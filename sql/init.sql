@@ -1,0 +1,12 @@
+DROP DATABASE IF EXISTS nkg;
+CREATE DATABASE nkg DEFAULT CHARACTER SET utf8;
+USE nkg;
+
+DROP TABLE IF EXISTS `JackList`;
+CREATE TABLE `JackList`(
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `dsp` varchar(256) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `JackList` VALUES(1,'hello my name is jack')

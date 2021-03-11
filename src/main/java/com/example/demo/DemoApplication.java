@@ -1,7 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.util.KGManager;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @MapperScan("com.example.demo.data")
@@ -9,7 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
-    }
 
+        KGManager gm = new KGManager("src/main/resources/covid-19-prevention-2020-03-11.json");
+
+        //SpringApplication.run(DemoApplication.class, args);
+    }
 }

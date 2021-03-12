@@ -9,9 +9,15 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 public class KGManager {
-    public ArrayList<KGNode> nodeList;
+    private ArrayList<KGNode> nodeList;
+    //编号对应
+    private ArrayList<String> numList;
+
+    private List<String[]> tri_set_id,tri_set_num;
+
 
     public KGManager(){
         this.nodeList = new ArrayList<>();
@@ -96,7 +102,7 @@ public class KGManager {
         return null;
     }
 
-    public KGNode searchByIDWithBuild(String id){
+    private KGNode searchByIDWithBuild(String id){
         KGNode res = this.searchByID(id);
         if(res==null) {
             res = new KGNode(id);
@@ -134,5 +140,53 @@ public class KGManager {
         }catch (Exception e){
             return null;
         }
+    }
+
+    private void initNumList(){
+        numList = new ArrayList<>();
+        for(int i=0;i<nodeList.size();i++){
+            numList.add(mapToNum(i).toString());
+        }
+    }
+
+    private Integer mapToNum(int i){
+        return 86400+i*101+i%17;
+    }
+
+    private String getNum(KGNode n){
+        return numList.get(nodeList.indexOf(n));
+    }
+
+    private void initTripleSet(){
+        tri_set_id  = new ArrayList<>();
+        tri_set_num  = new ArrayList<>();
+        if(numList==null) initNumList();
+        for(KGNode n: nodeList){
+            for(int i=0;i<n.relations.size();i++){
+                String[] triple_id = {n.id,n.relations.get(i).id,n.tails.get(i).id};
+                String[] triple_num = {getNum(n),getNum(n.relations.get(i)),getNum(n.tails.get(i))};
+                tri_set_id.add(triple_id);
+                tri_set_num.add(triple_num);
+            }
+        }
+    }
+
+    public List<String[]> getTripleSetById(){
+        if(tri_set_id==null) initTripleSet();
+        return  tri_set_id;
+    }
+
+    public List<String[]> getTripleSetByNum(){
+        if(tri_set_num==null) initTripleSet();
+        return  tri_set_num;
+    }
+
+    public List<String[]> getNumIdMap(){
+        ArrayList<String[]> res = new ArrayList<>();
+        for(int i=0;i<nodeList.size();i++){
+            String[] item = {numList.get(i),nodeList.get(i).id};
+            res.add(item);
+        }
+        return res;
     }
 }

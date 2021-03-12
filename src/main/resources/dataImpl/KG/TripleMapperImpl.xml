@@ -14,9 +14,9 @@
 <!--        delete from JackList where id = #{id}-->
 <!--    </delete>-->
 
-<!--    <select id="getJack" resultMap="JackPo">-->
-<!--        select * from JackList where id = #{jackId}-->
-<!--    </select>-->
+    <select id="getRelatedTriples" resultMap="TriplePo">
+        select * from TripleList where head = #{id} or relation = #{id} or tail = #{id}
+    </select>
 
 <!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
 <!--        update JackList-->

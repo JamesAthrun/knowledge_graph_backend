@@ -10,4 +10,5 @@ import java.util.List;
 public interface NumIdMapMapper {
     void insertNumIdMap(NumIdMapPo numIdMapPo);
     List<EntityPo> searchEntity(String keywords);
+    EntityPo getEntityById(String id);
 }

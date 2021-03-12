@@ -9,7 +9,8 @@ public class EntityListVo {
 
     public void addEntity(String id, String name){
         JSONObject item = new JSONObject();
-        item.put(id,name);
+        item.put("id",id);
+        item.put("name",name);
         data.add(item);
     }
 

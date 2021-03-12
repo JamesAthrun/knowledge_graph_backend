@@ -10,9 +10,12 @@ import com.example.demo.util.GlobalConfigure;
 import com.example.demo.util.KGManager;
 import com.example.demo.util.ResultBean;
 import com.example.demo.vo.EntityListVo;
+import com.example.demo.vo.GraphVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -51,4 +54,65 @@ public class KGServiceImpl implements KGService {
         }
         return ResultBean.success(entityListVo);
     }
+
+    @Override
+    public ResultBean getGraphData(String id) {
+        ArrayList<TriplePo> res_link = new ArrayList<>();
+        ArrayList<String> related_ids = new ArrayList<>();
+        searchTriples(id,1,res_link);//times是递归查找次数
+        for(TriplePo item:res_link){
+            if(!related_ids.contains(item.head)) related_ids.add(item.head);
+            if(!related_ids.contains(item.relation)) related_ids.add(item.relation);
+            if(!related_ids.contains(item.tail)) related_ids.add(item.tail);
+        }
+
+        GraphVo go = new GraphVo();
+        for(TriplePo item:res_link){
+            go.addLink(item.head,item.tail,item.relation);
+        }
+        for(String entity_id:related_ids){
+            EntityPo entity = numIdMapMapper.getEntityById(entity_id);
+            go.addData(entity.num,entity.id);
+        }
+        return ResultBean.success(go);
+    }
+
+    public void searchTriples(String id, int times,List<TriplePo> res){
+        if(times==0) return;
+        res = MySet(res);
+        List<TriplePo> cases = tripleMapper.getRelatedTriples(id);
+        res.addAll(cases);
+        for(TriplePo tri:cases){
+            if(!tri.head.equals(id)) searchTriples(tri.head,times-1,res);
+            if(!tri.relation.equals(id)) searchTriples(tri.relation,times-1,res);
+            if(!tri.tail.equals(id)) searchTriples(tri.tail,times-1,res);
+        }
+    }
+
+    //去重
+    public List<TriplePo> MySet(List<TriplePo> in){
+//        ArrayList<TriplePo> out = new ArrayList<>();
+//        for(TriplePo item: in){
+//            if(triple_existed(out,item)) continue;
+//            out.add(item);
+//        }
+//        in.clear();
+//        in.addAll(out);
+//        return in;
+        HashSet<TriplePo> out = new HashSet<>(in);
+        for(TriplePo item: in){
+            if(out.contains(item)) continue;
+            out.add(item);
+        }
+        in.clear();
+        in.addAll(out);
+        return in;
+    }
+
+//    public boolean triple_existed(List<TriplePo> list,TriplePo item){
+//        for(TriplePo tmp: list){
+//            if(tmp.head.equals(item.head) && tmp.relation.equals(item.relation) && tmp.tail.equals(item.tail)) return true;
+//        }
+//        return false;
+//    }
 }

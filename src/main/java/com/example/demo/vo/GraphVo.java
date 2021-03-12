@@ -5,11 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 
 public class GraphVo {
 
-    JSONArray data = new JSONArray();
-    JSONArray link = new JSONArray();
+    public JSONArray data = new JSONArray();
+    public JSONArray link = new JSONArray();
 
-    public void addData(String name){
+    public void addData(String id, String name){
         JSONObject item = new JSONObject();
+        item.put("id",id);
         item.put("name",name);
         data.add(item);
     }

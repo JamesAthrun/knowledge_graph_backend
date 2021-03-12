@@ -10,9 +10,13 @@
         insert into NumIdMapList(recordId,num,id) values(#{recordId},#{num},#{id})
     </insert>
 
-        <select id="searchEntity" resultMap="EntityPo">
-            select * from NumIdMapList where id like "%${keywords}%"
-        </select>
+    <select id="searchEntity" resultMap="EntityPo">
+        select * from NumIdMapList where id like "%${keywords}%"
+    </select>
+
+    <select id="getEntityById" resultMap="EntityPo">
+        select * from NumIdMapList where num = #{id}
+    </select>
 
 <!--    <delete id="delJack">-->
 <!--        delete from JackList where id = #{id}-->

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.data.KG.NumIdMapMapper">
+
+<!--    <insert id="addJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
+<!--        insert into JackList(id,dsp) values(#{id},#{dsp})-->
+<!--    </insert>-->
+
+    <insert id="insertNumIdMap" parameterType="com.example.demo.po.NumIdMapPo" useGeneratedKeys="true" keyProperty="recordId">
+        insert into NumIdMapList(recordId,num,id) values(#{recordId},#{num},#{id})
+    </insert>
+
+        <select id="searchEntity" resultMap="EntityPo">
+            select * from NumIdMapList where id like "%${keywords}%"
+        </select>
+
+<!--    <delete id="delJack">-->
+<!--        delete from JackList where id = #{id}-->
+<!--    </delete>-->
+
+<!--    <select id="getJack" resultMap="JackPo">-->
+<!--        select * from JackList where id = #{jackId}-->
+<!--    </select>-->
+
+<!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
+<!--        update JackList-->
+<!--        <set>-->
+<!--            dsp = #{dsp}-->
+<!--        </set>-->
+<!--        where id = #{id}-->
+<!--    </update>-->
+
+    <resultMap id="EntityPo" type="com.example.demo.po.EntityPo">
+        <id column="recordId" property="recordId"/>
+        <result column="id" property="id"/>
+        <result column="num" property="num"/>
+    </resultMap>
+
+</mapper>

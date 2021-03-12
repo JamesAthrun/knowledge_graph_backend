@@ -93,7 +93,7 @@ public class KGManager {
         }
     }
 
-    public KGNode searchByID(String id){
+    private KGNode searchByID(String id){
         KGNode res;
         for (KGNode kgNode : this.nodeList) {
             res = kgNode;
@@ -111,7 +111,7 @@ public class KGManager {
         return res;
     }
 
-    public void add(KGNode kgn){
+    private void add(KGNode kgn){
         if(searchByID(kgn.id)!=null) return;
         this.nodeList.add(kgn);
     }

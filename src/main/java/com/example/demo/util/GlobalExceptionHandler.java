@@ -10,6 +10,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResultBean unknownException(Exception e) {
+        e.printStackTrace();
         return ResultBean.error(2,"exception");
     }
 }

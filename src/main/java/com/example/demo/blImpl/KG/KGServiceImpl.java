@@ -84,7 +84,10 @@ public class KGServiceImpl implements KGService {
         res.addAll(cases);
         for(TriplePo tri:cases){
             if(!tri.head.equals(id)) searchTriples(tri.head,times-1,res);
-            if(!tri.relation.equals(id)) searchTriples(tri.relation,times-1,res);
+            //搜索头尾的关联节点，不搜索关系的关联节点
+            //后续可以视情况改成搜索指定数量的关系的关联节点
+            //todo
+            //if(!tri.relation.equals(id)) searchTriples(tri.relation,times-1,res);
             if(!tri.tail.equals(id)) searchTriples(tri.tail,times-1,res);
         }
     }

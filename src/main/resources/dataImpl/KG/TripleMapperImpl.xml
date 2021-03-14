@@ -10,6 +10,10 @@
         insert into TripleList(recordId,head,relation,tail) values(#{recordId},#{head},#{relation},#{tail})
     </insert>
 
+    <insert id="insertTriple_zh" parameterType="com.example.demo.po.TriplePo" useGeneratedKeys="true" keyProperty="recordId">
+        insert into TripleList_zh(recordId,head,relation,tail) values(#{recordId},#{head},#{relation},#{tail})
+    </insert>
+
 <!--    <delete id="delJack">-->
 <!--        delete from JackList where id = #{id}-->
 <!--    </delete>-->

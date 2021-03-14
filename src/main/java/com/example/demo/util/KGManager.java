@@ -35,25 +35,26 @@ public class KGManager {
         for(int i=0;i<list.size();i++){
             JSONObject jo =  list.getJSONObject(i);
 
-            if(!jo.containsKey("_id")) continue;
-            if(!jo.containsKey("_type")) continue;
-
+            //"_id"字段是必有的
             //处理id
             String headId = jo.getString("_id");
             //添加头实体
             KGNode head = this.searchByIDWithBuild(headId);
             this.add(head);
 
-            //处理type
-            JSONArray type_arr = jo.getJSONArray("_type");
-            for(Object value:type_arr){
-                String typeId = value.toString();
-                KGNode type = this.searchByIDWithBuild(typeId);
-                head.addCouple(this.searchByID("_type"),type);
+            //"_type"字段有一个例外
+            if(jo.containsKey("_type")) {
+                //处理type
+                JSONArray type_arr = jo.getJSONArray("_type");
+                for (Object value : type_arr) {
+                    String typeId = value.toString();
+                    KGNode type = this.searchByIDWithBuild(typeId);
+                    head.addCouple(this.searchByID("_type"), type);
+                }
             }
 
             //添加关系实体
-            String[] key_arr = getKeySArr(jo);
+            List<String> key_arr = getKeySArr(jo);
 
             for (Object value : key_arr) {
                 String relationId = value.toString();
@@ -116,14 +117,13 @@ public class KGManager {
         this.nodeList.add(kgn);
     }
 
-    private String[] getKeySArr(JSONObject jo) {
+    private List<String> getKeySArr(JSONObject jo) {
         Object[] tmp = jo.keySet().toArray();
-        String[] res = new String[tmp.length-2];
-        for(int i=0,j=0;i<tmp.length;i++){
-            String key = tmp[i].toString();
-            if(key.equals("_id")||key.equals("_type")) continue;
-            res[j] = key;
-            j+=1;
+        List<String> res = new ArrayList<>();
+        for (Object o : tmp) {
+            String key = o.toString();
+            if (key.equals("_id") || key.equals("_type")) continue;
+            res.add(key);
         }
         return res;
     }

@@ -10,5 +10,7 @@ public interface TripleMapper {
 
     void insertTriple(TriplePo triplePo);
 
+    void insertTriple_zh(TriplePo triplePo);
+
     List<TriplePo> getRelatedTriples(String id);
 }

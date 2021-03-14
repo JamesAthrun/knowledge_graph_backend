@@ -14,7 +14,10 @@ import com.example.demo.vo.GraphVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 
 @Service
 public class KGServiceImpl implements KGService {
@@ -30,11 +33,15 @@ public class KGServiceImpl implements KGService {
         if(!gc.needInit) return;
         KGManager gm = new KGManager("src/main/resources/covid-19-prevention-2020-03-11.json");
         List<String[]> tri_num = gm.getTripleSetByNum();
+        List<String[]> tri_id = gm.getTripleSetById();
         List<String[]> num_id_map = gm.getNumIdMap();
-
         for(String[] item:tri_num){
             TriplePo tp = new TriplePo(item[0],item[1],item[2]);
             tripleMapper.insertTriple(tp);
+        }
+        for(String[] item:tri_id){
+            TriplePo tp = new TriplePo(item[0],item[1],item[2]);
+            tripleMapper.insertTriple_zh(tp);
         }
         for(String[] item:num_id_map){
             NumIdMapPo np = new NumIdMapPo(item[0],item[1]);

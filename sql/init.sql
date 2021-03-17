@@ -11,8 +11,8 @@ CREATE TABLE `JackList`(
 
 INSERT INTO `JackList` VALUES(1,'hello my name is jack');
 
-DROP TABLE IF EXISTS `TripleList`;
-CREATE TABLE `TripleList`(
+DROP TABLE IF EXISTS `Triple`;
+CREATE TABLE `Triple`(
    `recordId` int(11) NOT NULL AUTO_INCREMENT,
    `head` varchar(256) DEFAULT NULL,
    `relation` varchar(256) DEFAULT NULL,
@@ -20,20 +20,27 @@ CREATE TABLE `TripleList`(
    PRIMARY KEY (`recordId`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `NumIdMapList`;
-CREATE TABLE `NumIdMapList`(
+DROP TABLE IF EXISTS `Entity`;
+CREATE TABLE `Entity`(
    `recordId` int(11) NOT NULL AUTO_INCREMENT,
-   `num` varchar(256) DEFAULT NULL,
    `id` varchar(256) DEFAULT NULL,
+   `nameEn` varchar(256) DEFAULT NULL,
+   `nameCn` varchar(256) DEFAULT NULL,
+   `division` varchar(256) DEFAULT NULL,
+   `from` varchar(256) DEFAULT NULL,
+   `comment` varchar(256) DEFAULT NULL,
    PRIMARY KEY (`recordId`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-USE nkg;
-DROP TABLE IF EXISTS `TripleList_zh`;
-CREATE TABLE `TripleList_zh`(
+DROP TABLE IF EXISTS `Property`;
+CREATE TABLE `Property`(
     `recordId` int(11) NOT NULL AUTO_INCREMENT,
-    `head` varchar(256) DEFAULT NULL,
-    `relation` varchar(256) DEFAULT NULL,
-    `tail` varchar(256) DEFAULT NULL,
+    `id` varchar(256) DEFAULT NULL,
+    `nameEn` varchar(256) DEFAULT NULL,
+    `nameCn` varchar(256) DEFAULT NULL,
+    `domain` varchar(256) DEFAULT NULL,
+    `range` varchar(256) DEFAULT NULL,
+    `from` varchar(256) DEFAULT NULL,
+    `comment` varchar(256) DEFAULT NULL,
     PRIMARY KEY (`recordId`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;

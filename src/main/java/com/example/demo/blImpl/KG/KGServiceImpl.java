@@ -1,15 +1,18 @@
 package com.example.demo.blImpl.KG;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.KG.KGService;
-import com.example.demo.data.KG.NumIdMapMapper;
+import com.example.demo.data.KG.EntityMapper;
+import com.example.demo.data.KG.PropertyMapper;
 import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.EntityPo;
-import com.example.demo.po.NumIdMapPo;
+import com.example.demo.po.PropertyPO;
 import com.example.demo.po.TriplePo;
 import com.example.demo.util.GlobalConfigure;
 import com.example.demo.util.KGManager;
 import com.example.demo.util.ResultBean;
-import com.example.demo.vo.EntityListVo;
+import com.example.demo.vo.NodeListVo;
 import com.example.demo.vo.GraphVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,47 +26,52 @@ import java.util.Random;
 public class KGServiceImpl implements KGService {
 
     @Autowired
-    NumIdMapMapper numIdMapMapper;
+    EntityMapper entityMapper;
+    @Autowired
+    PropertyMapper propertyMapper;
     @Autowired
     TripleMapper tripleMapper;
     @Autowired
     GlobalConfigure gc;
     @Autowired
-    void initKG(GlobalConfigure gc){
+    void init(GlobalConfigure gc){
         if(!gc.needInit) return;
-        KGManager gm = new KGManager("src/main/resources/covid-19-prevention-2020-03-11.json");
-        List<String[]> tri_num = gm.getTripleSetByNum();
-        List<String[]> tri_id = gm.getTripleSetById();
-        List<String[]> num_id_map = gm.getNumIdMap();
-        for(String[] item:tri_num){
-            TriplePo tp = new TriplePo(item[0],item[1],item[2]);
-            tripleMapper.insertTriple(tp);
+        JSONArray cr_list = JSONObject.parseObject(KGManager.getJsonString("src/main/resources/cr_list.json")).getJSONArray("data");
+        for(Object o:cr_list){
+            JSONObject jo = (JSONObject) o;
+            entityMapper.insert(new EntityPo(jo.getString("recordId"),jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("division"),jo.getString("from"),jo.getString("comment")));
         }
-        for(String[] item:tri_id){
-            TriplePo tp = new TriplePo(item[0],item[1],item[2]);
-            tripleMapper.insertTriple_zh(tp);
+        JSONArray p_list = JSONObject.parseObject(KGManager.getJsonString("src/main/resources/p_list.json")).getJSONArray("data");
+        for(Object o:p_list){
+            JSONObject jo = (JSONObject) o;
+            propertyMapper.insert(new PropertyPO(jo.getString("recordId"),jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("domain"),jo.getString("range"),jo.getString("from"),jo.getString("comment")));
         }
-        for(String[] item:num_id_map){
-            NumIdMapPo np = new NumIdMapPo(item[0],item[1]);
-            numIdMapMapper.insertNumIdMap(np);
+        JSONArray triple = JSONObject.parseObject(KGManager.getJsonString("src/main/resources/triple.json")).getJSONArray("data");
+        for(Object o:triple){
+            JSONObject jo = (JSONObject) o;
+            tripleMapper.insert(new TriplePo(jo.getString("head"),jo.getString("relation"),jo.getString("tail")));
         }
-        System.out.println("data init over");
     }
 
     @Override
     public ResultBean searchEntity(String keywords) {
         long t1 = System.currentTimeMillis();;
 
-        List<EntityPo> entities = numIdMapMapper.searchEntity(keywords);
-        EntityListVo entityListVo = new EntityListVo();
+        List<EntityPo> entities = entityMapper.searchByKeywords(keywords);
+        NodeListVo nodeListVo = new NodeListVo();
         for(EntityPo e:entities){
-            entityListVo.addEntity(e.num,e.id);
+            nodeListVo.addEntity(e);
+        }
+
+        List<PropertyPO> properties = propertyMapper.searchByKeywords(keywords);
+        for(PropertyPO p:properties){
+            nodeListVo.addProperty(p);
         }
 
         long t2 = System.currentTimeMillis();
-        System.out.println("节点数 "+entities.size()+" 搜索用时 "+(t2-t1)+"ms");
+        System.out.println("节点数 "+(entities.size()+properties.size())+" 搜索用时 "+(t2-t1)+"ms");
 
-        return ResultBean.success(entityListVo);
+        return ResultBean.success(nodeListVo);
     }
 
     @Override
@@ -84,9 +92,12 @@ public class KGServiceImpl implements KGService {
         for(TriplePo item:related_link){
             go.addLink(item.head,item.tail,item.relation);
         }
-        for(String entity_id:related_ids){
-            EntityPo entity = numIdMapMapper.getEntityById(entity_id);
-            go.addData(entity.num,entity.id);
+        for(String recordId:related_ids){
+            EntityPo e = entityMapper.getByRecordId(recordId);
+            PropertyPO p = propertyMapper.getByRecordId(recordId);
+            if(e!=null)  go.addData(e);
+            if(p!=null)  go.addData(p);
+            if(e==null&&p==null) go.addData(new EntityPo(recordId,"未知实体或属性","","","","unknown","我只能说，懂的都懂。"));
         }
 
         long t2 = System.currentTimeMillis();
@@ -97,7 +108,7 @@ public class KGServiceImpl implements KGService {
 
     public void searchTriples(String id, int depth,int neighbors, List<TriplePo> res){
         if(depth==0) return;
-//        res = MySet(res);
+        MySet(res);
         List<TriplePo> cases = tripleMapper.getRelatedTriples(id);
         List<TriplePo> tmp_h = new ArrayList<>();
         List<TriplePo> tmp_r = new ArrayList<>();
@@ -117,17 +128,13 @@ public class KGServiceImpl implements KGService {
         res.addAll(tmp_r);
         res.addAll(tmp_t);
         //作为头节点时，对尾节点进行相关搜索
-        //作为关系节点时，对头节点和尾节点进行相关搜索
+        //作为关系节点时，不进行相关搜索
         //作为尾节点时，对头节点进行相关搜索
         for (TriplePo tri:tmp_h) {
-            if(!tri.tail.equals(id)) searchTriples(tri.tail,depth-1,neighbors-1,res);
-        }
-        for (TriplePo tri:tmp_r) {
-            if(!tri.head.equals(id)) searchTriples(tri.head,depth-1,neighbors-1,res);
-            if(!tri.tail.equals(id)) searchTriples(tri.tail,depth-1,neighbors-1,res);
+            if(!tri.tail.equals(id)) searchTriples(tri.tail,depth-1,neighbors,res);
         }
         for (TriplePo tri:tmp_t) {
-            if(!tri.head.equals(id)) searchTriples(tri.head,depth-1,neighbors-1,res);
+            if(!tri.head.equals(id)) searchTriples(tri.head,depth-1,neighbors,res);
         }
     }
 

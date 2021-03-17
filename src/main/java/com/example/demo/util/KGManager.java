@@ -128,7 +128,7 @@ public class KGManager {
         return res;
     }
 
-    private String getJsonString(String filepath){
+    public static String getJsonString(String filepath){
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filepath)), StandardCharsets.UTF_8));
             String line;

@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.data.KG.NumIdMapMapper">
+<mapper namespace="com.example.demo.data.KG.EntityMapper">
 
 <!--    <insert id="addJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
 <!--        insert into JackList(id,dsp) values(#{id},#{dsp})-->
 <!--    </insert>-->
 
-    <insert id="insertNumIdMap" parameterType="com.example.demo.po.NumIdMapPo" useGeneratedKeys="true" keyProperty="recordId">
-        insert into NumIdMapList(recordId,num,id) values(#{recordId},#{num},#{id})
+    <insert id="insert" parameterType="com.example.demo.po.EntityPo" useGeneratedKeys="true" keyProperty="recordId">
+        insert into nkg.entity(recordId,id,nameEn,nameCn,division,`from`,comment) values (#{recordId},#{id},#{nameEn},#{nameCn},#{division},#{from},#{comment})
     </insert>
 
-    <select id="searchEntity" resultMap="EntityPo">
-        select * from NumIdMapList where id like "%${keywords}%"
-    </select>
-
-    <select id="getEntityById" resultMap="EntityPo">
-        select * from NumIdMapList where num = #{id}
-    </select>
 
 <!--    <delete id="delJack">-->
 <!--        delete from JackList where id = #{id}-->
 <!--    </delete>-->
 
-<!--    <select id="getJack" resultMap="JackPo">-->
-<!--        select * from JackList where id = #{jackId}-->
-<!--    </select>-->
+    <select id="searchByKeywords" resultMap="EntityPo">
+        select * from nkg.entity where id like "%${keywords}%" or nameCn like "%${keywords}%" or nameEn like "%${keywords}%"
+    </select>
+
+    <select id="getByRecordId" resultMap="EntityPo">
+        select * from nkg.entity where recordId = #{recordId}
+    </select>
+
 
 <!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
 <!--        update JackList-->
@@ -37,7 +35,10 @@
     <resultMap id="EntityPo" type="com.example.demo.po.EntityPo">
         <id column="recordId" property="recordId"/>
         <result column="id" property="id"/>
-        <result column="num" property="num"/>
+        <result column="nameEn" property="nameEn"/>
+        <result column="nameCn" property="nameCn"/>
+        <result column="division" property="division"/>
+        <result column="from" property="from"/>
     </resultMap>
 
 </mapper>

@@ -8,9 +8,7 @@ import java.util.List;
 @Repository
 public interface TripleMapper {
 
-    void insertTriple(TriplePo triplePo);
-
-    void insertTriple_zh(TriplePo triplePo);
+    void insert(TriplePo triplePo);
 
     List<TriplePo> getRelatedTriples(String id);
 }

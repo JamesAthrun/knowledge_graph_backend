@@ -6,12 +6,8 @@
 <!--        insert into JackList(id,dsp) values(#{id},#{dsp})-->
 <!--    </insert>-->
 
-    <insert id="insertTriple" parameterType="com.example.demo.po.TriplePo" useGeneratedKeys="true" keyProperty="recordId">
-        insert into TripleList(recordId,head,relation,tail) values(#{recordId},#{head},#{relation},#{tail})
-    </insert>
-
-    <insert id="insertTriple_zh" parameterType="com.example.demo.po.TriplePo" useGeneratedKeys="true" keyProperty="recordId">
-        insert into TripleList_zh(recordId,head,relation,tail) values(#{recordId},#{head},#{relation},#{tail})
+    <insert id="insert" parameterType="com.example.demo.po.TriplePo">
+        insert into nkg.triple(head,relation,tail) values(#{head},#{relation},#{tail})
     </insert>
 
 <!--    <delete id="delJack">-->
@@ -19,7 +15,7 @@
 <!--    </delete>-->
 
     <select id="getRelatedTriples" resultMap="TriplePo">
-        select * from TripleList where head = #{id} or relation = #{id} or tail = #{id}
+        select head,relation,tail from nkg.triple where head = #{id} or tail = #{id}
     </select>
 
 <!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
@@ -31,8 +27,7 @@
 <!--    </update>-->
 
     <resultMap id="TriplePo" type="com.example.demo.po.TriplePo">
-        <id column="recordId" property="recordId"/>
-        <result column="head" property="head"/>
+        <id column="head" property="head"/>
         <result column="relation" property="relation"/>
         <result column="tail" property="tail"/>
     </resultMap>

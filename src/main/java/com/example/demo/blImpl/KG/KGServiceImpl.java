@@ -80,7 +80,7 @@ public class KGServiceImpl implements KGService {
 
         List<TriplePo> related_link = new ArrayList<>();
         List<String> related_ids = new ArrayList<>();
-        searchTriples(id,3,4,related_link);//depth是递归查找上限，neighbors是每层头和尾的连接上限
+        searchTriples(id,3,5,related_link);//depth是递归查找上限，neighbors是每层头和尾的连接上限
 
         for(TriplePo item:related_link){
             related_ids.add(item.head);

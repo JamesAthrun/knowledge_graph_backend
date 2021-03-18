@@ -1,7 +1,5 @@
 package com.example.demo.blImpl.KG;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.KG.EntityMapper;
 import com.example.demo.data.KG.PropertyMapper;
@@ -9,11 +7,9 @@ import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.EntityPo;
 import com.example.demo.po.PropertyPO;
 import com.example.demo.po.TriplePo;
-import com.example.demo.util.GlobalConfigure;
-import com.example.demo.util.KGManager;
 import com.example.demo.util.ResultBean;
-import com.example.demo.vo.NodeListVo;
 import com.example.demo.vo.GraphVo;
+import com.example.demo.vo.NodeListVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,27 +27,6 @@ public class KGServiceImpl implements KGService {
     PropertyMapper propertyMapper;
     @Autowired
     TripleMapper tripleMapper;
-    @Autowired
-    GlobalConfigure gc;
-    @Autowired
-    void init(GlobalConfigure gc){
-        if(!gc.needInit) return;
-        JSONArray cr_list = JSONObject.parseObject(KGManager.getJsonString("src/main/resources/cr_list.json")).getJSONArray("data");
-        for(Object o:cr_list){
-            JSONObject jo = (JSONObject) o;
-            entityMapper.insert(new EntityPo(jo.getString("recordId"),jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("division"),jo.getString("from"),jo.getString("comment")));
-        }
-        JSONArray p_list = JSONObject.parseObject(KGManager.getJsonString("src/main/resources/p_list.json")).getJSONArray("data");
-        for(Object o:p_list){
-            JSONObject jo = (JSONObject) o;
-            propertyMapper.insert(new PropertyPO(jo.getString("recordId"),jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("domain"),jo.getString("range"),jo.getString("from"),jo.getString("comment")));
-        }
-        JSONArray triple = JSONObject.parseObject(KGManager.getJsonString("src/main/resources/triple.json")).getJSONArray("data");
-        for(Object o:triple){
-            JSONObject jo = (JSONObject) o;
-            tripleMapper.insert(new TriplePo(jo.getString("head"),jo.getString("relation"),jo.getString("tail")));
-        }
-    }
 
     @Override
     public ResultBean searchEntity(String keywords) {

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <title>Title</title>
+</head>
+<body>
+    <script>
+        function tmp(){
+            $.ajax({
+                url:"http://localhost:8080/KG/getGraphData?id=175684",
+                headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+                success:function (data) {
+                    console.log(data)
+                }
+            })
+        }
+        tmp()
+    </script>
+
+</body>
+</html>

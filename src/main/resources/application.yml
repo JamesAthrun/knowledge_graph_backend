@@ -9,6 +9,9 @@ spring:
   jackson:
     time-zone: GMT+8
 
+
 mybatis:
   mapper-locations: classpath*:/dataImpl/*/*MapperImpl.xml
 
+server:
+  port: 8080

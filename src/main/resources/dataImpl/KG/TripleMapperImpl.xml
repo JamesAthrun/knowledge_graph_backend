@@ -7,7 +7,7 @@
 <!--    </insert>-->
 
     <insert id="insert" parameterType="com.example.demo.po.TriplePo">
-        insert into nkg.triple(head,relation,tail) values(#{head},#{relation},#{tail})
+        insert into nkg.triple(tableId,head,relation,tail) values(#{tableId},#{head},#{relation},#{tail})
     </insert>
 
 <!--    <delete id="delJack">-->
@@ -15,7 +15,7 @@
 <!--    </delete>-->
 
     <select id="getRelatedTriples" resultMap="TriplePo">
-        select head,relation,tail from nkg.triple where head = #{id} or tail = #{id}
+        select tableId,head,relation,tail from nkg.triple where head = #{id} or tail = #{id}
     </select>
 
 <!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
@@ -27,7 +27,8 @@
 <!--    </update>-->
 
     <resultMap id="TriplePo" type="com.example.demo.po.TriplePo">
-        <id column="head" property="head"/>
+        <id column="tableId" property="tableId"/>
+        <result column="head" property="head"/>
         <result column="relation" property="relation"/>
         <result column="tail" property="tail"/>
     </resultMap>

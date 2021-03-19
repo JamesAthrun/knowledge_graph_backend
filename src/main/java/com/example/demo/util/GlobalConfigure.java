@@ -15,19 +15,22 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Configuration
 public class GlobalConfigure {
     //final String filepath = "src/main/resources/covid-19-prevention-2020-03-11.json";
-    final String cr_path = "src/main/resources/cr.json";
-    final String p_path = "src/main/resources/p.json";
-    final String t_path = "src/main/resources/t.json";
-    final boolean needInit = false;
+    final String data_path = "src/main/resources/data.json";
+    final boolean needInit = true;
     private final String[] origins = new String[]{
         //在这里设置允许跨域的路由
         "http://localhost:8000",
         "http://localhost:63342",
     };
 
+    @Autowired
+    Recorder recorder;
     @Autowired
     EntityMapper entityMapper;
     @Autowired
@@ -38,27 +41,40 @@ public class GlobalConfigure {
     @Autowired
     public void init(){
         if(!needInit) return;
-        String cr = KGManager.getJsonString(cr_path);
-        String p = KGManager.getJsonString(p_path);
-        String t = KGManager.getJsonString(t_path);
-        initFromJSONStr(cr,p,t);
+        String jsonString = KGManager.getJsonString(data_path);
+        initFromJSONStr(jsonString);
     }
 
-    private void initFromJSONStr(String cr,String p,String t){
-        JSONArray cr_list = JSONObject.parseObject(cr).getJSONArray("data");
-        for(Object o:cr_list){
+    private void initFromJSONStr(String jsonString){
+        JSONArray entity_list = JSONObject.parseObject(jsonString).getJSONArray("entity");
+        List<String> before = new ArrayList<>();
+        List<String> after = new ArrayList<>();
+        String tableId = recorder.getTableId();
+        for(Object o:entity_list){
             JSONObject jo = (JSONObject) o;
-            entityMapper.insert(new EntityPo(jo.getString("recordId"),jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("division"),jo.getString("from"),jo.getString("comment")));
+            before.add(jo.getString("recordId"));
+            String tmp = recorder.getRecordId();
+            after.add(tmp);
+            entityMapper.insert(new EntityPo(tmp,jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("division"),jo.getString("from"),jo.getString("comment")));
         }
-        JSONArray p_list = JSONObject.parseObject(p).getJSONArray("data");
-        for(Object o:p_list){
+        JSONArray property_list = JSONObject.parseObject(jsonString).getJSONArray("property");
+        for(Object o:property_list){
             JSONObject jo = (JSONObject) o;
-            propertyMapper.insert(new PropertyPO(jo.getString("recordId"),jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("domain"),jo.getString("range"),jo.getString("from"),jo.getString("comment")));
+            before.add(jo.getString("recordId"));
+            String tmp = recorder.getRecordId();
+            after.add(tmp);
+            propertyMapper.insert(new PropertyPO(tmp,jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("domain"),jo.getString("range"),jo.getString("from"),jo.getString("comment")));
         }
-        JSONArray triple = JSONObject.parseObject(t).getJSONArray("data");
-        for(Object o:triple){
+        JSONArray triple_list = JSONObject.parseObject(jsonString).getJSONArray("triple");
+        for(Object o:triple_list){
             JSONObject jo = (JSONObject) o;
-            tripleMapper.insert(new TriplePo(jo.getString("head"),jo.getString("relation"),jo.getString("tail")));
+            String head = jo.getString("head");
+            String real_head = after.get(before.indexOf(head));
+            String relation = jo.getString("relation");
+            String real_relation = after.get(before.indexOf(relation));
+            String tail = jo.getString("tail");
+            String real_tail = after.get(before.indexOf(tail));
+            tripleMapper.insert(new TriplePo(tableId,real_head,real_relation,real_tail));
         }
     }
 

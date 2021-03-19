@@ -14,6 +14,7 @@ INSERT INTO `JackList` VALUES(1,'hello my name is jack');
 DROP TABLE IF EXISTS `Triple`;
 CREATE TABLE `Triple`(
    `recordId` int(11) NOT NULL AUTO_INCREMENT,
+   `tableId` varchar(256) DEFAULT NULL,
    `head` varchar(256) DEFAULT NULL,
    `relation` varchar(256) DEFAULT NULL,
    `tail` varchar(256) DEFAULT NULL,

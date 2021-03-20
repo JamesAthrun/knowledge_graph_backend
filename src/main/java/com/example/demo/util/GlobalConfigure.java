@@ -24,7 +24,7 @@ public class GlobalConfigure {
     final boolean needInit = false;
     private final String[] origins = new String[]{
         //在这里设置允许跨域的路由
-        "http://localhost:8000",
+        "http://localhost:8081",
         "http://localhost:63342",
     };
 

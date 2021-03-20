@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.po.EntityPo;
 import com.example.demo.po.PropertyPO;
+import com.example.demo.po.TriplePo;
 
 public class GraphVo {
 
-    public JSONArray data = new JSONArray();
+    public JSONArray entityData = new JSONArray();
+    public JSONArray propertyData = new JSONArray();
     public JSONArray link = new JSONArray();
 
     public void addData(EntityPo entityPo){
@@ -19,7 +21,7 @@ public class GraphVo {
         if(!entityPo.nameEn.equals("")) des += "英文名 "+entityPo.nameEn+"\n";
         if(!entityPo.comment.equals("")) des += "评论 "+entityPo.comment+"\n";
         item.put("des",des);
-        data.add(item);
+        entityData.add(item);
     }
 
     public void addData(PropertyPO propertyPO){
@@ -33,14 +35,15 @@ public class GraphVo {
         if(!propertyPO.domain.equals("")) des += "定义域 "+ propertyPO.domain+"\n";
         if(!propertyPO.range.equals("")) des += "值域 "+ propertyPO.range+"\n";
         item.put("des",des);
-        data.add(item);
+        propertyData.add(item);
     }
 
-    public void addLink(String source, String target, String name){
+    public void addLink(TriplePo triplePo){
         JSONObject item = new JSONObject();
-        item.put("source",source);
-        item.put("target",target);
-        item.put("name",name);
+        item.put("id",triplePo.recordId);
+        item.put("name",triplePo.relation);
+        item.put("source",triplePo.head);
+        item.put("target",triplePo.tail);
         link.add(item);
     }
 }

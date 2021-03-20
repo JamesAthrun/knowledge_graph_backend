@@ -65,7 +65,7 @@ public class KGServiceImpl implements KGService {
         MySet(related_ids);
         GraphVo go = new GraphVo();
         for(TriplePo item:related_link){
-            go.addLink(item.head,item.tail,item.relation);
+            go.addLink(item);
         }
         for(String recordId:related_ids){
             EntityPo e = entityMapper.getByRecordId(recordId);

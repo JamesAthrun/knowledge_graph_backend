@@ -26,6 +26,8 @@ public class GlobalConfigure {
     private final String[] origins = new String[]{
         //在这里设置允许跨域的路由
         "http://localhost:8000",
+        "http://localhost:8081",
+        "http://localhost:8082",
         "http://localhost:63342",
     };
 
@@ -74,7 +76,7 @@ public class GlobalConfigure {
             String real_relation = after.get(before.indexOf(relation));
             String tail = jo.getString("tail");
             String real_tail = after.get(before.indexOf(tail));
-            tripleMapper.insert(new TriplePo(tableId,real_head,real_relation,real_tail));
+            tripleMapper.insert(new TriplePo(recorder.getRecordId(),tableId,real_head,real_relation,real_tail));
         }
     }
 

@@ -25,10 +25,8 @@ public class GlobalConfigure {
     final boolean needInit = true;
     private final String[] origins = new String[]{
         //在这里设置允许跨域的路由
-        "http://localhost:8000",
-        "http://localhost:8081",
-        "http://localhost:8082",
-        "http://localhost:63342",
+        "http://localhost:8080", "http://localhost:8081", "http://localhost:8082",
+        "http://localhost:63342", "https://jsonplaceholder.typicode.com/posts"
     };
 
     @Autowired

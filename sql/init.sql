@@ -2,8 +2,8 @@ DROP DATABASE IF EXISTS nkg;
 CREATE DATABASE nkg DEFAULT CHARACTER SET utf8;
 USE nkg;
 
-DROP TABLE IF EXISTS `JackList`;
-CREATE TABLE `JackList`(
+DROP TABLE IF EXISTS `jackList`;
+CREATE TABLE `jackList`(
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `dsp` varchar(256) DEFAULT NULL,
     PRIMARY KEY (`id`)
@@ -11,8 +11,8 @@ CREATE TABLE `JackList`(
 
 INSERT INTO `JackList` VALUES(1,'hello my name is jack');
 
-DROP TABLE IF EXISTS `Triple`;
-CREATE TABLE `Triple`(
+DROP TABLE IF EXISTS `triple`;
+CREATE TABLE `triple`(
    `recordId` int(11) NOT NULL AUTO_INCREMENT,
    `tableId` varchar(256) DEFAULT NULL,
    `head` varchar(256) DEFAULT NULL,
@@ -21,8 +21,8 @@ CREATE TABLE `Triple`(
    PRIMARY KEY (`recordId`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `Entity`;
-CREATE TABLE `Entity`(
+DROP TABLE IF EXISTS `entity`;
+CREATE TABLE `entity`(
    `recordId` int(11) NOT NULL AUTO_INCREMENT,
    `id` varchar(256) DEFAULT NULL,
    `nameEn` varchar(256) DEFAULT NULL,
@@ -33,8 +33,8 @@ CREATE TABLE `Entity`(
    PRIMARY KEY (`recordId`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `Property`;
-CREATE TABLE `Property`(
+DROP TABLE IF EXISTS `property`;
+CREATE TABLE `property`(
     `recordId` int(11) NOT NULL AUTO_INCREMENT,
     `id` varchar(256) DEFAULT NULL,
     `nameEn` varchar(256) DEFAULT NULL,

@@ -11,6 +11,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResultBean unknownException(Exception e) {
         e.printStackTrace();
+        System.out.println(e.toString());
         return ResultBean.error(2,"exception");
     }
 }

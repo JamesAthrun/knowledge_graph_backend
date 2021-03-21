@@ -22,7 +22,6 @@ import java.util.List;
 public class GlobalConfigure {
     //final String filepath = "src/main/resources/covid-19-prevention-2020-03-11.json";
     final String data_path = "src/main/resources/data.json";
-    final boolean needInit = true;
     private final String[] origins = new String[]{
         //在这里设置允许跨域的路由
         "http://localhost:8080", "http://localhost:8081", "http://localhost:8082",
@@ -40,9 +39,14 @@ public class GlobalConfigure {
 
     @Autowired
     public void init(){
-        if(!needInit) return;
+        if(tripleMapper.getListSize()>0) {
+            System.out.println("data existed");
+            return;
+        }
+        System.out.println("data load begin");
         String jsonString = KGManager.getJsonString(data_path);
         initFromJSONStr(jsonString);
+        System.out.println("data load end");
     }
 
     private void initFromJSONStr(String jsonString){

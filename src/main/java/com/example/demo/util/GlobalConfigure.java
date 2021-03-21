@@ -24,7 +24,9 @@ public class GlobalConfigure {
     final String data_path = "src/main/resources/data.json";
     private final String[] origins = new String[]{
         //在这里设置允许跨域的路由
-        "http://localhost:8080", "http://0.0.0.0:8081", "http://localhost:8082",
+        "http://localhost:8080", "http://localhost:8081", "http://localhost:8082",
+            "http://0.0.0.0:8080", "http://0.0.0.0:8081", "http://0.0.0.0:8082",
+            "http://119.3.222.50:8080", "http://119.3.222.50:8081", "http://119.3.222.50:8082",
         "http://localhost:63342", "https://jsonplaceholder.typicode.com/posts"
     };
 

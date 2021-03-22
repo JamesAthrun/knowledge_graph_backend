@@ -6,30 +6,38 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Recorder {
     private int i;
-    private int tableNum;
+    private int currentTableId;
+    private int currentSeed;
+    private final int seed;
     private final int base;
-    private final int leap;
-    private final int step;
+    private final int A;
+    private final int B;
+    private final int M;
 
-    public Recorder(int i, int tableNum, int base, int leap, int step) {
-        this.i = i;
-        this.tableNum = tableNum;
+
+    public Recorder(int currentTableId, int seed, int base, int a, int b, int m) {
+        this.currentTableId = currentTableId;
+        this.seed = seed;
+        this.currentSeed = this.seed;
         this.base = base;
-        this.leap = leap;
-        this.step = step;
+        this.A = a;
+        this.B = b;
+        this.M = m;
     }
 
     public Recorder(){
-        this.i = -1;
-        this.tableNum = -1;
-        this.base = 86400;
-        this.leap = 101;
-        this.step = 17;
+        this.currentTableId = -1;
+        this.seed = 1453;
+        this.currentSeed = seed;
+        this.base = 19181107;
+        this.A = 2;
+        this.B = 1949;
+        this.M = 19911225-19181107;
     }
 
     public String getRecordId(){
-        this.i += 1;
-        return String.valueOf(base+this.i*leap+this.i%step);
+        currentSeed = (A * currentSeed + B) % M;
+        return String.valueOf(base+currentSeed);
     }
 
     @Bean
@@ -38,7 +46,7 @@ public class Recorder {
     }
 
     public String getTableId(){
-        this.tableNum += 1;
-        return String.valueOf(this.tableNum);
+        this.currentTableId += 1;
+        return String.valueOf(this.currentTableId);
     }
 }

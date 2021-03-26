@@ -15,7 +15,9 @@ public class KGController {
     KGService kgService;
 
     @GetMapping("/search")
-    public ResultBean search(@RequestParam String keywords){ return kgService.searchEntity(keywords); }
+    public ResultBean search(@RequestParam String keywords){
+        return kgService.searchEntity(keywords);
+    }
 
     @GetMapping("/getGraphData")
     public ResultBean getGraphData(@RequestParam String id){ return kgService.getGraphData(id); }

@@ -2,15 +2,6 @@ DROP DATABASE IF EXISTS nkg;
 CREATE DATABASE nkg DEFAULT CHARACTER SET utf8;
 USE nkg;
 
-DROP TABLE IF EXISTS `jackList`;
-CREATE TABLE `jackList`(
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `dsp` varchar(256) DEFAULT NULL,
-    PRIMARY KEY (`id`)
-)ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-INSERT INTO `JackList` VALUES(1,'hello my name is jack');
-
 DROP TABLE IF EXISTS `triple`;
 CREATE TABLE `triple`(
    `recordId` int(11) NOT NULL AUTO_INCREMENT,
@@ -44,4 +35,20 @@ CREATE TABLE `property`(
     `from` varchar(256) DEFAULT NULL,
     `comment` varchar(256) DEFAULT NULL,
     PRIMARY KEY (`recordId`)
+)ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `verify`;
+CREATE TABLE `verify`(
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `ip` varchar(256) NOT NULL,
+    `desKey` varchar(256) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `account`;
+CREATE TABLE `account`(
+     `id` int(11) NOT NULL AUTO_INCREMENT,
+     `name` varchar(256) UNIQUE DEFAULT NULL,
+     `pwd` varchar(256) DEFAULT NULL,
+     PRIMARY KEY (`id`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;

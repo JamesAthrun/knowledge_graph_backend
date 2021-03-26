@@ -18,6 +18,8 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.demo.util.GlobalTrans.getJsonString;
+
 @Configuration
 public class GlobalConfigure {
     //final String filepath = "src/main/resources/covid-19-prevention-2020-03-11.json";
@@ -44,7 +46,7 @@ public class GlobalConfigure {
             return;
         }
         System.out.println("data load begin");
-        String jsonString = KGManager.getJsonString(data_path);
+        String jsonString = getJsonString(data_path);
         initFromJSONStr(jsonString);
         System.out.println("data load end");
     }

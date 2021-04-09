@@ -1,5 +1,6 @@
 package com.example.demo.blImpl.Verify;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.Verify.VerifyService;
 import com.example.demo.data.Verify.VerifyMapper;
@@ -36,8 +37,11 @@ public class VerifyServiceImpl implements VerifyService {
         verifyMapper.insert(ip, GlobalTrans.BytesToStr(desKey.getEncoded()));
 
         byte[] t0 = desKey.getEncoded();
-        byte[] t1 = rsaCipher.doFinal(t0);
-
+        JSONArray ja = new JSONArray();
+        for(byte b:t0){
+            ja.add(String.valueOf(b));
+        }
+        byte[] t1 = rsaCipher.doFinal(ja.toJSONString().getBytes());
         JSONObject jo = new JSONObject();
         jo.put("key",GlobalTrans.BytesToStr(t1));
 

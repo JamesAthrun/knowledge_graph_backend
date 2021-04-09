@@ -24,7 +24,7 @@ public class VerifyServiceImpl implements VerifyService {
 
     @Override
     public ResultBean getDesKey(String ip,String modulus, String exponent) throws Exception {
-
+        System.out.println("ip from "+ip+" gen key");
         RSAPublicKeySpec spec = new RSAPublicKeySpec(new BigInteger(modulus),new BigInteger(exponent));
         KeyFactory factory = KeyFactory.getInstance("RSA");
         PublicKey publicKey = factory.generatePublic(spec);
@@ -33,13 +33,14 @@ public class VerifyServiceImpl implements VerifyService {
         rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
         Key desKey = KeyGenerator.getInstance("DES").generateKey();
-        verifyMapper.insert(ip, GlobalTrans.BytesToStr(desKey.getEncoded()));
+        verifyMapper.insert(ip, GlobalTrans.bytesToHexStr(desKey.getEncoded()));
 
         byte[] t0 = desKey.getEncoded();
-        byte[] t1 = rsaCipher.doFinal(t0);
+        String s = GlobalTrans.bytesToHexStr(t0);
 
+        byte[] t1 = rsaCipher.doFinal(s.getBytes());
         JSONObject jo = new JSONObject();
-        jo.put("key",GlobalTrans.BytesToStr(t1));
+        jo.put("key",GlobalTrans.BytesToBase64Str(t1));
 
         return ResultBean.success(jo);
     }

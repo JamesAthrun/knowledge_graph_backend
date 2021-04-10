@@ -3,20 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/cryptico/0.0.1343522940/cryptico.min.js"></script>
+    <script src="https://cdn.bootcss.com/crypto-js/3.1.9-1/crypto-js.min.js"></script>
     <title>Title</title>
 </head>
 <body>
     <script>
-        function tmp(){
+        function getGraphData(){
             $.ajax({
-                url:"http://localhost:8080/KG/getGraphData?id=143877",
+                url:"http://localhost:8082/KG/getGraphData?id=19584878",
                 headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
                 success:function (data) {
                     console.log(data)
                 }
             })
         }
-        tmp()
+
+        async function verify(){
+            function solve(){
+                return new Promise(((resolve, reject) => {
+                    let sth = Math.random().toString()
+                    let k = cryptico.generateRSAKey(sth,1024)
+                    let modulus = String(k.n)
+                    let exponent = String(k.e)
+                    $.ajax({
+                        url:"http://localhost:8082/Verify/getDesKey",//url
+                        type:"POST",
+                        headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+                        data:JSON.stringify({"exponent":exponent,"modulus":modulus}),//发送公钥
+                        success:function (response) {
+                            let des_key_s = JSON.parse(response.data).key
+                            let des_key = k.decrypt(cryptico.b64to16(des_key_s))//私钥解密
+                            //DES密钥
+                            resolve(des_key)
+                        }
+                    })
+                }))
+            }
+            return await solve()
+        }
+
+        //DES加密
+        function encryptByDES(message, key){
+            let keyHex = CryptoJS.enc.Hex.parse(key);
+            let encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return encrypted.ciphertext.toString();
+        }
+        //DES解密
+        function decryptByDES(ciphertext, key){
+            let keyHex = CryptoJS.enc.Hex.parse(key);
+            let decrypted = CryptoJS.DES.decrypt({
+                ciphertext: CryptoJS.enc.Hex.parse(ciphertext)
+            }, keyHex, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return decrypted.toString(CryptoJS.enc.Utf8);
+        }
+
+        verify().then((key)=>{
+            console.log(key)
+            let t1 = encryptByDES("hello you",key)
+            console.log(t1)
+            let t2 = decryptByDES(t1,key)
+            console.log(t2)
+        })
     </script>
 
 </body>

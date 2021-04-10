@@ -39,10 +39,9 @@ CREATE TABLE `property`(
 
 DROP TABLE IF EXISTS `verify`;
 CREATE TABLE `verify`(
-    `id` int(11) NOT NULL AUTO_INCREMENT,
     `ip` varchar(256) NOT NULL,
     `desKey` varchar(256) DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`ip`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `account`;
@@ -50,5 +49,6 @@ CREATE TABLE `account`(
      `id` int(11) NOT NULL AUTO_INCREMENT,
      `name` varchar(256) UNIQUE DEFAULT NULL,
      `pwd` varchar(256) DEFAULT NULL,
+     `email` varchar(256) DEFAULT NULL,
      PRIMARY KEY (`id`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;

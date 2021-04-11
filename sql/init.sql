@@ -50,5 +50,9 @@ CREATE TABLE `account`(
      `name` varchar(256) UNIQUE DEFAULT NULL,
      `pwd` varchar(256) DEFAULT NULL,
      `email` varchar(256) DEFAULT NULL,
+     `authority` varchar(256) DEFAULT NULL,
      PRIMARY KEY (`id`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO account (name, pwd, email, authority) VALUES ('trump','123456','magg@trump.com','president');
+INSERT INTO account (name, pwd, email, authority) VALUES ('obama','123456','blm@obama.com','president');

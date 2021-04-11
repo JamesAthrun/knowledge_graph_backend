@@ -2,6 +2,7 @@ package com.example.demo.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.KG.EntityMapper;
 import com.example.demo.data.KG.PropertyMapper;
 import com.example.demo.data.KG.TripleMapper;
@@ -22,6 +23,12 @@ import static com.example.demo.util.GlobalTrans.getJsonString;
 
 @Configuration
 public class GlobalConfigure {
+    //4.11
+    //todo 用户权限功能 √
+    //todo 编辑知识图谱 持久化 √
+    //todo 从json文件新建知识图谱 √
+    //todo 知识图谱问答
+
     public final String data_path = "src/main/resources/data.json";
     public final String[] origins = new String[]{
         //在这里设置允许跨域的路由
@@ -39,6 +46,8 @@ public class GlobalConfigure {
     TripleMapper tripleMapper;
     @Autowired
     GlobalLogger logger;
+    @Autowired
+    KGService kgService;
 
     @Autowired
     public void init(){
@@ -48,11 +57,11 @@ public class GlobalConfigure {
         }
         logger.log("data load begin");
         String jsonString = getJsonString(data_path);
-        initFromJSONStr(jsonString);
+        createGraphByJsonStr(jsonString);
         logger.log("data load end");
     }
 
-    private void initFromJSONStr(String jsonString){
+    public void createGraphByJsonStr(String jsonString){
         JSONArray entity_list = JSONObject.parseObject(jsonString).getJSONArray("entity");
         List<String> before = new ArrayList<>();
         List<String> after = new ArrayList<>();

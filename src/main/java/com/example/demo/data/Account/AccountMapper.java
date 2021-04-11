@@ -8,5 +8,5 @@ public interface AccountMapper {
 
     void register(AccountPo accountpo);
 
-    String selectPwdByName(String name);
+    AccountPo selectPwdByName(String name);
 }

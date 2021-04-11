@@ -1,5 +1,6 @@
 package com.example.demo.blImpl.AccountServiceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.Account.AccountService;
 import com.example.demo.data.Account.AccountMapper;
 import com.example.demo.data.Verify.VerifyMapper;
@@ -21,9 +22,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResultBean login(String name, String pwd) {
-        String pwd_true = accountMapper.selectPwdByName(name);
-        if(pwd.equals(pwd_true))
-            return ResultBean.success();
+        AccountPo accountPo = accountMapper.selectPwdByName(name);
+        if(pwd.equals(accountPo.pwd)) {
+            JSONObject jo = new JSONObject();
+            jo.put("authority",accountPo.authority);
+            return ResultBean.success(jo);
+        }
         else{
             logger.log("pwd not match");
             return ResultBean.error(3,"pwd not match");
@@ -32,7 +36,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResultBean register(String name,String pwd, String email){
-        accountMapper.register(new AccountPo(name,pwd,email));
+        accountMapper.register(new AccountPo(name,pwd,email,"client"));
         return ResultBean.success();
     }
 }

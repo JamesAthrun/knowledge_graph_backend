@@ -7,6 +7,7 @@ import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.EntityPo;
 import com.example.demo.po.PropertyPO;
 import com.example.demo.po.TriplePo;
+import com.example.demo.util.GlobalConfigure;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
 import com.example.demo.vo.GraphVo;
@@ -30,6 +31,8 @@ public class KGServiceImpl implements KGService {
     TripleMapper tripleMapper;
     @Autowired
     GlobalLogger logger;
+    @Autowired
+    GlobalConfigure globalConfigure;
 
     @Override
     public ResultBean searchEntity(String keywords) {
@@ -84,7 +87,14 @@ public class KGServiceImpl implements KGService {
         return ResultBean.success(go);
     }
 
-    public void searchTriples(String id, int depth,int neighbors, List<TriplePo> res){
+    @Override
+    public ResultBean createGraphByJsonStr(String jsonString){
+        globalConfigure.createGraphByJsonStr(jsonString);
+        return ResultBean.success();
+    }
+
+
+    private void searchTriples(String id, int depth,int neighbors, List<TriplePo> res){
         if(depth==0) return;
         MySet(res);
         List<TriplePo> cases = tripleMapper.getRelatedTriples(id);
@@ -117,7 +127,7 @@ public class KGServiceImpl implements KGService {
     }
 
     //去重
-    public static <T> void MySet(List<T> in){
+    private static <T> void MySet(List<T> in){
         HashSet<T> out = new HashSet<>(in);
         for(T item: in){
             if(out.contains(item)) continue;
@@ -127,7 +137,7 @@ public class KGServiceImpl implements KGService {
         in.addAll(out);
     }
 
-    public static <T> List<T> getRandomList(List<T> paramList,int count){
+    private static <T> List<T> getRandomList(List<T> paramList,int count){
         if(paramList.size()<count){
             return paramList;
         }
@@ -145,7 +155,7 @@ public class KGServiceImpl implements KGService {
         return newList;
     }
 
-    public boolean triple_existed(List<TriplePo> list,TriplePo item){
+    private boolean triple_existed(List<TriplePo> list,TriplePo item){
         for(TriplePo tmp: list){
             if(tmp.head.equals(item.head) && tmp.relation.equals(item.relation) && tmp.tail.equals(item.tail)) return true;
         }

@@ -22,7 +22,6 @@ import static com.example.demo.util.GlobalTrans.getJsonString;
 
 @Configuration
 public class GlobalConfigure {
-    //final String filepath = "src/main/resources/covid-19-prevention-2020-03-11.json";
     public final String data_path = "src/main/resources/data.json";
     public final String[] origins = new String[]{
         //在这里设置允许跨域的路由
@@ -38,17 +37,19 @@ public class GlobalConfigure {
     PropertyMapper propertyMapper;
     @Autowired
     TripleMapper tripleMapper;
+    @Autowired
+    GlobalLogger logger;
 
     @Autowired
     public void init(){
         if(tripleMapper.getListSize()>0) {
-            System.out.println("data existed");
+            logger.log("data existed");
             return;
         }
-        System.out.println("data load begin");
+        logger.log("data load begin");
         String jsonString = getJsonString(data_path);
         initFromJSONStr(jsonString);
-        System.out.println("data load end");
+        logger.log("data load end");
     }
 
     private void initFromJSONStr(String jsonString){

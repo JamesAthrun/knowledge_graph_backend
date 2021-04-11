@@ -1,11 +1,9 @@
 package com.example.demo.util;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
 public class Recorder {
-    private int i;
     private int currentTableId;
     private int currentSeed;
     private final int seed;
@@ -38,11 +36,6 @@ public class Recorder {
     public String getRecordId(){
         currentSeed = (A * currentSeed + B) % M;
         return String.valueOf(base+currentSeed);
-    }
-
-    @Bean
-    public Recorder initRecorder(){
-        return new Recorder();
     }
 
     public String getTableId(){

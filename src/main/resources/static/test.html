@@ -63,8 +63,9 @@
             });
             return decrypted.toString(CryptoJS.enc.Utf8);
         }
-
-        verify().then((key)=>{
+        let promiseVerifyReturned = verify()
+        console.log(promiseVerifyReturned)
+        promiseVerifyReturned.then((key)=>{
             console.log(key)
             let t1 = encryptByDES("hello you",key)
             console.log(t1)

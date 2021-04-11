@@ -4,6 +4,7 @@ import com.example.demo.bl.Account.AccountService;
 import com.example.demo.data.Account.AccountMapper;
 import com.example.demo.data.Verify.VerifyMapper;
 import com.example.demo.po.AccountPo;
+import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ public class AccountServiceImpl implements AccountService {
     AccountMapper accountMapper;
     @Autowired
     VerifyMapper verifyMapper;
+    @Autowired
+    GlobalLogger logger;
 
     @Override
     public ResultBean login(String name, String pwd) {
@@ -22,7 +25,7 @@ public class AccountServiceImpl implements AccountService {
         if(pwd.equals(pwd_true))
             return ResultBean.success();
         else{
-            System.out.println("pwd not match");
+            logger.log("pwd not match");
             return ResultBean.error(3,"pwd not match");
         }
     }

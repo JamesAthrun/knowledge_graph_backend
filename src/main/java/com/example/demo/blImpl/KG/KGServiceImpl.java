@@ -7,6 +7,7 @@ import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.EntityPo;
 import com.example.demo.po.PropertyPO;
 import com.example.demo.po.TriplePo;
+import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
 import com.example.demo.vo.GraphVo;
 import com.example.demo.vo.NodeListVo;
@@ -27,6 +28,8 @@ public class KGServiceImpl implements KGService {
     PropertyMapper propertyMapper;
     @Autowired
     TripleMapper tripleMapper;
+    @Autowired
+    GlobalLogger logger;
 
     @Override
     public ResultBean searchEntity(String keywords) {
@@ -44,7 +47,7 @@ public class KGServiceImpl implements KGService {
         }
 
         long t2 = System.currentTimeMillis();
-        System.out.println("节点数 "+(entities.size()+properties.size())+" 搜索用时 "+(t2-t1)+"ms");
+        logger.log("节点数 "+(entities.size()+properties.size())+" 搜索用时 "+(t2-t1)+"ms");
 
         return ResultBean.success(nodeListVo);
     }
@@ -76,7 +79,7 @@ public class KGServiceImpl implements KGService {
         }
 
         long t2 = System.currentTimeMillis();
-        System.out.println("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
+        logger.log("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
 
         return ResultBean.success(go);
     }

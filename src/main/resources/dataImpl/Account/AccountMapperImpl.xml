@@ -3,7 +3,7 @@
 <mapper namespace="com.example.demo.data.Account.AccountMapper">
 
     <insert id="register" parameterType="com.example.demo.po.AccountPo">
-        insert into nkg.account(name, pwd) values (#{name},#{pwd})
+        insert into nkg.account(name, pwd, email, authority) values (#{name},#{pwd},#{email},#{authority})
     </insert>
 
     <select id="selectPwdByName" resultType="com.example.demo.po.AccountPo">

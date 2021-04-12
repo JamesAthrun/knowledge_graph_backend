@@ -11,4 +11,6 @@ public interface TripleMapper {
     void insert(TriplePo triplePo);
 
     List<TriplePo> getRelatedTriples(String id);
+
+    Integer getListSize();
 }

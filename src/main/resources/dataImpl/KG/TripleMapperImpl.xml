@@ -7,15 +7,19 @@
 <!--    </insert>-->
 
     <insert id="insert" parameterType="com.example.demo.po.TriplePo">
-        insert into nkg.triple(tableId,head,relation,tail) values(#{tableId},#{head},#{relation},#{tail})
+        insert into nkg.triple(recordId,tableId,head,relation,tail) values(#{recordId},#{tableId},#{head},#{relation},#{tail})
     </insert>
 
 <!--    <delete id="delJack">-->
 <!--        delete from JackList where id = #{id}-->
 <!--    </delete>-->
 
+    <select id="getListSize" resultType="java.lang.Integer">
+        select count(recordId) from nkg.triple
+    </select>
+
     <select id="getRelatedTriples" resultMap="TriplePo">
-        select tableId,head,relation,tail from nkg.triple where head = #{id} or tail = #{id}
+        select * from nkg.triple where head = #{id} or tail = #{id}
     </select>
 
 <!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->

@@ -7,6 +7,8 @@ import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.EntityPo;
 import com.example.demo.po.PropertyPO;
 import com.example.demo.po.TriplePo;
+import com.example.demo.util.GlobalConfigure;
+import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
 import com.example.demo.vo.GraphVo;
 import com.example.demo.vo.NodeListVo;
@@ -27,6 +29,10 @@ public class KGServiceImpl implements KGService {
     PropertyMapper propertyMapper;
     @Autowired
     TripleMapper tripleMapper;
+    @Autowired
+    GlobalLogger logger;
+    @Autowired
+    GlobalConfigure globalConfigure;
 
     @Override
     public ResultBean searchEntity(String keywords) {
@@ -44,7 +50,7 @@ public class KGServiceImpl implements KGService {
         }
 
         long t2 = System.currentTimeMillis();
-        System.out.println("节点数 "+(entities.size()+properties.size())+" 搜索用时 "+(t2-t1)+"ms");
+        logger.log("节点数 "+(entities.size()+properties.size())+" 搜索用时 "+(t2-t1)+"ms");
 
         return ResultBean.success(nodeListVo);
     }
@@ -65,7 +71,7 @@ public class KGServiceImpl implements KGService {
         MySet(related_ids);
         GraphVo go = new GraphVo();
         for(TriplePo item:related_link){
-            go.addLink(item.head,item.tail,item.relation);
+            go.addLink(item);
         }
         for(String recordId:related_ids){
             EntityPo e = entityMapper.getByRecordId(recordId);
@@ -76,12 +82,19 @@ public class KGServiceImpl implements KGService {
         }
 
         long t2 = System.currentTimeMillis();
-        System.out.println("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
+        logger.log("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
 
         return ResultBean.success(go);
     }
 
-    public void searchTriples(String id, int depth,int neighbors, List<TriplePo> res){
+    @Override
+    public ResultBean createGraphByJsonStr(String jsonString){
+        globalConfigure.createGraphByJsonStr(jsonString);
+        return ResultBean.success();
+    }
+
+
+    private void searchTriples(String id, int depth,int neighbors, List<TriplePo> res){
         if(depth==0) return;
         MySet(res);
         List<TriplePo> cases = tripleMapper.getRelatedTriples(id);
@@ -114,7 +127,7 @@ public class KGServiceImpl implements KGService {
     }
 
     //去重
-    public static <T> void MySet(List<T> in){
+    private static <T> void MySet(List<T> in){
         HashSet<T> out = new HashSet<>(in);
         for(T item: in){
             if(out.contains(item)) continue;
@@ -124,7 +137,7 @@ public class KGServiceImpl implements KGService {
         in.addAll(out);
     }
 
-    public static <T> List<T> getRandomList(List<T> paramList,int count){
+    private static <T> List<T> getRandomList(List<T> paramList,int count){
         if(paramList.size()<count){
             return paramList;
         }
@@ -142,7 +155,7 @@ public class KGServiceImpl implements KGService {
         return newList;
     }
 
-    public boolean triple_existed(List<TriplePo> list,TriplePo item){
+    private boolean triple_existed(List<TriplePo> list,TriplePo item){
         for(TriplePo tmp: list){
             if(tmp.head.equals(item.head) && tmp.relation.equals(item.relation) && tmp.tail.equals(item.tail)) return true;
         }

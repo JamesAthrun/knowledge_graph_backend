@@ -865,6 +865,7 @@
   {"id": "GoodsC312", "comment": "", "recordId": "175395", "nameEn": "Soap", "nameCn": "香皂", "division": "Class", "from": "http://www.openkg.cn/COVID-19/goods"},
   {"id": "GoodsC311", "comment": "", "recordId": "175497", "nameEn": "Paper_towel", "nameCn": "纸巾", "division": "Class", "from": "http://www.openkg.cn/COVID-19/goods"}
   ],
+  "description": "根据目前互联网公开的针对人员、场所、交通工具防控指南或手册，形成相应的知识图谱，包含防护概念的分类体系、注意事项，相关避免去的场所和不要做的事情。 其中物资包含口罩等涉及一些特定商品的图谱并与防控规则关联。 潜在应用包括提供基本防控知识问题，集成于流程化信息处理平台，用于各场所检查防控措施是否正确等。",
   "property": [
     {"id": "P019", "comment": "", "recordId": "94985", "nameEn": "Applicable people", "nameCn": "适用人群", "from": "http://www.openkg.cn/COVID-19/prevention", "domain": "C3", "range": "C1"},
     {"id": "P022", "comment": "", "recordId": "95087", "nameEn": "Applicable places", "nameCn": "适用场所", "from": "http://www.openkg.cn/COVID-19/prevention", "domain": "C3", "range": "C2"},
@@ -1896,5 +1897,6 @@
     {"head": "96515", "relation": "125500", "tail": "124990"},
     {"head": "96617", "relation": "125296", "tail": "175684"},
     {"head": "96617", "relation": "125500", "tail": "124990"}
-  ]
+  ],
+  "name": "新冠开放知识图谱.防控"
 }

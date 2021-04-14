@@ -3,7 +3,7 @@ package com.example.demo.vo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.po.EntityPo;
-import com.example.demo.po.PropertyPO;
+import com.example.demo.po.PropertyPo;
 
 public class NodeListVo {
 
@@ -21,7 +21,7 @@ public class NodeListVo {
         data.add(item);
     }
 
-    public void addProperty(PropertyPO propertyPO){
+    public void addProperty(PropertyPo propertyPO){
         JSONObject item = new JSONObject();
         item.put("id", propertyPO.recordId);
         item.put("name", propertyPO.id);

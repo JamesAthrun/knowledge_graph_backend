@@ -3,7 +3,7 @@ package com.example.demo.controller.Verify;
 import com.example.demo.bl.Verify.VerifyService;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
-import com.example.demo.vo.EncryptionVO;
+import com.example.demo.vo.EncryptionVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +21,7 @@ public class VerifyController {
     GlobalLogger logger;
 
     @PostMapping("/getDesKey")
-    public ResultBean getDesKey(HttpServletRequest request, @RequestBody EncryptionVO encryptionVO) throws Exception {
+    public ResultBean getDesKey(HttpServletRequest request, @RequestBody EncryptionVo encryptionVO) throws Exception {
         logger.log("VerifyController getDesKey");
         //获取用户ip
         String ip = request.getRemoteAddr();

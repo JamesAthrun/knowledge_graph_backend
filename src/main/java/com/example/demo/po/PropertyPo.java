@@ -1,6 +1,6 @@
 package com.example.demo.po;
 
-public class PropertyPO {
+public class PropertyPo {
     public String recordId;
     public String id;
     public String nameEn;
@@ -10,7 +10,7 @@ public class PropertyPO {
     public String from;
     public String comment;
 
-    public PropertyPO(String recordId, String id, String nameEn, String nameCn, String domain, String range, String from,String comment) {
+    public PropertyPo(String recordId, String id, String nameEn, String nameCn, String domain, String range, String from, String comment) {
         this.recordId = recordId;
         this.id = id;
         this.nameEn = nameEn;

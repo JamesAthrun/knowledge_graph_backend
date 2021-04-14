@@ -29,7 +29,7 @@ public class KGController {
     }
 
     @PostMapping("/createGraphByJsonStr")
-    public ResultBean createGraphByJsonStr(@RequestParam String jsonStr){
+    public ResultBean createGraphByJsonStr(@RequestBody String jsonStr){
         logger.log("KGController createGraphByJsonStr");
         return kgService.createGraphByJsonStr(jsonStr);
     }
@@ -38,6 +38,48 @@ public class KGController {
     public ResultBean uploadFile(HttpServletRequest request){
         logger.log("uploading");
         return ResultBean.success();
+    }
+    
+    @PostMapping("/createEntity")
+    public ResultBean createEntity(String jsonStr){
+        //todo
+        return null;
+    }
+
+    @PostMapping("/createProperty")
+    public ResultBean createProperty(String jsonStr){
+        //todo
+        return null;
+    }
+
+    @PostMapping("/createLink")
+    public ResultBean createLink(String jsonStr){
+        //todo
+        return null;
+    }
+
+    @PostMapping("/updateItem")
+    public ResultBean updateItem(String jsonStr){
+        //todo
+        return null;
+    }
+
+    @PostMapping("/replaceItem")
+    public ResultBean replaceItem(String jsonStr){
+        //todo
+        return null;
+    }
+
+    @PostMapping("/deleteItem")
+    public ResultBean deleteItem(String jsonStr){
+        //todo
+        return null;
+    }
+
+    @PostMapping("/deleteLink")
+    public ResultBean deleteLink(String jsonStr){
+        //todo
+        return null;
     }
 
 }

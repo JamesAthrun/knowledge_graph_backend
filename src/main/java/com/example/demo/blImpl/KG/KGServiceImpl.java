@@ -5,12 +5,12 @@ import com.example.demo.data.KG.EntityMapper;
 import com.example.demo.data.KG.PropertyMapper;
 import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.EntityPo;
-import com.example.demo.po.PropertyPO;
+import com.example.demo.po.PropertyPo;
 import com.example.demo.po.TriplePo;
 import com.example.demo.util.GlobalConfigure;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
-import com.example.demo.vo.GraphVo;
+import com.example.demo.vo.GraphInfoVo;
 import com.example.demo.vo.NodeListVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,8 +44,8 @@ public class KGServiceImpl implements KGService {
             nodeListVo.addEntity(e);
         }
 
-        List<PropertyPO> properties = propertyMapper.searchByKeywords(keywords);
-        for(PropertyPO p:properties){
+        List<PropertyPo> properties = propertyMapper.searchByKeywords(keywords);
+        for(PropertyPo p:properties){
             nodeListVo.addProperty(p);
         }
 
@@ -69,13 +69,13 @@ public class KGServiceImpl implements KGService {
             related_ids.add(item.tail);
         }
         MySet(related_ids);
-        GraphVo go = new GraphVo();
+        GraphInfoVo go = new GraphInfoVo();
         for(TriplePo item:related_link){
             go.addLink(item);
         }
         for(String recordId:related_ids){
             EntityPo e = entityMapper.getByRecordId(recordId);
-            PropertyPO p = propertyMapper.getByRecordId(recordId);
+            PropertyPo p = propertyMapper.getByRecordId(recordId);
             if(e!=null)  go.addData(e);
             if(p!=null)  go.addData(p);
             if(e==null&&p==null) go.addData(new EntityPo(recordId,"未知实体或属性","","","","unknown","我只能说，懂的都懂。"));

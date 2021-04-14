@@ -3,10 +3,10 @@ package com.example.demo.vo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.po.EntityPo;
-import com.example.demo.po.PropertyPO;
+import com.example.demo.po.PropertyPo;
 import com.example.demo.po.TriplePo;
 
-public class GraphVo {
+public class GraphInfoVo {
 
     public JSONArray entityData = new JSONArray();
     public JSONArray propertyData = new JSONArray();
@@ -24,7 +24,7 @@ public class GraphVo {
         entityData.add(item);
     }
 
-    public void addData(PropertyPO propertyPO){
+    public void addData(PropertyPo propertyPO){
         JSONObject item = new JSONObject();
         item.put("id", propertyPO.recordId);
         item.put("name", propertyPO.id);

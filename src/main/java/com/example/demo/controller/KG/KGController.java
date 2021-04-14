@@ -6,6 +6,8 @@ import com.example.demo.util.ResultBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController()
 @RequestMapping("/KG")
 public class KGController {
@@ -30,6 +32,12 @@ public class KGController {
     public ResultBean createGraphByJsonStr(@RequestParam String jsonStr){
         logger.log("KGController createGraphByJsonStr");
         return kgService.createGraphByJsonStr(jsonStr);
+    }
+
+    @PostMapping("/uploadFile")
+    public ResultBean uploadFile(HttpServletRequest request){
+        logger.log("uploading");
+        return ResultBean.success();
     }
 
 }

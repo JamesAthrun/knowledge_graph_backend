@@ -112,4 +112,5 @@ public class GlobalConfigure {
             corsConfiguration.addAllowedOrigin(origin);
         }
     }
+
 }

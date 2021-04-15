@@ -6,6 +6,7 @@ public interface KGService {
 
     ResultBean searchEntity(String keywords);
     ResultBean getGraphData(String id);
+    ResultBean getTreeData(String id);
     ResultBean createGraphByJsonStr(String jsonStr);
 
 }

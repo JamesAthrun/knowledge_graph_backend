@@ -1,5 +1,6 @@
 package com.example.demo.blImpl.KG;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.KG.EntityMapper;
 import com.example.demo.data.KG.PropertyMapper;
@@ -12,13 +13,11 @@ import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
 import com.example.demo.vo.GraphInfoVo;
 import com.example.demo.vo.NodeListVo;
+import com.example.demo.vo.TreeInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class KGServiceImpl implements KGService {
@@ -76,7 +75,6 @@ public class KGServiceImpl implements KGService {
             PropertyPo p = propertyMapper.getByRecordId(recordId);
             if(e!=null)  go.addData(e);
             if(p!=null)  go.addData(p);
-            if(e==null&&p==null) go.addData(new EntityPo(recordId,"未知实体或属性","","","","unknown","我只能说，懂的都懂。"));
         }
         for(TriplePo item:related_link){
             go.addLink(item);
@@ -88,11 +86,60 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
+    public ResultBean getTreeData(String id) {
+        long t1 = System.currentTimeMillis();;
+
+        List<TriplePo> related_link = new ArrayList<>();
+        searchTriples(id,3,5,related_link);
+
+        TreeInfoVo to = new TreeInfoVo();
+
+        Queue<String> q = new LinkedList<String>();
+        q.offer(id);
+        HashMap<String,Integer> visited = new HashMap<>();
+        for(TriplePo triplePo: related_link){
+            if(visited.containsKey(triplePo.head)) visited.put(triplePo.head,visited.get(triplePo.head) +1);
+            else visited.put(triplePo.head,1);
+            if(visited.containsKey(triplePo.tail)) visited.put(triplePo.tail,visited.get(triplePo.tail) +1);
+            else visited.put(triplePo.tail,1);
+        }
+
+        while (q.size()>0) {
+            String pId = q.poll();
+            for(TriplePo triplePo: related_link){
+                if(triplePo.head.equals(pId) && visited.get(triplePo.tail)!=0){
+                    to.propertyAdd(
+                            to.addProperty(triplePo.head,triplePo.relation,entityMapper,propertyMapper),
+                            triplePo.tail,entityMapper,propertyMapper);
+                    q.offer(triplePo.tail);
+                    //p->relation->tail
+                    visited.put(triplePo.head,visited.get(triplePo.head)-1);
+                    visited.put(triplePo.tail,visited.get(triplePo.tail)-1);
+                }
+                if(triplePo.tail.equals(pId) && visited.get(triplePo.head)!=0){
+                    to.propertyAdd(
+                            to.addProperty(triplePo.tail,triplePo.relation,entityMapper,propertyMapper),
+                            triplePo.head,entityMapper,propertyMapper);
+                    q.offer(triplePo.head);
+                    //p->relation->head
+                    visited.put(triplePo.head,visited.get(triplePo.head)-1);
+                    visited.put(triplePo.tail,visited.get(triplePo.tail)-1);
+                }
+            }
+        }
+
+        long t2 = System.currentTimeMillis();
+        logger.log("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
+
+        JSONObject root = to.getNode(id,entityMapper,propertyMapper);
+        return ResultBean.success(root);
+    }
+
+    @Override
     public ResultBean createGraphByJsonStr(String jsonString){
         globalConfigure.createGraphByJsonStr(jsonString);
         return ResultBean.success();
     }
-
 
     private void searchTriples(String id, int depth,int neighbors, List<TriplePo> res){
         if(depth==0) return;

@@ -32,7 +32,7 @@ public class KGController {
     public ResultBean getTreeData(@RequestParam String id){
         logger.log("KGController getTreeData");
         //todo
-        return null;
+        return kgService.getTreeData(id);
     }
     @PostMapping("/createGraphByJsonStr")
     public ResultBean createGraphByJsonStr(@RequestBody String jsonStr){

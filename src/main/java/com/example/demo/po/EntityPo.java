@@ -52,4 +52,18 @@ public class EntityPo {
         return item;
     }
 
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        if(!this.nameCn.equals("")){
+            sb.append("中文名 ").append(this.nameCn).append("\n");
+            sb.append("英文名 ").append(this.nameEn).append("\n");
+        }
+        else{
+            if(!this.nameEn.equals(""))
+                sb.append("英文名 ").append(this.nameEn).append("\n");
+            else sb.append("id " ).append(this.id).append("\n");
+        }
+        if(!this.comment.equals("")) sb.append("评论 ").append(this.comment).append("\n");
+        return sb.toString();
+    }
 }

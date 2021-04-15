@@ -20,12 +20,7 @@ public class GraphInfoVo {
     }
 
     public void addLink(TriplePo triplePo){
-//        String name = "";
-//        for(Object item: propertyData){
-//            JSONObject tmp = (JSONObject)(item);
-//            if(tmp.getString("id").equals(triplePo.relation)) name = tmp.getString("name");
-//        }
         link.add(triplePo.toJSONObject());
-
     }
+
 }

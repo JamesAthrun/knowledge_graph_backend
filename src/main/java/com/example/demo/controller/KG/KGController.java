@@ -28,6 +28,12 @@ public class KGController {
         return kgService.getGraphData(id);
     }
 
+    @GetMapping("/getTreeData")
+    public ResultBean getTreeData(@RequestParam String id){
+        logger.log("KGController getTreeData");
+        //todo
+        return null;
+    }
     @PostMapping("/createGraphByJsonStr")
     public ResultBean createGraphByJsonStr(@RequestBody String jsonStr){
         logger.log("KGController createGraphByJsonStr");
@@ -41,43 +47,71 @@ public class KGController {
     }
     
     @PostMapping("/createEntity")
-    public ResultBean createEntity(String jsonStr){
+    public ResultBean createEntity(
+            @RequestBody String headId, @RequestBody String relationId, @RequestBody String tailId,
+            @RequestBody String name,
+            @RequestBody String comment,
+            @RequestBody String nameEn,
+            @RequestBody String nameCn,
+            @RequestBody String division,
+            @RequestBody String from
+    ){
+        logger.log("KGController createEntity");
         //todo
         return null;
     }
 
     @PostMapping("/createProperty")
-    public ResultBean createProperty(String jsonStr){
+    public ResultBean createProperty(
+            @RequestBody String name,
+            @RequestBody String comment,
+            @RequestBody String nameEn,
+            @RequestBody String nameCn,
+            @RequestBody String from,
+            @RequestBody String domain,
+            @RequestBody String range
+    ){
+        logger.log("KGController createProperty");
         //todo
         return null;
     }
 
     @PostMapping("/createLink")
-    public ResultBean createLink(String jsonStr){
-        //todo
+    public ResultBean createLink(){
         return null;
     }
 
     @PostMapping("/updateItem")
-    public ResultBean updateItem(String jsonStr){
-        //todo
+    public ResultBean updateItem(){
         return null;
     }
 
     @PostMapping("/replaceItem")
-    public ResultBean replaceItem(String jsonStr){
+    public ResultBean replaceItem(
+            @RequestBody String headId, @RequestBody String relationId, @RequestBody String tailId,
+            @RequestBody String itemId,
+            @RequestBody String name,
+            @RequestBody String comment,
+            @RequestBody String nameEn,
+            @RequestBody String nameCn,
+            @RequestBody String division,
+            @RequestBody String from
+    ){
+        logger.log("KGController replaceItem");
         //todo
         return null;
     }
 
     @PostMapping("/deleteItem")
-    public ResultBean deleteItem(String jsonStr){
-        //todo
+    public ResultBean deleteItem(){
         return null;
     }
 
     @PostMapping("/deleteLink")
-    public ResultBean deleteLink(String jsonStr){
+    public ResultBean deleteLink(
+            @RequestBody String headId, @RequestBody String relationId, @RequestBody String tailId
+    ){
+        logger.log("KGController deleteLink");
         //todo
         return null;
     }

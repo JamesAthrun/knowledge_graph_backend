@@ -3,12 +3,11 @@ CREATE DATABASE nkg DEFAULT CHARACTER SET utf8;
 USE nkg;
 
 CREATE TABLE `triple`(
-   `recordId` int(11) NOT NULL AUTO_INCREMENT,
-   `tableId` varchar(256) DEFAULT NULL,
-   `head` varchar(256) DEFAULT NULL,
-   `relation` varchar(256) DEFAULT NULL,
-   `tail` varchar(256) DEFAULT NULL,
-   PRIMARY KEY (`recordId`)
+    `tableId` varchar(64) DEFAULT NULL,
+    `head` varchar(64) DEFAULT '',
+    `relation` varchar(64) DEFAULT '',
+    `tail` varchar(64) DEFAULT '',
+    PRIMARY KEY (`head`,`relation`,`tail`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `entity`(

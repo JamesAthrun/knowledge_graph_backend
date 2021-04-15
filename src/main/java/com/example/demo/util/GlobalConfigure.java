@@ -27,7 +27,7 @@ import static com.example.demo.util.GlobalTrans.getJsonString;
 public class GlobalConfigure {
     //4.11
     //todo 用户权限功能 √
-    //todo 编辑知识图谱 持久化 √
+    //todo 编辑知识图谱 持久化
     //todo 从json文件新建知识图谱 √
     //todo 知识图谱问答
 
@@ -99,7 +99,7 @@ public class GlobalConfigure {
             String real_relation = after.get(before.indexOf(relation));
             String tail = jo.getString("tail");
             String real_tail = after.get(before.indexOf(tail));
-            tripleMapper.insert(new TriplePo(recorder.getRecordId(),tableId,real_head,real_relation,real_tail));
+            tripleMapper.insert(new TriplePo(tableId,real_head,real_relation,real_tail));
         }
         recorder.save();
     }

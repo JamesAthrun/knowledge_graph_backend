@@ -61,7 +61,8 @@ public class KGServiceImpl implements KGService {
 
         List<TriplePo> related_link = new ArrayList<>();
         List<String> related_ids = new ArrayList<>();
-        searchTriples(id,3,5,related_link);//depth是递归查找上限，neighbors是每层头和尾的连接上限
+        searchTriples(id,3,5,related_link);
+        //depth是递归查找上限，neighbors是每层头和尾的连接上限
 
         for(TriplePo item:related_link){
             related_ids.add(item.head);
@@ -70,9 +71,6 @@ public class KGServiceImpl implements KGService {
         }
         MySet(related_ids);
         GraphInfoVo go = new GraphInfoVo();
-        for(TriplePo item:related_link){
-            go.addLink(item);
-        }
         for(String recordId:related_ids){
             EntityPo e = entityMapper.getByRecordId(recordId);
             PropertyPo p = propertyMapper.getByRecordId(recordId);
@@ -80,7 +78,9 @@ public class KGServiceImpl implements KGService {
             if(p!=null)  go.addData(p);
             if(e==null&&p==null) go.addData(new EntityPo(recordId,"未知实体或属性","","","","unknown","我只能说，懂的都懂。"));
         }
-
+        for(TriplePo item:related_link){
+            go.addLink(item);
+        }
         long t2 = System.currentTimeMillis();
         logger.log("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
 

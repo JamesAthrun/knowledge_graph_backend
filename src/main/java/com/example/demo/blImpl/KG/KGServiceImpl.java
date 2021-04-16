@@ -119,7 +119,7 @@ public class KGServiceImpl implements KGService {
                         q.offer(triplePo.head);
                         //p->relation->head
                         if (!visited.containsKey(triplePo.relation)) visited.put(triplePo.relation, new ArrayList<>());
-                        visited.get(triplePo.relation).add(triplePo);//不走原路
+                        visited.get(triplePo.relation).add(triplePo);
                     }
                 }
             }

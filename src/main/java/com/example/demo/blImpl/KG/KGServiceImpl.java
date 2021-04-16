@@ -92,38 +92,35 @@ public class KGServiceImpl implements KGService {
         List<TriplePo> related_link = new ArrayList<>();
         searchTriples(id,3,5,related_link);
 
-        TreeInfoVo to = new TreeInfoVo();
+        TreeInfoVo to = new TreeInfoVo(id,entityMapper,propertyMapper);
 
-        Queue<String> q = new LinkedList<String>();
+        Queue<String> q = new LinkedList<>();
         q.offer(id);
-        HashMap<String,Integer> visited = new HashMap<>();
-        for(TriplePo triplePo: related_link){
-            if(visited.containsKey(triplePo.head)) visited.put(triplePo.head,visited.get(triplePo.head) +1);
-            else visited.put(triplePo.head,1);
-            if(visited.containsKey(triplePo.tail)) visited.put(triplePo.tail,visited.get(triplePo.tail) +1);
-            else visited.put(triplePo.tail,1);
-        }
+        HashMap<String,ArrayList<TriplePo>> visited = new HashMap<>();
 
         while (q.size()>0) {
             String pId = q.poll();
             for(TriplePo triplePo: related_link){
-                if(triplePo.head.equals(pId) && visited.get(triplePo.tail)!=0){
+                if(visited.get(triplePo.relation)!=null && visited.get(triplePo.relation).contains(triplePo)) continue;
+                if(triplePo.head.equals(pId)){
                     to.propertyAdd(
-                            to.addProperty(triplePo.head,triplePo.relation,entityMapper,propertyMapper),
-                            triplePo.tail,entityMapper,propertyMapper);
+                            to.addProperty(triplePo.head, triplePo.relation),
+                            triplePo.tail);
                     q.offer(triplePo.tail);
                     //p->relation->tail
-                    visited.put(triplePo.head,visited.get(triplePo.head)-1);
-                    visited.put(triplePo.tail,visited.get(triplePo.tail)-1);
+                    if (!visited.containsKey(triplePo.relation)) visited.put(triplePo.relation, new ArrayList<>());
+                    visited.get(triplePo.relation).add(triplePo);//不走原路
                 }
-                if(triplePo.tail.equals(pId) && visited.get(triplePo.head)!=0){
-                    to.propertyAdd(
-                            to.addProperty(triplePo.tail,triplePo.relation,entityMapper,propertyMapper),
-                            triplePo.head,entityMapper,propertyMapper);
-                    q.offer(triplePo.head);
-                    //p->relation->head
-                    visited.put(triplePo.head,visited.get(triplePo.head)-1);
-                    visited.put(triplePo.tail,visited.get(triplePo.tail)-1);
+                if(triplePo.tail.equals(pId)) {
+                    if (!(visited.get(triplePo.tail) != null && visited.get(triplePo.tail).contains(triplePo))) {
+                        to.propertyAdd(
+                                to.addProperty(triplePo.tail, triplePo.relation),
+                                triplePo.head);
+                        q.offer(triplePo.head);
+                        //p->relation->head
+                        if (!visited.containsKey(triplePo.relation)) visited.put(triplePo.relation, new ArrayList<>());
+                        visited.get(triplePo.relation).add(triplePo);//不走原路
+                    }
                 }
             }
         }
@@ -131,7 +128,7 @@ public class KGServiceImpl implements KGService {
         long t2 = System.currentTimeMillis();
         logger.log("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
 
-        JSONObject root = to.getNode(id,entityMapper,propertyMapper);
+        JSONObject root = to.getRoot();
         return ResultBean.success(root);
     }
 

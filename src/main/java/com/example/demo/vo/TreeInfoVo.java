@@ -10,19 +10,26 @@ import com.example.demo.po.PropertyPo;
 import java.util.ArrayList;
 
 public class TreeInfoVo {
+    String root;
+    EntityMapper entityMapper;
+    PropertyMapper propertyMapper;
+
     public ArrayList<JSONObject> nodes;
-    public TreeInfoVo(){
+    public TreeInfoVo(String r,EntityMapper e,PropertyMapper p){
+        this.root = r;
+        this.entityMapper = e;
+        this.propertyMapper = p;
         nodes = new ArrayList<>();
     }
 
-    public JSONObject getNode(String id, EntityMapper entityMapper, PropertyMapper propertyMapper ){
+    public JSONObject getNode(String id){
         for(JSONObject item:nodes){
             if(item.getString("id").equals(id)) return item;
         }
-        return createNode(id,entityMapper,propertyMapper);
+        return createNode(id);
     }
 
-    private JSONObject createNode(String id, EntityMapper entityMapper, PropertyMapper propertyMapper){
+    private JSONObject createNode(String id){
         JSONObject jo = new JSONObject();
         jo.put("id",id);
         EntityPo e = entityMapper.getByRecordId(id);
@@ -33,14 +40,19 @@ public class TreeInfoVo {
         return jo;
     }
 
-    public JSONObject addProperty(String parentId,String childId, EntityMapper entityMapper, PropertyMapper propertyMapper){
-        JSONObject child = createNode(childId,entityMapper,propertyMapper);
-        getNode(parentId,entityMapper,propertyMapper).getJSONArray("children").add(child);
+    public JSONObject addProperty(String parentId,String childId){
+        JSONObject child = createNode(childId);
+        getNode(parentId).getJSONArray("children").add(child);
         return child;
     }
 
-    public void propertyAdd(JSONObject parent,String childId, EntityMapper entityMapper, PropertyMapper propertyMapper){
-        JSONObject child = getNode(childId,entityMapper,propertyMapper);
+    public void propertyAdd(JSONObject parent,String childId){
+        JSONObject child = createNode(childId);
         parent.getJSONArray("children").add(child);
     }
+
+    public JSONObject getRoot(){
+        return getNode(root);
+    }
+
 }

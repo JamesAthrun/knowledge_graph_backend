@@ -55,5 +55,13 @@ CREATE TABLE `graph`(
    PRIMARY KEY (`tableId`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+CREATE TABLE `question`(
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `keyWords` varchar(256) UNIQUE DEFAULT NULL,
+    `help` varchar(256) UNIQUE DEFAULT NULL,
+    `relatedIds` varchar(256) UNIQUE DEFAULT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 INSERT INTO account (name, pwd, email, authority) VALUES ('trump','123456','magg@trump.com','president');
 INSERT INTO account (name, pwd, email, authority) VALUES ('obama','123456','blm@obama.com','president');

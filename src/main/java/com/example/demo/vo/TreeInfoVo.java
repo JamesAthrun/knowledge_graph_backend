@@ -10,11 +10,11 @@ import com.example.demo.po.PropertyPo;
 import java.util.ArrayList;
 
 public class TreeInfoVo {
-    String root;
-    EntityMapper entityMapper;
-    PropertyMapper propertyMapper;
-
+    private final String root;
+    private final EntityMapper entityMapper;
+    private final PropertyMapper propertyMapper;
     public ArrayList<JSONObject> nodes;
+
     public TreeInfoVo(String r,EntityMapper e,PropertyMapper p){
         this.root = r;
         this.entityMapper = e;

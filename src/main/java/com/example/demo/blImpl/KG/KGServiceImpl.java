@@ -1,6 +1,5 @@
 package com.example.demo.blImpl.KG;
 
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.KG.EntityMapper;
 import com.example.demo.data.KG.PropertyMapper;
@@ -12,7 +11,7 @@ import com.example.demo.util.GlobalConfigure;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
 import com.example.demo.vo.GraphInfoVo;
-import com.example.demo.vo.NodeListVo;
+import com.example.demo.vo.ItemListVo;
 import com.example.demo.vo.TreeInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,20 +37,20 @@ public class KGServiceImpl implements KGService {
         long t1 = System.currentTimeMillis();;
 
         List<EntityPo> entities = entityMapper.searchByKeywords(keywords);
-        NodeListVo nodeListVo = new NodeListVo();
+        ItemListVo itemListVo = new ItemListVo();
         for(EntityPo e:entities){
-            nodeListVo.addEntity(e);
+            itemListVo.addEntity(e);
         }
 
         List<PropertyPo> properties = propertyMapper.searchByKeywords(keywords);
         for(PropertyPo p:properties){
-            nodeListVo.addProperty(p);
+            itemListVo.addProperty(p);
         }
 
         long t2 = System.currentTimeMillis();
         logger.log("节点数 "+(entities.size()+properties.size())+" 搜索用时 "+(t2-t1)+"ms");
 
-        return ResultBean.success(nodeListVo);
+        return ResultBean.success(itemListVo);
     }
 
     @Override
@@ -59,23 +58,10 @@ public class KGServiceImpl implements KGService {
         long t1 = System.currentTimeMillis();;
 
         List<TriplePo> related_link = new ArrayList<>();
-        List<String> related_ids = new ArrayList<>();
         searchTriples(id,3,5,related_link);
         //depth是递归查找上限，neighbors是每层头和尾的连接上限
 
-        for(TriplePo item:related_link){
-            related_ids.add(item.head);
-            related_ids.add(item.relation);
-            related_ids.add(item.tail);
-        }
-        MySet(related_ids);
-        GraphInfoVo go = new GraphInfoVo();
-        for(String recordId:related_ids){
-            EntityPo e = entityMapper.getByRecordId(recordId);
-            PropertyPo p = propertyMapper.getByRecordId(recordId);
-            if(e!=null)  go.addData(e);
-            if(p!=null)  go.addData(p);
-        }
+        GraphInfoVo go = new GraphInfoVo(entityMapper,propertyMapper);
         for(TriplePo item:related_link){
             go.addLink(item);
         }
@@ -128,8 +114,7 @@ public class KGServiceImpl implements KGService {
         long t2 = System.currentTimeMillis();
         logger.log("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
 
-        JSONObject root = to.getRoot();
-        return ResultBean.success(root);
+        return ResultBean.success(to.getRoot());
     }
 
     @Override

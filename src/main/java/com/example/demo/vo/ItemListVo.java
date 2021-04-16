@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.example.demo.po.EntityPo;
 import com.example.demo.po.PropertyPo;
 
-public class NodeListVo {
+public class ItemListVo {
 
     public JSONArray data = new JSONArray();
 

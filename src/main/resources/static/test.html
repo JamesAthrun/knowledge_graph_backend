@@ -63,15 +63,17 @@
             });
             return decrypted.toString(CryptoJS.enc.Utf8);
         }
-        let promiseVerifyReturned = verify()
-        console.log(promiseVerifyReturned)
-        promiseVerifyReturned.then((key)=>{
-            console.log(key)
-            let t1 = encryptByDES("hello you",key)
-            console.log(t1)
-            let t2 = decryptByDES(t1,key)
-            console.log(t2)
-        })
+
+        function ask(questionStr){
+            return $.ajax({
+                url:"http://localhost:8082/KG/ask",
+                type:"POST",
+                headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+                data:questionStr
+            })
+        }
+        ask("农民工预防")
+
     </script>
 
 </body>

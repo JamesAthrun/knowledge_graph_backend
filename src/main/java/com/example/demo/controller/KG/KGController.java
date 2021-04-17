@@ -34,6 +34,7 @@ public class KGController {
         //todo
         return kgService.getTreeData(id);
     }
+
     @PostMapping("/createGraphByJsonStr")
     public ResultBean createGraphByJsonStr(@RequestBody String jsonStr){
         logger.log("KGController createGraphByJsonStr");
@@ -114,6 +115,12 @@ public class KGController {
         logger.log("KGController deleteLink");
         //todo
         return null;
+    }
+
+    @PostMapping("/ask")
+    public ResultBean ask(@RequestBody String questionStr){
+        logger.log("KGController ask");
+        return kgService.ask(questionStr);
     }
 
 }

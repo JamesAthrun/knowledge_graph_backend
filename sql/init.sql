@@ -65,3 +65,5 @@ CREATE TABLE `question`(
 
 INSERT INTO account (name, pwd, email, authority) VALUES ('trump','123456','magg@trump.com','president');
 INSERT INTO account (name, pwd, email, authority) VALUES ('obama','123456','blm@obama.com','president');
+
+INSERT INTO question (keyWords, help, relatedIds) VALUES ('[{"0":"农民工"},{"1":"预防"}]','请仔细阅读以上内容，在完成的项后打勾，如果您已经全部完成，说明您已经百毒不侵，可以下地干活了！','[{"0":"19321220"},{"1":"19747406"},{"2":"19261796"},{"3":"19509710"},{"4":"19771248"},{"5":"19357164"},{"6":"19891182"},{"7":"19836900"}]');

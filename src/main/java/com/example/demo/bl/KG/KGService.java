@@ -8,5 +8,5 @@ public interface KGService {
     ResultBean getGraphData(String id);
     ResultBean getTreeData(String id);
     ResultBean createGraphByJsonStr(String jsonStr);
-
+    ResultBean ask(String questionStr);
 }

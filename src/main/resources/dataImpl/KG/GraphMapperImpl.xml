@@ -6,7 +6,6 @@
         replace into nkg.graph(tableId, name, description) values (#{tableId},#{name},#{description})
     </insert>
 
-
     <select id="get" resultMap="GraphPo">
         select * from nkg.graph where tableId = #{tableId}
     </select>
@@ -14,7 +13,6 @@
     <select id="getSize" resultType="java.lang.Integer">
         select count(tableId) from nkg.graph
     </select>
-
 
     <resultMap id="GraphPo" type="com.example.demo.po.GraphPo">
         <id column="tableId" property="tableId"/>

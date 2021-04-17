@@ -3,13 +3,16 @@ package com.example.demo.blImpl.KG;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.KG.EntityMapper;
 import com.example.demo.data.KG.PropertyMapper;
+import com.example.demo.data.KG.QuestionMapper;
 import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.EntityPo;
 import com.example.demo.po.PropertyPo;
+import com.example.demo.po.QuestionPo;
 import com.example.demo.po.TriplePo;
 import com.example.demo.util.GlobalConfigure;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
+import com.example.demo.vo.AnswerVo;
 import com.example.demo.vo.GraphInfoVo;
 import com.example.demo.vo.ItemListVo;
 import com.example.demo.vo.TreeInfoVo;
@@ -31,6 +34,8 @@ public class KGServiceImpl implements KGService {
     GlobalLogger logger;
     @Autowired
     GlobalConfigure globalConfigure;
+    @Autowired
+    QuestionMapper questionMapper;
 
     @Override
     public ResultBean searchEntity(String keywords) {
@@ -121,6 +126,31 @@ public class KGServiceImpl implements KGService {
     public ResultBean createGraphByJsonStr(String jsonString){
         globalConfigure.createGraphByJsonStr(jsonString);
         return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean ask(String questionStr) {
+        List<QuestionPo> qs = new ArrayList<>(questionMapper.getAll());
+        HashMap<QuestionPo,Integer> votes = new HashMap<>();
+
+        for(QuestionPo q:qs){
+            List<String> tmp = q.getKeyWords();
+            for(String kw:tmp) {
+                if(questionStr.contains(kw)) votes.merge(q,0,(oldValue,newValue)->oldValue+1);
+            }
+        }
+        votes.put(null,0);
+        QuestionPo max = null;
+        for(QuestionPo q:votes.keySet())
+            if(votes.get(q)>votes.get(max)) max = q;
+        if(max==null) return ResultBean.error(0,"no match question");
+
+        AnswerVo ao = new AnswerVo(entityMapper,max.help);
+        List<String> relatedIds = max.getRelatedIds();
+        for(String id:relatedIds) {
+            ao.addTableItem(id);
+        }
+        return ResultBean.success(ao);
     }
 
     private void searchTriples(String id, int depth,int neighbors, List<TriplePo> res){

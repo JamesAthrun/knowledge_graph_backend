@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.data.KG.QuestionMapper">
+
+    <select id="getAll" resultMap="QuestionPo">
+        select keyWords, help, relatedIds from nkg.question;
+    </select>
+
+    <resultMap id="QuestionPo" type="com.example.demo.po.QuestionPo">
+        <result column="keyWords" property="keyWords"/>
+        <result column="help" property="help"/>
+        <result column="relatedIds" property="relatedIds"/>
+    </resultMap>
+
+</mapper>

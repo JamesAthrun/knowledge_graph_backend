@@ -2,17 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.data.KG.TripleMapper">
 
-<!--    <insert id="addJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
-<!--        insert into JackList(id,dsp) values(#{id},#{dsp})-->
-<!--    </insert>-->
-
     <insert id="insert" parameterType="com.example.demo.po.TriplePo">
         insert into nkg.triple(tableId,head,relation,tail) values(#{tableId},#{head},#{relation},#{tail})
     </insert>
-
-<!--    <delete id="delJack">-->
-<!--        delete from JackList where id = #{id}-->
-<!--    </delete>-->
 
     <select id="getListSize" resultType="java.lang.Integer">
         select count(tableId) from nkg.triple
@@ -21,14 +13,6 @@
     <select id="getRelatedTriples" resultMap="TriplePo">
         select * from nkg.triple where head = #{id} or tail = #{id}
     </select>
-
-<!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
-<!--        update JackList-->
-<!--        <set>-->
-<!--            dsp = #{dsp}-->
-<!--        </set>-->
-<!--        where id = #{id}-->
-<!--    </update>-->
 
     <resultMap id="TriplePo" type="com.example.demo.po.TriplePo">
         <result column="head" property="head"/>

@@ -11,6 +11,7 @@ import com.example.demo.po.QuestionPo;
 import com.example.demo.po.TriplePo;
 import com.example.demo.util.GlobalConfigure;
 import com.example.demo.util.GlobalLogger;
+import com.example.demo.util.Recorder;
 import com.example.demo.util.ResultBean;
 import com.example.demo.vo.AnswerVo;
 import com.example.demo.vo.GraphInfoVo;
@@ -125,6 +126,131 @@ public class KGServiceImpl implements KGService {
     @Override
     public ResultBean createGraphByJsonStr(String jsonString){
         globalConfigure.createGraphByJsonStr(jsonString);
+        return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean createEntity(String headId, String relationId, String tailId, String name, String comment, String nameEn, String nameCn, String division, String from) {
+        if(relationId.equals("")) return ResultBean.error(103, "RelationId not given");
+        String tmp = recorder.getRecordId();
+        if(headId != null) {
+            entityMapper.insert(new EntityPo(tmp, name, nameEn, nameCn, division, from, comment));
+            ResultBean code = createLink(headId, relationId, tmp);
+            if(code.code == 1) {
+                createLink(tmp, relationId, tailId);
+                return ResultBean.success(tmp);
+            }
+
+            else {
+                deleteItem(tmp);
+                return ResultBean.error(204, "CreateEntity error");
+            }
+        }
+        else if(tailId != null) {
+            entityMapper.insert(new EntityPo(tmp, name, nameEn, nameCn, division, from, comment));
+            ResultBean code = createLink(tmp, relationId, tailId);
+            if(code.code == 1) {
+                createLink(headId, relationId, tmp);
+                return ResultBean.success(tmp);
+            }
+            else {
+                deleteItem(tmp);
+                return ResultBean.error(204, "CreateEntity error");
+            }
+        }
+        else {
+            return ResultBean.error(105, "HeadId or relationId not given");
+        }
+    }
+
+    @Override
+    public ResultBean createProperty(String id, String comment, String nameEn, String nameCn, String from, String domain, String range) {
+        String tmp = recorder.getRecordId();
+        if(id.equals("")) return ResultBean.error(101, "Id not given");
+        propertyMapper.insert(new PropertyPo(tmp, id, nameEn, nameCn, domain, range, from, comment));
+        return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean createLink(String headId, String relationId, String tailId) {
+        String tableId = recorder.getTableId();
+        if(headId.equals("")) return ResultBean.error(102, "HeadId not given");
+        if(relationId.equals("")) return ResultBean.error(103, "RelationId not given");
+        if(tailId.equals("")) return ResultBean.error(104, "TailId not given");
+        try {
+            tripleMapper.insert(new TriplePo(tableId, headId, relationId, tailId));
+        }catch (Exception e) {
+            return ResultBean.error(201, "Create Link failed");
+        }
+        return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean updateItem(String id, String comment, String nameEn, String nameCn, String division, String from, String domain, String range) {
+        EntityPo e = entityMapper.getByRecordId(id);
+        PropertyPo p = propertyMapper.getByRecordId(id);
+        if(e != null) {
+            String thisId = e.id;
+            entityMapper.deleteById(id);
+            entityMapper.insert(new EntityPo(id, thisId, nameEn, nameCn, division, from, comment)); // 错误处理未做
+            return ResultBean.success();
+        }
+        else if(p != null) {
+            String thisId = p.id;
+            propertyMapper.deleteById(id);
+            entityMapper.insert(new EntityPo(id, thisId, nameEn, nameCn, division, from, comment)); // 错误处理未做
+            return ResultBean.success();
+        }
+        return ResultBean.error(202, "Update item failed");
+    }
+
+    @Override
+    public ResultBean replaceItem(String id, String headId, String relationId, String tailId, String name, String comment, String nameEn, String nameCn, String division, String from, String domain, String range) {
+        // 这个函数没有进行合理性检查
+        if(id.equals(headId)) {
+            deleteLink(headId, relationId, tailId);
+            return createEntity("", relationId, tailId, name, comment, nameEn, nameCn, division, from);
+        }
+        else if(id.equals(relationId)) {
+            deleteLink(headId, relationId, tailId);
+            return createEntity(headId, relationId, "", name, comment, nameEn, nameCn, division, from);
+        }
+        else if(id.equals(tailId)) {
+            deleteLink(headId, relationId, tailId);
+            createProperty(id, comment, nameEn,nameCn, from, domain, range);
+            createLink(headId, relationId, tailId);
+            return ResultBean.success();
+        }
+        else {
+            return ResultBean.error(205, "Replace item failed");
+        }
+    }
+
+    @Override
+    public ResultBean deleteItem(String id) {
+        if(id.equals("")) return ResultBean.error(101, "Id not given");
+        try {
+            entityMapper.deleteById(id);
+        }catch (Exception e1) {
+            try {
+                propertyMapper.deleteById(id);
+            } catch (Exception e2) {
+                return ResultBean.error(203, "Delete item failed");
+            }
+        }
+        return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean deleteLink(String headId, String relationId, String tailId) {
+        if (headId.equals("")) return ResultBean.error(102, "HeadId not given");
+        if (relationId.equals("")) return ResultBean.error(103, "RelationId not given");
+        if (tailId.equals("")) return ResultBean.error(104, "TailId not given");
+        try {
+            tripleMapper.delete(headId, relationId, tailId);
+        } catch (Exception e) {
+            return ResultBean.error(201, "Delete link failed");
+        }
         return ResultBean.success();
     }
 

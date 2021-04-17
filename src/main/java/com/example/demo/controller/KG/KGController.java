@@ -50,7 +50,7 @@ public class KGController {
     @PostMapping("/createEntity")
     public ResultBean createEntity(
             @RequestBody String headId, @RequestBody String relationId, @RequestBody String tailId,
-            @RequestBody String name,
+             @RequestBody String name,
             @RequestBody String comment,
             @RequestBody String nameEn,
             @RequestBody String nameCn,
@@ -58,13 +58,12 @@ public class KGController {
             @RequestBody String from
     ){
         logger.log("KGController createEntity");
-        //todo
-        return null;
+        return kgService.createEntity(headId, relationId, tailId, name, comment, nameEn, nameCn, division, from);
     }
 
     @PostMapping("/createProperty")
     public ResultBean createProperty(
-            @RequestBody String name,
+            @RequestBody String id,
             @RequestBody String comment,
             @RequestBody String nameEn,
             @RequestBody String nameCn,
@@ -73,39 +72,58 @@ public class KGController {
             @RequestBody String range
     ){
         logger.log("KGController createProperty");
-        //todo
-        return null;
+        return kgService.createProperty(id, comment, nameEn,nameCn, from, domain, range);
     }
 
     @PostMapping("/createLink")
-    public ResultBean createLink(){
-        return null;
+    public ResultBean createLink(
+            @RequestBody String headId,
+            @RequestBody String relationId,
+            @RequestBody String tailId
+    ){
+        logger.log("KGController createLink");
+        return kgService.createLink(headId, relationId, tailId);
     }
 
     @PostMapping("/updateItem")
-    public ResultBean updateItem(){
-        return null;
+    public ResultBean updateItem(
+            @RequestBody String id,
+            @RequestBody String comment,
+            @RequestBody String nameEn,
+            @RequestBody String nameCn,
+            @RequestBody String division,
+            @RequestBody String from,
+            @RequestBody String domain,
+            @RequestBody String range
+    ){
+        logger.log("KGController updateItem");
+        return kgService.updateItem(id, comment, nameEn, nameCn, division, from, domain, range);
     }
 
     @PostMapping("/replaceItem")
     public ResultBean replaceItem(
-            @RequestBody String headId, @RequestBody String relationId, @RequestBody String tailId,
-            @RequestBody String itemId,
+            @RequestBody String id,
+            @RequestBody String headId,
+            @RequestBody String relationId,
+            @RequestBody String tailId,
             @RequestBody String name,
             @RequestBody String comment,
             @RequestBody String nameEn,
             @RequestBody String nameCn,
             @RequestBody String division,
-            @RequestBody String from
+            @RequestBody String from,
+            @RequestBody String domain,
+            @RequestBody String range
     ){
         logger.log("KGController replaceItem");
-        //todo
-        return null;
+        return kgService.replaceItem(id, headId, relationId, tailId, name, comment, nameEn, nameCn, division, from, domain, range);
     }
 
     @PostMapping("/deleteItem")
-    public ResultBean deleteItem(){
-        return null;
+    public ResultBean deleteItem(
+            @RequestBody String id
+    ){
+        return kgService.deleteItem(id);
     }
 
     @PostMapping("/deleteLink")
@@ -113,8 +131,7 @@ public class KGController {
             @RequestBody String headId, @RequestBody String relationId, @RequestBody String tailId
     ){
         logger.log("KGController deleteLink");
-        //todo
-        return null;
+        return kgService.deleteLink(headId,relationId,tailId);
     }
 
     @PostMapping("/ask")

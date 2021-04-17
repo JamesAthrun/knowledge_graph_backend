@@ -13,4 +13,8 @@ public interface PropertyMapper {
     List<PropertyPo> searchByKeywords(String keywords);
 
     PropertyPo getByRecordId(String recordId);
+
+    void deleteById(String id);
+
+    void updateItem(String id, String comment, String nameEn, String nameCn, String division, String from, String domain, String range);
 }

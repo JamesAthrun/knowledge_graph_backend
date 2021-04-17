@@ -14,6 +14,18 @@
         select * from nkg.property where recordId = #{recordId}
     </select>
 
+    <delete id="deleteById">
+        delete from nkg.property WHERE id =#{id}
+    </delete>
+
+<!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
+<!--        update JackList-->
+<!--        <set>-->
+<!--            dsp = #{dsp}-->
+<!--        </set>-->
+<!--        where id = #{id}-->
+<!--    </update>-->
+
     <resultMap id="PropertyPo" type="com.example.demo.po.PropertyPo">
         <id column="recordId" property="recordId"/>
         <result column="id" property="id"/>

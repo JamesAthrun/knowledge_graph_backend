@@ -37,10 +37,12 @@ public class KGServiceImpl implements KGService {
     GlobalConfigure globalConfigure;
     @Autowired
     QuestionMapper questionMapper;
+    @Autowired
+    Recorder recorder;
 
     @Override
     public ResultBean searchEntity(String keywords) {
-        long t1 = System.currentTimeMillis();;
+        long t1 = System.currentTimeMillis();
 
         List<EntityPo> entities = entityMapper.searchByKeywords(keywords);
         ItemListVo itemListVo = new ItemListVo();

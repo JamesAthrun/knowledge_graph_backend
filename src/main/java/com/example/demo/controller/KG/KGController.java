@@ -50,7 +50,7 @@ public class KGController {
     @PostMapping("/createEntity")
     public ResultBean createEntity(
             @RequestBody String headId, @RequestBody String relationId, @RequestBody String tailId,
-             @RequestBody String name,
+            @RequestBody String name,
             @RequestBody String comment,
             @RequestBody String nameEn,
             @RequestBody String nameCn,
@@ -72,7 +72,7 @@ public class KGController {
             @RequestBody String range
     ){
         logger.log("KGController createProperty");
-        return kgService.createProperty(id, comment, nameEn,nameCn, from, domain, range);
+        return kgService.createProperty(id, comment, nameEn, nameCn, from, domain, range);
     }
 
     @PostMapping("/createLink")

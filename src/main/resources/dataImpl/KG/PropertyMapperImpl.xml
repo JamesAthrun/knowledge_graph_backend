@@ -7,7 +7,7 @@
     </insert>
 
     <select id="searchByKeywords" resultMap="PropertyPo">
-        select * from nkg.property where id like "%${keywords}%" or nameCn like "%${keywords}%" or nameEn like "%${keywords}%"
+        select * from nkg.property where id like '%${keywords}%' or nameCn like '%${keywords}%' or nameEn like '%${keywords}%'
     </select>
 
     <select id="getByRecordId" resultMap="PropertyPo">

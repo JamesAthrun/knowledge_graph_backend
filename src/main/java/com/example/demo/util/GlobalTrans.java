@@ -107,4 +107,15 @@ public class GlobalTrans {
         String jsonStr = bytesToStr(cipher.doFinal(hexStrToBytes(secretJsonStr)));
         return JSON.parseObject(jsonStr);
     }
+
+//    public static HashMap<String,String> postBodyJsonStrToHashMap(String jsonStr){
+//        JSONObject jo = JSONObject.parseObject(jsonStr);
+//        HashMap<String,String> res = new HashMap<>();
+//        for(Object o:jo.keySet()){
+//            String key = (String)o;
+//            String value = jo.getString(key);
+//            res.put(key,value);
+//        }
+//        return res;
+//    }
 }

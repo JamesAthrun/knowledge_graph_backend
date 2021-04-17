@@ -170,7 +170,7 @@ public class KGServiceImpl implements KGService {
         String tmp = recorder.getRecordId();
         if(id.equals("")) return ResultBean.error(101, "Id not given");
         propertyMapper.insert(new PropertyPo(tmp, id, nameEn, nameCn, domain, range, from, comment));
-        return ResultBean.success();
+        return ResultBean.success(tmp);
     }
 
     @Override

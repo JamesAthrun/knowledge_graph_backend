@@ -49,17 +49,17 @@ CREATE TABLE `account`(
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `graph`(
-   `tableId` int(11) NOT NULL AUTO_INCREMENT,
-   `name` varchar(256) UNIQUE DEFAULT NULL,
-   `description` varchar(256) UNIQUE DEFAULT NULL,
+   `tableId` int(11) NOT NULL,
+   `name` varchar(256) DEFAULT NULL,
+   `description` varchar(256) DEFAULT NULL,
    PRIMARY KEY (`tableId`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `question`(
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `keyWords` varchar(256) UNIQUE DEFAULT NULL,
-    `help` varchar(256) UNIQUE DEFAULT NULL,
-    `relatedIds` varchar(256) UNIQUE DEFAULT NULL,
+    `keyWords` varchar(256) DEFAULT NULL,
+    `help` varchar(256) DEFAULT NULL,
+    `relatedIds` varchar(256) DEFAULT NULL,
     PRIMARY KEY (`id`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

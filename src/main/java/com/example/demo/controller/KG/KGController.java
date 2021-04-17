@@ -103,9 +103,7 @@ public class KGController {
     @PostMapping("/replaceItem")
     public ResultBean replaceItem(
             @RequestBody String id,
-            @RequestBody String headId,
-            @RequestBody String relationId,
-            @RequestBody String tailId,
+            @RequestBody String headId, @RequestBody String relationId, @RequestBody String tailId,
             @RequestBody String name,
             @RequestBody String comment,
             @RequestBody String nameEn,

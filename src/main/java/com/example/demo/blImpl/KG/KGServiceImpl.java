@@ -5,18 +5,18 @@ import com.example.demo.data.KG.EntityMapper;
 import com.example.demo.data.KG.PropertyMapper;
 import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.EntityPo;
-import com.example.demo.po.PropertyPO;
+import com.example.demo.po.PropertyPo;
 import com.example.demo.po.TriplePo;
+import com.example.demo.util.GlobalConfigure;
+import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
-import com.example.demo.vo.GraphVo;
-import com.example.demo.vo.NodeListVo;
+import com.example.demo.vo.GraphInfoVo;
+import com.example.demo.vo.ItemListVo;
+import com.example.demo.vo.TreeInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class KGServiceImpl implements KGService {
@@ -27,26 +27,30 @@ public class KGServiceImpl implements KGService {
     PropertyMapper propertyMapper;
     @Autowired
     TripleMapper tripleMapper;
+    @Autowired
+    GlobalLogger logger;
+    @Autowired
+    GlobalConfigure globalConfigure;
 
     @Override
     public ResultBean searchEntity(String keywords) {
         long t1 = System.currentTimeMillis();;
 
         List<EntityPo> entities = entityMapper.searchByKeywords(keywords);
-        NodeListVo nodeListVo = new NodeListVo();
+        ItemListVo itemListVo = new ItemListVo();
         for(EntityPo e:entities){
-            nodeListVo.addEntity(e);
+            itemListVo.addEntity(e);
         }
 
-        List<PropertyPO> properties = propertyMapper.searchByKeywords(keywords);
-        for(PropertyPO p:properties){
-            nodeListVo.addProperty(p);
+        List<PropertyPo> properties = propertyMapper.searchByKeywords(keywords);
+        for(PropertyPo p:properties){
+            itemListVo.addProperty(p);
         }
 
         long t2 = System.currentTimeMillis();
-        System.out.println("节点数 "+(entities.size()+properties.size())+" 搜索用时 "+(t2-t1)+"ms");
+        logger.log("节点数 "+(entities.size()+properties.size())+" 搜索用时 "+(t2-t1)+"ms");
 
-        return ResultBean.success(nodeListVo);
+        return ResultBean.success(itemListVo);
     }
 
     @Override
@@ -54,34 +58,72 @@ public class KGServiceImpl implements KGService {
         long t1 = System.currentTimeMillis();;
 
         List<TriplePo> related_link = new ArrayList<>();
-        List<String> related_ids = new ArrayList<>();
-        searchTriples(id,3,5,related_link);//depth是递归查找上限，neighbors是每层头和尾的连接上限
+        searchTriples(id,3,5,related_link);
+        //depth是递归查找上限，neighbors是每层头和尾的连接上限
 
-        for(TriplePo item:related_link){
-            related_ids.add(item.head);
-            related_ids.add(item.relation);
-            related_ids.add(item.tail);
-        }
-        MySet(related_ids);
-        GraphVo go = new GraphVo();
+        GraphInfoVo go = new GraphInfoVo(entityMapper,propertyMapper);
         for(TriplePo item:related_link){
             go.addLink(item);
         }
-        for(String recordId:related_ids){
-            EntityPo e = entityMapper.getByRecordId(recordId);
-            PropertyPO p = propertyMapper.getByRecordId(recordId);
-            if(e!=null)  go.addData(e);
-            if(p!=null)  go.addData(p);
-            if(e==null&&p==null) go.addData(new EntityPo(recordId,"未知实体或属性","","","","unknown","我只能说，懂的都懂。"));
-        }
-
         long t2 = System.currentTimeMillis();
-        System.out.println("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
+        logger.log("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
 
         return ResultBean.success(go);
     }
 
-    public void searchTriples(String id, int depth,int neighbors, List<TriplePo> res){
+    @Override
+    public ResultBean getTreeData(String id) {
+        long t1 = System.currentTimeMillis();;
+
+        List<TriplePo> related_link = new ArrayList<>();
+        searchTriples(id,3,5,related_link);
+
+        TreeInfoVo to = new TreeInfoVo(id,entityMapper,propertyMapper);
+
+        Queue<String> q = new LinkedList<>();
+        q.offer(id);
+        HashMap<String,ArrayList<TriplePo>> visited = new HashMap<>();
+
+        while (q.size()>0) {
+            String pId = q.poll();
+            for(TriplePo triplePo: related_link){
+                if(visited.get(triplePo.relation)!=null && visited.get(triplePo.relation).contains(triplePo)) continue;
+                if(triplePo.head.equals(pId)){
+                    to.propertyAdd(
+                            to.addProperty(triplePo.head, triplePo.relation),
+                            triplePo.tail);
+                    q.offer(triplePo.tail);
+                    //p->relation->tail
+                    if (!visited.containsKey(triplePo.relation)) visited.put(triplePo.relation, new ArrayList<>());
+                    visited.get(triplePo.relation).add(triplePo);//不走原路
+                }
+                if(triplePo.tail.equals(pId)) {
+                    if (!(visited.get(triplePo.tail) != null && visited.get(triplePo.tail).contains(triplePo))) {
+                        to.propertyAdd(
+                                to.addProperty(triplePo.tail, triplePo.relation),
+                                triplePo.head);
+                        q.offer(triplePo.head);
+                        //p->relation->head
+                        if (!visited.containsKey(triplePo.relation)) visited.put(triplePo.relation, new ArrayList<>());
+                        visited.get(triplePo.relation).add(triplePo);
+                    }
+                }
+            }
+        }
+
+        long t2 = System.currentTimeMillis();
+        logger.log("相关节点数 "+related_link.size()+" 搜索用时 "+(t2-t1)+"ms");
+
+        return ResultBean.success(to.getRoot());
+    }
+
+    @Override
+    public ResultBean createGraphByJsonStr(String jsonString){
+        globalConfigure.createGraphByJsonStr(jsonString);
+        return ResultBean.success();
+    }
+
+    private void searchTriples(String id, int depth,int neighbors, List<TriplePo> res){
         if(depth==0) return;
         MySet(res);
         List<TriplePo> cases = tripleMapper.getRelatedTriples(id);
@@ -114,7 +156,7 @@ public class KGServiceImpl implements KGService {
     }
 
     //去重
-    public static <T> void MySet(List<T> in){
+    private static <T> void MySet(List<T> in){
         HashSet<T> out = new HashSet<>(in);
         for(T item: in){
             if(out.contains(item)) continue;
@@ -124,7 +166,7 @@ public class KGServiceImpl implements KGService {
         in.addAll(out);
     }
 
-    public static <T> List<T> getRandomList(List<T> paramList,int count){
+    private static <T> List<T> getRandomList(List<T> paramList,int count){
         if(paramList.size()<count){
             return paramList;
         }
@@ -142,7 +184,7 @@ public class KGServiceImpl implements KGService {
         return newList;
     }
 
-    public boolean triple_existed(List<TriplePo> list,TriplePo item){
+    private boolean triple_existed(List<TriplePo> list,TriplePo item){
         for(TriplePo tmp: list){
             if(tmp.head.equals(item.head) && tmp.relation.equals(item.relation) && tmp.tail.equals(item.tail)) return true;
         }

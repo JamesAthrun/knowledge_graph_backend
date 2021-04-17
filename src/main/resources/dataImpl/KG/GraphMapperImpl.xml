@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.data.KG.GraphMapper">
+
+    <insert id="insert" parameterType="com.example.demo.po.GraphPo" useGeneratedKeys="true" keyProperty="tableId">
+        replace into nkg.graph(tableId, name, description) values (#{tableId},#{name},#{description})
+    </insert>
+
+
+    <select id="get" resultMap="GraphPo">
+        select * from nkg.graph where tableId = #{tableId}
+    </select>
+
+    <select id="getSize" resultType="java.lang.Integer">
+        select count(tableId) from nkg.graph
+    </select>
+
+
+    <resultMap id="GraphPo" type="com.example.demo.po.GraphPo">
+        <id column="tableId" property="tableId"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+    </resultMap>
+
+</mapper>

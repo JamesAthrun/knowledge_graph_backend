@@ -3,6 +3,7 @@ package com.example.demo.blImpl.Verify;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.Verify.VerifyService;
 import com.example.demo.data.Verify.VerifyMapper;
+import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.GlobalTrans;
 import com.example.demo.util.ResultBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class VerifyServiceImpl implements VerifyService {
 
     @Autowired
     VerifyMapper verifyMapper;
+    @Autowired
+    GlobalLogger logger;
 
     @Override
     public ResultBean getDesKey(String ip,String modulus, String exponent) throws Exception {
@@ -33,13 +36,17 @@ public class VerifyServiceImpl implements VerifyService {
         rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
         Key desKey = KeyGenerator.getInstance("DES").generateKey();
-        verifyMapper.insert(ip, GlobalTrans.BytesToStr(desKey.getEncoded()));
+
+        String keyStr = GlobalTrans.bytesToHexStr(desKey.getEncoded());
+        logger.log("for ip "+ip+" gen key "+keyStr);
+        verifyMapper.insert(ip, keyStr);
 
         byte[] t0 = desKey.getEncoded();
-        byte[] t1 = rsaCipher.doFinal(t0);
+        String s = GlobalTrans.bytesToHexStr(t0);
 
+        byte[] t1 = rsaCipher.doFinal(s.getBytes());
         JSONObject jo = new JSONObject();
-        jo.put("key",GlobalTrans.BytesToStr(t1));
+        jo.put("key",GlobalTrans.BytesToBase64Str(t1));
 
         return ResultBean.success(jo);
     }

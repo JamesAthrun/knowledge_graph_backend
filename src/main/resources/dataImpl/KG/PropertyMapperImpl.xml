@@ -6,7 +6,7 @@
 <!--        insert into JackList(id,dsp) values(#{id},#{dsp})-->
 <!--    </insert>-->
 
-    <insert id="insert" parameterType="com.example.demo.po.PropertyPO" useGeneratedKeys="true" keyProperty="recordId">
+    <insert id="insert" parameterType="com.example.demo.po.PropertyPo" useGeneratedKeys="true" keyProperty="recordId">
         insert into nkg.property(recordId,id,nameEn,nameCn,domain,`range`,`from`,comment) values(#{recordId},#{id},#{nameEn},#{nameCn},#{domain},#{range},#{from},#{comment})
     </insert>
 
@@ -30,7 +30,7 @@
 <!--        where id = #{id}-->
 <!--    </update>-->
 
-    <resultMap id="PropertyPo" type="com.example.demo.po.PropertyPO">
+    <resultMap id="PropertyPo" type="com.example.demo.po.PropertyPo">
         <id column="recordId" property="recordId"/>
         <result column="id" property="id"/>
         <result column="nameEn" property="nameEn"/>

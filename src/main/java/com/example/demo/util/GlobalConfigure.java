@@ -2,11 +2,14 @@ package com.example.demo.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.KG.EntityMapper;
+import com.example.demo.data.KG.GraphMapper;
 import com.example.demo.data.KG.PropertyMapper;
 import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.EntityPo;
-import com.example.demo.po.PropertyPO;
+import com.example.demo.po.GraphPo;
+import com.example.demo.po.PropertyPo;
 import com.example.demo.po.TriplePo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +25,12 @@ import static com.example.demo.util.GlobalTrans.getJsonString;
 
 @Configuration
 public class GlobalConfigure {
-    //final String filepath = "src/main/resources/covid-19-prevention-2020-03-11.json";
+    //4.11
+    //todo 用户权限功能 √
+    //todo 编辑知识图谱 持久化
+    //todo 从json文件新建知识图谱 √
+    //todo 知识图谱问答
+
     public final String data_path = "src/main/resources/data.json";
     public final String[] origins = new String[]{
         //在这里设置允许跨域的路由
@@ -40,24 +48,35 @@ public class GlobalConfigure {
     PropertyMapper propertyMapper;
     @Autowired
     TripleMapper tripleMapper;
+    @Autowired
+    GraphMapper graphMapper;
+    @Autowired
+    GlobalLogger logger;
+    @Autowired
+    KGService kgService;
 
     @Autowired
     public void init(){
-        if(tripleMapper.getListSize()>0) {
-            System.out.println("data existed");
+        if(graphMapper.getSize()!=0) {
+            logger.log("data existed");
             return;
         }
-        System.out.println("data load begin");
+        recorder.init();
+        logger.log("data load begin");
         String jsonString = getJsonString(data_path);
-        initFromJSONStr(jsonString);
-        System.out.println("data load end");
+        createGraphByJsonStr(jsonString);
+        logger.log("data load end");
     }
 
-    private void initFromJSONStr(String jsonString){
-        JSONArray entity_list = JSONObject.parseObject(jsonString).getJSONArray("entity");
+    public void createGraphByJsonStr(String jsonString){
+        String tableId = recorder.getTableId();
+        JSONObject jojo = JSONObject.parseObject(jsonString);
+        graphMapper.insert(new GraphPo(tableId,jojo.getString("name"),jojo.getString("description")));
+
+        JSONArray entity_list = jojo.getJSONArray("entity");
         List<String> before = new ArrayList<>();
         List<String> after = new ArrayList<>();
-        String tableId = recorder.getTableId();
+
         for(Object o:entity_list){
             JSONObject jo = (JSONObject) o;
             before.add(jo.getString("recordId"));
@@ -65,15 +84,15 @@ public class GlobalConfigure {
             after.add(tmp);
             entityMapper.insert(new EntityPo(tmp,jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("division"),jo.getString("from"),jo.getString("comment")));
         }
-        JSONArray property_list = JSONObject.parseObject(jsonString).getJSONArray("property");
+        JSONArray property_list = jojo.getJSONArray("property");
         for(Object o:property_list){
             JSONObject jo = (JSONObject) o;
             before.add(jo.getString("recordId"));
             String tmp = recorder.getRecordId();
             after.add(tmp);
-            propertyMapper.insert(new PropertyPO(tmp,jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("domain"),jo.getString("range"),jo.getString("from"),jo.getString("comment")));
+            propertyMapper.insert(new PropertyPo(tmp,jo.getString("id"),jo.getString("nameEn"),jo.getString("nameCn"),jo.getString("domain"),jo.getString("range"),jo.getString("from"),jo.getString("comment")));
         }
-        JSONArray triple_list = JSONObject.parseObject(jsonString).getJSONArray("triple");
+        JSONArray triple_list = jojo.getJSONArray("triple");
         for(Object o:triple_list){
             JSONObject jo = (JSONObject) o;
             String head = jo.getString("head");
@@ -82,8 +101,9 @@ public class GlobalConfigure {
             String real_relation = after.get(before.indexOf(relation));
             String tail = jo.getString("tail");
             String real_tail = after.get(before.indexOf(tail));
-            tripleMapper.insert(new TriplePo(recorder.getRecordId(),tableId,real_head,real_relation,real_tail));
+            tripleMapper.insert(new TriplePo(tableId,real_head,real_relation,real_tail));
         }
+        recorder.save();
     }
 
     @Bean
@@ -104,4 +124,5 @@ public class GlobalConfigure {
             corsConfiguration.addAllowedOrigin(origin);
         }
     }
+
 }

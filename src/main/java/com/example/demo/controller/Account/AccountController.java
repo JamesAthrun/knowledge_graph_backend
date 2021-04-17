@@ -1,26 +1,41 @@
 package com.example.demo.controller.Account;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.Account.AccountService;
+import com.example.demo.data.Verify.VerifyMapper;
+import com.example.demo.util.GlobalLogger;
+import com.example.demo.util.GlobalTrans;
 import com.example.demo.util.ResultBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController()
-@RequestMapping("/Account")
+@RequestMapping("")
 public class AccountController {
     @Autowired
     AccountService accountService;
+    @Autowired
+    VerifyMapper verifyMapper;
+    @Autowired
+    GlobalLogger logger;
 
-    @GetMapping("/register")
-    public ResultBean register(@RequestParam String name,@RequestParam String pwd){
-        return accountService.register(name,pwd);
+    @PostMapping("/login")
+    public ResultBean login(HttpServletRequest request, @RequestBody String s) throws Exception {
+        logger.log("AccountController login");
+        String ip = request.getRemoteAddr();
+        JSONObject jo = GlobalTrans.secretJsonStrToJsonObject(ip,verifyMapper,s);
+        String name = jo.getString("username"),pwd = jo.getString("password");
+        return accountService.login(name,pwd);
     }
 
-    @GetMapping("/login")
-    public ResultBean login(@RequestParam String name,@RequestParam String pwd){
-        return accountService.login(name,pwd);
+    @PostMapping("/signup")
+    public ResultBean register(HttpServletRequest request, @RequestBody String s) throws Exception {
+        logger.log("AccountController signup");
+        String ip = request.getRemoteAddr();
+        JSONObject jo = GlobalTrans.secretJsonStrToJsonObject(ip,verifyMapper,s);
+        String name = jo.getString("username"),pwd = jo.getString("password"),email = jo.getString("email");
+        return accountService.register(name,pwd,email);
     }
 }

@@ -2,17 +2,14 @@ DROP DATABASE IF EXISTS nkg;
 CREATE DATABASE nkg DEFAULT CHARACTER SET utf8;
 USE nkg;
 
-DROP TABLE IF EXISTS `triple`;
 CREATE TABLE `triple`(
-   `recordId` int(11) NOT NULL AUTO_INCREMENT,
-   `tableId` varchar(256) DEFAULT NULL,
-   `head` varchar(256) DEFAULT NULL,
-   `relation` varchar(256) DEFAULT NULL,
-   `tail` varchar(256) DEFAULT NULL,
-   PRIMARY KEY (`recordId`)
+    `tableId` varchar(64) DEFAULT NULL,
+    `head` varchar(64) DEFAULT '',
+    `relation` varchar(64) DEFAULT '',
+    `tail` varchar(64) DEFAULT '',
+    PRIMARY KEY (`head`,`relation`,`tail`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `entity`;
 CREATE TABLE `entity`(
    `recordId` int(11) NOT NULL AUTO_INCREMENT,
    `id` varchar(256) DEFAULT NULL,
@@ -24,7 +21,6 @@ CREATE TABLE `entity`(
    PRIMARY KEY (`recordId`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `property`;
 CREATE TABLE `property`(
     `recordId` int(11) NOT NULL AUTO_INCREMENT,
     `id` varchar(256) DEFAULT NULL,
@@ -37,18 +33,27 @@ CREATE TABLE `property`(
     PRIMARY KEY (`recordId`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `verify`;
 CREATE TABLE `verify`(
-    `id` int(11) NOT NULL AUTO_INCREMENT,
     `ip` varchar(256) NOT NULL,
     `desKey` varchar(256) DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`ip`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account`(
      `id` int(11) NOT NULL AUTO_INCREMENT,
      `name` varchar(256) UNIQUE DEFAULT NULL,
      `pwd` varchar(256) DEFAULT NULL,
+     `email` varchar(256) DEFAULT NULL,
+     `authority` varchar(256) DEFAULT NULL,
      PRIMARY KEY (`id`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `graph`(
+   `tableId` int(11) NOT NULL AUTO_INCREMENT,
+   `name` varchar(256) UNIQUE DEFAULT NULL,
+   `description` varchar(256) UNIQUE DEFAULT NULL,
+   PRIMARY KEY (`tableId`)
+)ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO account (name, pwd, email, authority) VALUES ('trump','123456','magg@trump.com','president');
+INSERT INTO account (name, pwd, email, authority) VALUES ('obama','123456','blm@obama.com','president');

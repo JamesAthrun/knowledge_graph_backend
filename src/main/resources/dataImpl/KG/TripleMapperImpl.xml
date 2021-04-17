@@ -22,6 +22,10 @@
         select * from nkg.triple where head = #{id} or tail = #{id}
     </select>
 
+    <delete id="deleteById">
+        delete from nkg.triple WHERE head =#{headId} and tail = #{tailId} and relation = #{relationId}
+    </delete>
+
 <!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
 <!--        update JackList-->
 <!--        <set>-->

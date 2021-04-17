@@ -13,4 +13,6 @@ public interface TripleMapper {
     List<TriplePo> getRelatedTriples(String id);
 
     Integer getListSize();
+
+    void delete(String headId, String relationId, String tailId);
 }

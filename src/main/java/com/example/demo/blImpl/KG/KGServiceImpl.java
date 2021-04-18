@@ -3,14 +3,17 @@ package com.example.demo.blImpl.KG;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.KG.EntityMapper;
 import com.example.demo.data.KG.PropertyMapper;
+import com.example.demo.data.KG.QuestionMapper;
 import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.EntityPo;
 import com.example.demo.po.PropertyPo;
+import com.example.demo.po.QuestionPo;
 import com.example.demo.po.TriplePo;
 import com.example.demo.util.GlobalConfigure;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.Recorder;
 import com.example.demo.util.ResultBean;
+import com.example.demo.vo.AnswerVo;
 import com.example.demo.vo.GraphInfoVo;
 import com.example.demo.vo.ItemListVo;
 import com.example.demo.vo.TreeInfoVo;
@@ -33,11 +36,13 @@ public class KGServiceImpl implements KGService {
     @Autowired
     GlobalConfigure globalConfigure;
     @Autowired
+    QuestionMapper questionMapper;
+    @Autowired
     Recorder recorder;
 
     @Override
     public ResultBean searchEntity(String keywords) {
-        long t1 = System.currentTimeMillis();;
+        long t1 = System.currentTimeMillis();
 
         List<EntityPo> entities = entityMapper.searchByKeywords(keywords);
         ItemListVo itemListVo = new ItemListVo();
@@ -165,7 +170,7 @@ public class KGServiceImpl implements KGService {
         String tmp = recorder.getRecordId();
         if(id.equals("")) return ResultBean.error(101, "Id not given");
         propertyMapper.insert(new PropertyPo(tmp, id, nameEn, nameCn, domain, range, from, comment));
-        return ResultBean.success();
+        return ResultBean.success(tmp);
     }
 
     @Override
@@ -249,6 +254,31 @@ public class KGServiceImpl implements KGService {
             return ResultBean.error(201, "Delete link failed");
         }
         return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean ask(String questionStr) {
+        List<QuestionPo> qs = new ArrayList<>(questionMapper.getAll());
+        HashMap<QuestionPo,Integer> votes = new HashMap<>();
+
+        for(QuestionPo q:qs){
+            List<String> tmp = q.getKeyWords();
+            for(String kw:tmp) {
+                if(questionStr.contains(kw)) votes.merge(q,0,(oldValue,newValue)->oldValue+1);
+            }
+        }
+        votes.put(null,0);
+        QuestionPo max = null;
+        for(QuestionPo q:votes.keySet())
+            if(votes.get(q)>votes.get(max)) max = q;
+        if(max==null) return ResultBean.error(0,"no match question");
+
+        AnswerVo ao = new AnswerVo(entityMapper,max.help);
+        List<String> relatedIds = max.getRelatedIds();
+        for(String id:relatedIds) {
+            ao.addTableItem(id);
+        }
+        return ResultBean.success(ao);
     }
 
     private void searchTriples(String id, int depth,int neighbors, List<TriplePo> res){

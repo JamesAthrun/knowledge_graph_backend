@@ -27,11 +27,10 @@ public class EntityPo {
         String des = "";
         if(!this.nameCn.equals("")){
             item.put("name",this.nameCn);
-            des += "英文名 "+this.nameEn+"\n";
+            if(!this.nameEn.equals("")) des += "英文名 "+this.nameEn+"\n";
         }
         else{
-            if(!this.nameEn.equals(""))
-                item.put("name",this.nameEn);
+            if(!this.nameEn.equals("")) item.put("name",this.nameEn);
             else item.put("name",this.id);
         }
         if(!this.comment.equals("")) des += "评论 "+this.comment+"\n";

@@ -1,7 +1,6 @@
 package com.example.demo.bl.KG;
 
 import com.example.demo.util.ResultBean;
-import org.springframework.web.bind.annotation.RequestBody;
 
 public interface KGService {
 
@@ -16,4 +15,5 @@ public interface KGService {
     ResultBean replaceItem(String id, String headId, String relationId, String tailId, String name, String comment, String nameEn, String nameCn, String division, String from, String domain, String range);
     ResultBean deleteItem(String id);
     ResultBean deleteLink(String headId, String relationId, String tailId);
+    ResultBean ask(String questionStr);
 }

@@ -49,11 +49,21 @@ CREATE TABLE `account`(
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `graph`(
-   `tableId` int(11) NOT NULL AUTO_INCREMENT,
-   `name` varchar(256) UNIQUE DEFAULT NULL,
-   `description` varchar(256) UNIQUE DEFAULT NULL,
+   `tableId` int(11) NOT NULL,
+   `name` varchar(256) DEFAULT NULL,
+   `description` varchar(256) DEFAULT NULL,
    PRIMARY KEY (`tableId`)
+)ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `question`(
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `keyWords` varchar(256) DEFAULT NULL,
+    `help` varchar(256) DEFAULT NULL,
+    `relatedIds` varchar(256) DEFAULT NULL,
+    PRIMARY KEY (`id`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO account (name, pwd, email, authority) VALUES ('trump','123456','magg@trump.com','president');
 INSERT INTO account (name, pwd, email, authority) VALUES ('obama','123456','blm@obama.com','president');
+
+INSERT INTO question (keyWords, help, relatedIds) VALUES ('[{"0":"农民工"},{"1":"预防"}]','请仔细阅读以上内容，在完成的项后打勾，如果您已经全部完成，说明您已经百毒不侵，可以下地干活了！','[{"0":"19321220"},{"1":"19747406"},{"2":"19261796"},{"3":"19509710"},{"4":"19771248"},{"5":"19357164"},{"6":"19891182"},{"7":"19836900"}]');

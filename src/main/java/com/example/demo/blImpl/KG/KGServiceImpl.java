@@ -178,7 +178,7 @@ public class KGServiceImpl implements KGService {
 
     @Override
     public ResultBean createLink(String headId, String relationId, String tailId) {
-        String tableId = "0";
+        String tableId = "1";
         if(headId.equals("")) return ResultBean.error(102, "HeadId not given");
         if(relationId.equals("")) return ResultBean.error(103, "RelationId not given");
         if(tailId.equals("")) return ResultBean.error(104, "TailId not given");

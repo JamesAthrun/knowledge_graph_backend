@@ -1,5 +1,6 @@
 package com.example.demo.blImpl.KG;
 
+import com.alibaba.fastjson.JSON;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.KG.EntityMapper;
 import com.example.demo.data.KG.PropertyMapper;
@@ -221,8 +222,9 @@ public class KGServiceImpl implements KGService {
         }
         else if(id.equals(relationId)) {
             deleteLink(headId, relationId, tailId);
-            createProperty(id, comment, nameEn,nameCn, from, domain, range);
-            createLink(headId, relationId, tailId);
+            ResultBean code = createProperty(name, comment, nameEn,nameCn, from, domain, range);
+            String newRelationId = (String) JSON.parse(code.data);
+            createLink(headId, newRelationId, tailId);
             return ResultBean.success();
         }
         else {

@@ -73,7 +73,14 @@
             })
         }
 
-        ask("农民工预防")
+        // ask("农民工预防")
+
+        $.ajax({
+            url:"http://localhost:8082/KG/createProperty",
+            type:"POST",
+            headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+            data:JSON.stringify({"id":"","comment":"","nameEn":"","nameCn":"","from":"","domain":"","range":""})
+        })
 
     </script>
 

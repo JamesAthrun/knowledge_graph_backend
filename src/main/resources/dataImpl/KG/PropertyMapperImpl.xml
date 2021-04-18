@@ -15,7 +15,7 @@
     </select>
 
     <delete id="deleteById">
-        delete from nkg.property WHERE id =#{id}
+        delete from nkg.property WHERE recordId =#{id}
     </delete>
 
 <!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->

@@ -24,7 +24,7 @@
     </select>
 
     <delete id="deleteById">
-        delete from nkg.entity WHERE id =#{id}
+        delete from nkg.entity WHERE recordId =#{id}
     </delete>
 
 

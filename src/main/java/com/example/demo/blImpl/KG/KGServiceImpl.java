@@ -135,30 +135,32 @@ public class KGServiceImpl implements KGService {
     public ResultBean createEntity(String headId, String relationId, String tailId, String name, String comment, String nameEn, String nameCn, String division, String from) {
         if(relationId.equals("")) return ResultBean.error(103, "RelationId not given");
         String tmp = recorder.getRecordId();
-        if(headId != null) {
+        if(headId != null && !headId.equals("")) {
             entityMapper.insert(new EntityPo(tmp, name, nameEn, nameCn, division, from, comment));
             ResultBean code = createLink(headId, relationId, tmp);
-            if(code.code == 1) {
-                createLink(tmp, relationId, tailId);
-                return ResultBean.success(tmp);
-            }
-
-            else {
-                deleteItem(tmp);
-                return ResultBean.error(204, "CreateEntity error");
-            }
+//            if(code.code == 1) {
+//                createLink(tmp, relationId, tailId);
+//                return ResultBean.success(tmp);
+//            }
+//
+//            else {
+//                deleteItem(tmp);
+//                return ResultBean.error(204, "CreateEntity error");
+//            }
+            return ResultBean.success(tmp);
         }
-        else if(tailId != null) {
+        else if(tailId != null && !tailId.equals("")) {
             entityMapper.insert(new EntityPo(tmp, name, nameEn, nameCn, division, from, comment));
             ResultBean code = createLink(tmp, relationId, tailId);
-            if(code.code == 1) {
-                createLink(headId, relationId, tmp);
-                return ResultBean.success(tmp);
-            }
-            else {
-                deleteItem(tmp);
-                return ResultBean.error(204, "CreateEntity error");
-            }
+//            if(code.code == 1) {
+//                createLink(headId, relationId, tmp);
+//                return ResultBean.success(tmp);
+//            }
+//            else {
+//                deleteItem(tmp);
+//                return ResultBean.error(204, "CreateEntity error");
+//            }
+            return ResultBean.success(tmp);
         }
         else {
             return ResultBean.error(105, "HeadId or relationId not given");

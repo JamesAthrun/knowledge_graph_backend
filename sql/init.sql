@@ -49,10 +49,9 @@ CREATE TABLE `account`(
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `graph`(
-   `tableId` int(11) NOT NULL AUTO_INCREMENT,
+   `tableId` int(11) DEFAULT NULL,
    `name` varchar(256) UNIQUE DEFAULT NULL,
-   `description` varchar(256) UNIQUE DEFAULT NULL,
-   PRIMARY KEY (`tableId`)
+   `description` varchar(256) UNIQUE DEFAULT NULL
 )ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `question`(

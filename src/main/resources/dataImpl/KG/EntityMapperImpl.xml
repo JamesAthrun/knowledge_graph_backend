@@ -23,6 +23,10 @@
         select * from nkg.entity where recordId = #{recordId}
     </select>
 
+    <delete id="deleteById">
+        delete from nkg.entity WHERE recordId =#{id}
+    </delete>
+
 
 <!--    <update id="updateJack" parameterType="com.example.demo.po.JackPo" useGeneratedKeys="true" keyProperty="id">-->
 <!--        update JackList-->

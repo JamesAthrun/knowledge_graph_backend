@@ -13,4 +13,7 @@ public interface EntityMapper {
     List<EntityPo> searchByKeywords(String keywords);
 
     EntityPo getByRecordId(String recordId);
+
+    void deleteById(String id);
+
 }

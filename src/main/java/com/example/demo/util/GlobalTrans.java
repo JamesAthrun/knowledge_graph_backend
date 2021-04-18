@@ -100,9 +100,22 @@ public class GlobalTrans {
     public static JSONObject secretJsonStrToJsonObject(String ip, VerifyMapper verifyMapper, String secretJsonStr) throws Exception {
         String hexStr = verifyMapper.getDesKey(ip);
         Key key = GlobalTrans.getDesKeyFromHexString(hexStr);
-        Cipher cipher = Cipher.getInstance("DES");
+
+        Cipher cipher = Cipher.getInstance("DES/ECB/ISO10126Padding");
         cipher.init(Cipher.DECRYPT_MODE,key);
-        String jsonStr =  bytesToStr(cipher.doFinal(secretJsonStr.getBytes()));
+
+        String jsonStr = bytesToStr(cipher.doFinal(hexStrToBytes(secretJsonStr)));
         return JSON.parseObject(jsonStr);
     }
+
+//    public static HashMap<String,String> postBodyJsonStrToHashMap(String jsonStr){
+//        JSONObject jo = JSONObject.parseObject(jsonStr);
+//        HashMap<String,String> res = new HashMap<>();
+//        for(Object o:jo.keySet()){
+//            String key = (String)o;
+//            String value = jo.getString(key);
+//            res.put(key,value);
+//        }
+//        return res;
+//    }
 }

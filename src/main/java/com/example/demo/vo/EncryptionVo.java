@@ -1,6 +1,6 @@
 package com.example.demo.vo;
 
-public class EncryptionVO {
+public class EncryptionVo {
     public String modulus;
     public String exponent;
 }

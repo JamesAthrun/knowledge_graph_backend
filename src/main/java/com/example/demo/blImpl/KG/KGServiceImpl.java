@@ -200,7 +200,7 @@ public class KGServiceImpl implements KGService {
         else if(p != null) {
             String thisId = p.id;
             propertyMapper.deleteById(id);
-            entityMapper.insert(new EntityPo(id, thisId, nameEn, nameCn, division, from, comment)); // 错误处理未做
+            propertyMapper.insert(new PropertyPo(id, thisId, nameEn, nameCn, domain, range, from, comment));
             return ResultBean.success();
         }
         return ResultBean.error(202, "Update item failed");
@@ -213,11 +213,11 @@ public class KGServiceImpl implements KGService {
             deleteLink(headId, relationId, tailId);
             return createEntity("", relationId, tailId, name, comment, nameEn, nameCn, division, from);
         }
-        else if(id.equals(relationId)) {
+        else if(id.equals(tailId)) {
             deleteLink(headId, relationId, tailId);
             return createEntity(headId, relationId, "", name, comment, nameEn, nameCn, division, from);
         }
-        else if(id.equals(tailId)) {
+        else if(id.equals(relationId)) {
             deleteLink(headId, relationId, tailId);
             createProperty(id, comment, nameEn,nameCn, from, domain, range);
             createLink(headId, relationId, tailId);

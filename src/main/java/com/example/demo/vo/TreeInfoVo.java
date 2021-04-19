@@ -2,23 +2,19 @@ package com.example.demo.vo;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.data.KG.EntityMapper;
-import com.example.demo.data.KG.PropertyMapper;
-import com.example.demo.po.EntityPo;
-import com.example.demo.po.PropertyPo;
+import com.example.demo.data.KG.ItemMapper;
+import com.example.demo.po.ItemPo;
 
 import java.util.ArrayList;
 
 public class TreeInfoVo {
     private final String root;
-    private final EntityMapper entityMapper;
-    private final PropertyMapper propertyMapper;
+    private final ItemMapper itemMapper;
     public ArrayList<JSONObject> nodes;
 
-    public TreeInfoVo(String r, EntityMapper e, PropertyMapper p) {
+    public TreeInfoVo(String r, ItemMapper i) {
         this.root = r;
-        this.entityMapper = e;
-        this.propertyMapper = p;
+        this.itemMapper = i;
         nodes = new ArrayList<>();
     }
 
@@ -32,21 +28,20 @@ public class TreeInfoVo {
     private JSONObject createNode(String id) {
         JSONObject jo = new JSONObject();
         jo.put("id", id);
-        EntityPo e = entityMapper.getByRecordId(id);
-        PropertyPo p = propertyMapper.getByRecordId(id);
-        jo.put("name", (p == null ? e : p).toString());
+        ItemPo i = itemMapper.getById(id);
+        jo.put("name", i.toString());
         jo.put("children", new JSONArray());
         nodes.add(jo);
         return jo;
     }
 
-    public JSONObject addProperty(String parentId, String childId) {
+    public JSONObject addItem(String parentId, String childId) {
         JSONObject child = createNode(childId);
         getNode(parentId).getJSONArray("children").add(child);
         return child;
     }
 
-    public void propertyAdd(JSONObject parent, String childId) {
+    public void itemAdd(JSONObject parent, String childId) {
         JSONObject child = createNode(childId);
         parent.getJSONArray("children").add(child);
     }

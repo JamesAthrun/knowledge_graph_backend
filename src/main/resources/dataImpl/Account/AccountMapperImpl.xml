@@ -7,11 +7,10 @@
         values (#{name}, #{pwd}, #{email}, #{authority})
     </insert>
 
-    <select id="selectPwdByName" resultType="com.example.demo.po.AccountPo">
+    <select id="selectAccountByName" resultType="com.example.demo.po.AccountPo">
         select *
         from nkg.account
         where name = #{name}
-        limit 0,1
     </select>
 
 </mapper>

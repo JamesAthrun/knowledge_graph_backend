@@ -12,15 +12,13 @@ public interface KGService {
 
     ResultBean createGraphByJsonStr(String jsonStr);
 
-    ResultBean createEntity(String headId, String relationId, String tailId, String name, String comment, String nameEn, String nameCn, String division, String from);
+    ResultBean createItem(String headId, String relationId, String tailId, String tableId, String title, String name, String division, String comment);
 
-    ResultBean createProperty(String id, String comment, String nameEn, String nameCn, String from, String domain, String range);
+    ResultBean createLink(String tableId, String headId, String relationId, String tailId);
 
-    ResultBean createLink(String headId, String relationId, String tailId);
+    ResultBean updateItem(String id, String tableId, String title, String name, String division, String comment);
 
-    ResultBean updateItem(String id, String comment, String nameEn, String nameCn, String division, String from, String domain, String range);
-
-    ResultBean replaceItem(String id, String headId, String relationId, String tailId, String name, String comment, String nameEn, String nameCn, String division, String from, String domain, String range);
+    ResultBean replaceItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment);
 
     ResultBean deleteItem(String id);
 

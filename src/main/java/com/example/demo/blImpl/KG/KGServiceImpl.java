@@ -2,12 +2,10 @@ package com.example.demo.blImpl.KG;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo.bl.KG.KGService;
-import com.example.demo.data.KG.EntityMapper;
-import com.example.demo.data.KG.PropertyMapper;
+import com.example.demo.data.KG.ItemMapper;
 import com.example.demo.data.KG.QuestionMapper;
 import com.example.demo.data.KG.TripleMapper;
-import com.example.demo.po.EntityPo;
-import com.example.demo.po.PropertyPo;
+import com.example.demo.po.ItemPo;
 import com.example.demo.po.QuestionPo;
 import com.example.demo.po.TriplePo;
 import com.example.demo.util.GlobalConfigure;
@@ -27,9 +25,7 @@ import java.util.*;
 public class KGServiceImpl implements KGService {
 
     @Autowired
-    EntityMapper entityMapper;
-    @Autowired
-    PropertyMapper propertyMapper;
+    ItemMapper itemMapper;
     @Autowired
     TripleMapper tripleMapper;
     @Autowired
@@ -45,19 +41,14 @@ public class KGServiceImpl implements KGService {
     public ResultBean searchEntity(String keywords) {
         long t1 = System.currentTimeMillis();
 
-        List<EntityPo> entities = entityMapper.searchByKeywords(keywords);
+        List<ItemPo> items = itemMapper.searchByKeywords(keywords);
         ItemListVo itemListVo = new ItemListVo();
-        for (EntityPo e : entities) {
-            itemListVo.addEntity(e);
-        }
-
-        List<PropertyPo> properties = propertyMapper.searchByKeywords(keywords);
-        for (PropertyPo p : properties) {
-            itemListVo.addProperty(p);
+        for (ItemPo e : items) {
+            itemListVo.addItem(e);
         }
 
         long t2 = System.currentTimeMillis();
-        logger.log("节点数 " + (entities.size() + properties.size()) + " 搜索用时 " + (t2 - t1) + "ms");
+        logger.log("节点数 " + items.size() + " 搜索用时 " + (t2 - t1) + "ms");
 
         return ResultBean.success(itemListVo);
     }
@@ -71,7 +62,7 @@ public class KGServiceImpl implements KGService {
         searchTriples(id, 3, 5, related_link);
         //depth是递归查找上限，neighbors是每层头和尾的连接上限
 
-        GraphInfoVo go = new GraphInfoVo(entityMapper, propertyMapper);
+        GraphInfoVo go = new GraphInfoVo(itemMapper);
         for (TriplePo item : related_link) {
             go.addLink(item);
         }
@@ -89,7 +80,7 @@ public class KGServiceImpl implements KGService {
         List<TriplePo> related_link = new ArrayList<>();
         searchTriples(id, 3, 5, related_link);
 
-        TreeInfoVo to = new TreeInfoVo(id, entityMapper, propertyMapper);
+        TreeInfoVo to = new TreeInfoVo(id, itemMapper);
 
         Queue<String> q = new LinkedList<>();
         q.offer(id);
@@ -101,8 +92,8 @@ public class KGServiceImpl implements KGService {
                 if (visited.get(triplePo.relation) != null && visited.get(triplePo.relation).contains(triplePo))
                     continue;
                 if (triplePo.head.equals(pId)) {
-                    to.propertyAdd(
-                            to.addProperty(triplePo.head, triplePo.relation),
+                    to.itemAdd(
+                            to.addItem(triplePo.head, triplePo.relation),
                             triplePo.tail);
                     q.offer(triplePo.tail);
                     //p->relation->tail
@@ -111,8 +102,8 @@ public class KGServiceImpl implements KGService {
                 }
                 if (triplePo.tail.equals(pId)) {
                     if (!(visited.get(triplePo.tail) != null && visited.get(triplePo.tail).contains(triplePo))) {
-                        to.propertyAdd(
-                                to.addProperty(triplePo.tail, triplePo.relation),
+                        to.itemAdd(
+                                to.addItem(triplePo.tail, triplePo.relation),
                                 triplePo.head);
                         q.offer(triplePo.head);
                         //p->relation->head
@@ -136,50 +127,35 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean createEntity(String headId, String relationId, String tailId, String name, String comment, String nameEn, String nameCn, String division, String from) {
-        if (relationId.equals("")) return ResultBean.error(103, "RelationId not given");
-        String tmp = recorder.getRecordId();
-        if (headId != null && !headId.equals("")) {
-            entityMapper.insert(new EntityPo(tmp, name, nameEn, nameCn, division, from, comment));
-            ResultBean code = createLink(headId, relationId, tmp);
-//            if(code.code == 1) {
-//                createLink(tmp, relationId, tailId);
-//                return ResultBean.success(tmp);
-//            }
-//
-//            else {
-//                deleteItem(tmp);
-//                return ResultBean.error(204, "CreateEntity error");
-//            }
+    public ResultBean createItem(String headId, String relationId, String tailId, String tableId, String title, String name, String division, String comment) {
+        //010
+        if (headId.equals("") && !relationId.equals("") && tailId.equals("")) {
+            String tmp = recorder.getRecordId();
+            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment));
             return ResultBean.success(tmp);
-        } else if (tailId != null && !tailId.equals("")) {
-            entityMapper.insert(new EntityPo(tmp, name, nameEn, nameCn, division, from, comment));
-            ResultBean code = createLink(tmp, relationId, tailId);
-//            if(code.code == 1) {
-//                createLink(headId, relationId, tmp);
-//                return ResultBean.success(tmp);
-//            }
-//            else {
-//                deleteItem(tmp);
-//                return ResultBean.error(204, "CreateEntity error");
-//            }
-            return ResultBean.success(tmp);
-        } else {
-            return ResultBean.error(105, "HeadId or relationId not given");
         }
+
+        //011
+        if (headId.equals("") && !relationId.equals("") && !tailId.equals("")) {
+            String tmp = recorder.getRecordId();
+            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment));
+            createLink(tableId, headId, relationId, tmp);
+            return ResultBean.success(tmp);
+        }
+
+        //110
+        if (!headId.equals("") && !relationId.equals("") && tailId.equals("")) {
+            String tmp = recorder.getRecordId();
+            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment));
+            createLink(tableId, tmp, relationId, tailId);
+            return ResultBean.success(tmp);
+        }
+
+        return ResultBean.error(105, "h-r-t must be 010 or 011 or 110");
     }
 
     @Override
-    public ResultBean createProperty(String id, String comment, String nameEn, String nameCn, String from, String domain, String range) {
-        String tmp = recorder.getRecordId();
-        if (id.equals("")) return ResultBean.error(101, "Id not given");
-        propertyMapper.insert(new PropertyPo(tmp, id, nameEn, nameCn, domain, range, from, comment));
-        return ResultBean.success(tmp);
-    }
-
-    @Override
-    public ResultBean createLink(String headId, String relationId, String tailId) {
-        String tableId = "1";
+    public ResultBean createLink(String tableId, String headId, String relationId, String tailId) {
         if (headId.equals("")) return ResultBean.error(102, "HeadId not given");
         if (relationId.equals("")) return ResultBean.error(103, "RelationId not given");
         if (tailId.equals("")) return ResultBean.error(104, "TailId not given");
@@ -192,37 +168,31 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean updateItem(String id, String comment, String nameEn, String nameCn, String division, String from, String domain, String range) {
-        EntityPo e = entityMapper.getByRecordId(id);
-        PropertyPo p = propertyMapper.getByRecordId(id);
-        if (e != null) {
-            String thisId = e.id;
-            entityMapper.deleteById(id);
-            entityMapper.insert(new EntityPo(id, thisId, nameEn, nameCn, division, from, comment)); // 错误处理未做
-            return ResultBean.success();
-        } else if (p != null) {
-            String thisId = p.id;
-            propertyMapper.deleteById(id);
-            propertyMapper.insert(new PropertyPo(id, thisId, nameEn, nameCn, domain, range, from, comment));
+    public ResultBean updateItem(String id, String tableId, String title, String name, String division, String comment) {
+        ItemPo i = itemMapper.getById(id);
+        if (i != null) {
+            itemMapper.deleteById(id);
+            itemMapper.insert(new ItemPo(id, tableId, title, name, division, comment)); // 错误处理未做
             return ResultBean.success();
         }
         return ResultBean.error(202, "Update item failed");
     }
 
+
     @Override
-    public ResultBean replaceItem(String id, String headId, String relationId, String tailId, String name, String comment, String nameEn, String nameCn, String division, String from, String domain, String range) {
+    public ResultBean replaceItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment) {
         // 这个函数没有进行合理性检查
         if (id.equals(headId)) {
             deleteLink(headId, relationId, tailId);
-            return createEntity("", relationId, tailId, name, comment, nameEn, nameCn, division, from);
+            return createItem("", relationId, tailId, tableId, title, name, division, comment);
         } else if (id.equals(tailId)) {
             deleteLink(headId, relationId, tailId);
-            return createEntity(headId, relationId, "", name, comment, nameEn, nameCn, division, from);
+            return createItem(headId, relationId, "", tableId, title, name, division, comment);
         } else if (id.equals(relationId)) {
             deleteLink(headId, relationId, tailId);
-            ResultBean code = createProperty(name, comment, nameEn, nameCn, from, domain, range);
+            ResultBean code = createItem(headId, relationId, tailId, tableId, title, name, division, comment);
             String newRelationId = (String) JSON.parse(code.data);
-            createLink(headId, newRelationId, tailId);
+            createLink(newRelationId, headId, newRelationId, tailId);
             return ResultBean.success();
         } else {
             return ResultBean.error(205, "Replace item failed");
@@ -233,10 +203,10 @@ public class KGServiceImpl implements KGService {
     public ResultBean deleteItem(String id) {
         if (id.equals("")) return ResultBean.error(101, "Id not given");
         try {
-            entityMapper.deleteById(id);
+            itemMapper.deleteById(id);
         } catch (Exception e1) {
             try {
-                propertyMapper.deleteById(id);
+                itemMapper.deleteById(id);
             } catch (Exception e2) {
                 return ResultBean.error(203, "Delete item failed");
             }
@@ -274,7 +244,7 @@ public class KGServiceImpl implements KGService {
             if (votes.get(q) > votes.get(max)) max = q;
         if (max == null) return ResultBean.error(0, "no match question");
 
-        AnswerVo ao = new AnswerVo(entityMapper, max.help);
+        AnswerVo ao = new AnswerVo(itemMapper, max.help);
         List<String> relatedIds = max.getRelatedIds();
         for (String id : relatedIds) {
             ao.addTableItem(id);

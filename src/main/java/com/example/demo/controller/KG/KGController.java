@@ -1,11 +1,11 @@
 package com.example.demo.controller.KG;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
-import io.swagger.annotations.*;
+import com.example.demo.vo.KGEditFormVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,43 +73,23 @@ public class KGController {
         return ResultBean.success();
     }
 
-    @PostMapping("/createEntity")
+    @PostMapping("/createItem")
     @ApiOperation(
             value = "",
             notes = ""
     )
-    public ResultBean createEntity(@RequestBody String jsonStr) {
-        logger.log("KGController createEntity");
-        JSONObject jo = JSON.parseObject(jsonStr);
-        return kgService.createEntity(
-                jo.getString("headId"),
-                jo.getString("relationId"),
-                jo.getString("tailId"),
-                jo.getString("name"),
-                jo.getString("comment"),
-                jo.getString("nameEn"),
-                jo.getString("nameCn"),
-                jo.getString("division"),
-                jo.getString("from")
+    public ResultBean createItem(@RequestBody KGEditFormVo f) {
+        logger.log("KGController createItem");
+        return kgService.createItem(
+                f.headId,
+                f.relationId,
+                f.tailId,
+                f.tableId,
+                f.title,
+                f.name,
+                f.division,
+                f.comment
         );
-    }
-
-    @PostMapping("/createProperty")
-    @ApiOperation(
-            value = "",
-            notes = ""
-    )
-    public ResultBean createProperty(@RequestBody String jsonStr) {
-        logger.log("KGController createProperty");
-        JSONObject jo = JSON.parseObject(jsonStr);
-        return kgService.createProperty(
-                jo.getString("id"),
-                jo.getString("comment"),
-                jo.getString("nameEn"),
-                jo.getString("nameCn"),
-                jo.getString("from"),
-                jo.getString("domain"),
-                jo.getString("range"));
     }
 
     @PostMapping("/createLink")
@@ -117,13 +97,13 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean createLink(@RequestBody String jsonStr) {
+    public ResultBean createLink(@RequestBody KGEditFormVo f) {
         logger.log("KGController createLink");
-        JSONObject jo = JSON.parseObject(jsonStr);
         return kgService.createLink(
-                jo.getString("headId"),
-                jo.getString("relationId"),
-                jo.getString("tailId"));
+                f.tableId,
+                f.headId,
+                f.relationId,
+                f.tailId);
     }
 
     @PostMapping("/updateItem")
@@ -131,18 +111,16 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean updateItem(@RequestBody String jsonStr) {
+    public ResultBean updateItem(@RequestBody KGEditFormVo f) {
         logger.log("KGController updateItem");
-        JSONObject jo = JSON.parseObject(jsonStr);
         return kgService.updateItem(
-                jo.getString("id"),
-                jo.getString("comment"),
-                jo.getString("nameEn"),
-                jo.getString("nameCn"),
-                jo.getString("division"),
-                jo.getString("from"),
-                jo.getString("domain"),
-                jo.getString("range"));
+                f.id,
+                f.tableId,
+                f.title,
+                f.name,
+                f.division,
+                f.comment
+        );
     }
 
     @PostMapping("/replaceItem")
@@ -150,22 +128,19 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean replaceItem(@RequestBody String jsonStr) {
+    public ResultBean replaceItem(@RequestBody KGEditFormVo f) {
         logger.log("KGController replaceItem");
-        JSONObject jo = JSON.parseObject(jsonStr);
         return kgService.replaceItem(
-                jo.getString("id"),
-                jo.getString("headId"),
-                jo.getString("relationId"),
-                jo.getString("tailId"),
-                jo.getString("name"),
-                jo.getString("comment"),
-                jo.getString("nameEn"),
-                jo.getString("nameCn"),
-                jo.getString("division"),
-                jo.getString("from"),
-                jo.getString("domain"),
-                jo.getString("range"));
+                f.headId,
+                f.relationId,
+                f.tailId,
+                f.id,
+                f.tableId,
+                f.title,
+                f.name,
+                f.division,
+                f.comment
+        );
     }
 
     @PostMapping("/deleteItem")
@@ -173,9 +148,9 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean deleteItem(@RequestBody String id) {
+    public ResultBean deleteItem(@RequestBody KGEditFormVo f) {
         logger.log("KGController deleteItem");
-        return kgService.deleteItem(id);
+        return kgService.deleteItem(f.id);
     }
 
     @PostMapping("/deleteLink")
@@ -183,13 +158,12 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean deleteLink(@RequestBody String jsonStr) {
+    public ResultBean deleteLink(@RequestBody KGEditFormVo f) {
         logger.log("KGController deleteLink");
-        JSONObject jo = JSON.parseObject(jsonStr);
         return kgService.deleteLink(
-                jo.getString("headId"),
-                jo.getString("relationId"),
-                jo.getString("tailId"));
+                f.headId,
+                f.relationId,
+                f.tailId);
     }
 
     @PostMapping("/ask")

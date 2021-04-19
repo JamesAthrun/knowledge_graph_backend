@@ -3,13 +3,11 @@ package com.example.demo.util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.KG.KGService;
-import com.example.demo.data.KG.EntityMapper;
+import com.example.demo.data.KG.ItemMapper;
 import com.example.demo.data.KG.GraphMapper;
-import com.example.demo.data.KG.PropertyMapper;
 import com.example.demo.data.KG.TripleMapper;
-import com.example.demo.po.EntityPo;
+import com.example.demo.po.ItemPo;
 import com.example.demo.po.GraphPo;
-import com.example.demo.po.PropertyPo;
 import com.example.demo.po.TriplePo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -43,9 +41,7 @@ public class GlobalConfigure {
     @Autowired
     Recorder recorder;
     @Autowired
-    EntityMapper entityMapper;
-    @Autowired
-    PropertyMapper propertyMapper;
+    ItemMapper itemMapper;
     @Autowired
     TripleMapper tripleMapper;
     @Autowired
@@ -73,25 +69,18 @@ public class GlobalConfigure {
         JSONObject jojo = JSONObject.parseObject(jsonString);
         graphMapper.insert(new GraphPo(tableId, jojo.getString("name"), jojo.getString("description")));
 
-        JSONArray entity_list = jojo.getJSONArray("entity");
+        JSONArray entity_list = jojo.getJSONArray("item");
         List<String> before = new ArrayList<>();
         List<String> after = new ArrayList<>();
 
         for (Object o : entity_list) {
             JSONObject jo = (JSONObject) o;
-            before.add(jo.getString("recordId"));
+            before.add(jo.getString("id"));
             String tmp = recorder.getRecordId();
             after.add(tmp);
-            entityMapper.insert(new EntityPo(tmp, jo.getString("id"), jo.getString("nameEn"), jo.getString("nameCn"), jo.getString("division"), jo.getString("from"), jo.getString("comment")));
+            itemMapper.insert(new ItemPo(tmp, tableId, jo.getString("title"), jo.getString("name"), jo.getString("division"), jo.getString("comment")));
         }
-        JSONArray property_list = jojo.getJSONArray("property");
-        for (Object o : property_list) {
-            JSONObject jo = (JSONObject) o;
-            before.add(jo.getString("recordId"));
-            String tmp = recorder.getRecordId();
-            after.add(tmp);
-            propertyMapper.insert(new PropertyPo(tmp, jo.getString("id"), jo.getString("nameEn"), jo.getString("nameCn"), jo.getString("domain"), jo.getString("range"), jo.getString("from"), jo.getString("comment")));
-        }
+
         JSONArray triple_list = jojo.getJSONArray("triple");
         for (Object o : triple_list) {
             JSONObject jo = (JSONObject) o;

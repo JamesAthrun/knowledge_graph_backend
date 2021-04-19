@@ -22,7 +22,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResultBean login(String name, String pwd) {
-        AccountPo accountPo = accountMapper.selectPwdByName(name);
+        AccountPo accountPo = accountMapper.selectAccountByName(name);
         if (pwd.equals(accountPo.pwd)) {
             JSONObject jo = new JSONObject();
             jo.put("authority", accountPo.authority);

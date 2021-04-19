@@ -2,22 +2,22 @@ package com.example.demo.vo;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.data.KG.EntityMapper;
-import com.example.demo.po.EntityPo;
+import com.example.demo.data.KG.ItemMapper;
+import com.example.demo.po.ItemPo;
 
 public class AnswerVo {
     public JSONArray table;
     public String help;
     private int count;
-    private final EntityMapper entityMapper;
+    private final ItemMapper itemMapper;
 
-    public AnswerVo(EntityMapper e, String h) {
+    public AnswerVo(ItemMapper e, String h) {
         table = new JSONArray();
-        entityMapper = e;
+        itemMapper = e;
         help = h;
     }
 
-    private void addEntity(EntityPo e) {
+    private void addEntity(ItemPo e) {
         JSONObject jo = new JSONObject();
         if (!e.division.equals("String")) return;
         String context = e.id.substring(1);
@@ -26,7 +26,7 @@ public class AnswerVo {
     }
 
     public void addTableItem(String id) {
-        EntityPo e = entityMapper.getByRecordId(id);
+        ItemPo e = itemMapper.getById(id);
         addEntity(e);
     }
 

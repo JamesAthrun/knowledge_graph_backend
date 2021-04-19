@@ -20,7 +20,7 @@ public class ResultBean {
         return res;
     }
 
-    public static ResultBean success(){
+    public static ResultBean success() {
         ResultBean res = new ResultBean();
         res.code = 1;
         return res;
@@ -33,15 +33,15 @@ public class ResultBean {
         return res;
     }
 
-    public static ResultBean secret(Object data,VerifyMapper verifyMapper, String ip) throws Exception {
+    public static ResultBean secret(Object data, VerifyMapper verifyMapper, String ip) throws Exception {
         ResultBean res = new ResultBean();
         res.code = 1;
         String hexStr = verifyMapper.getDesKey(ip);
         Key key = GlobalTrans.getDesKeyFromHexString(hexStr);
         Cipher cipher = Cipher.getInstance("DES");
-        cipher.init(Cipher.ENCRYPT_MODE,key);
+        cipher.init(Cipher.ENCRYPT_MODE, key);
         String js = JSON.toJSONString(data);
-        res.data =  bytesToStr(cipher.doFinal(js.getBytes()));
+        res.data = bytesToStr(cipher.doFinal(js.getBytes()));
         return res;
     }
 }

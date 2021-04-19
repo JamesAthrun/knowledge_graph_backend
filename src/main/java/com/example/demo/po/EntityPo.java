@@ -11,7 +11,7 @@ public class EntityPo {
     public String from;
     public String comment;
 
-    public EntityPo(String recordId,String id, String nameEn, String nameCn, String division, String from,String comment) {
+    public EntityPo(String recordId, String id, String nameEn, String nameCn, String division, String from, String comment) {
         this.recordId = recordId;
         this.id = id;
         this.nameEn = nameEn;
@@ -21,20 +21,19 @@ public class EntityPo {
         this.comment = comment;
     }
 
-    public JSONObject toJSONObject(){
+    public JSONObject toJSONObject() {
         JSONObject item = new JSONObject();
-        item.put("id",this.recordId);
+        item.put("id", this.recordId);
         String des = "";
-        if(!this.nameCn.equals("")){
-            item.put("name",this.nameCn);
-            if(!this.nameEn.equals("")) des += "英文名 "+this.nameEn+"\n";
+        if (!this.nameCn.equals("")) {
+            item.put("name", this.nameCn);
+            if (!this.nameEn.equals("")) des += "英文名 " + this.nameEn + "\n";
+        } else {
+            if (!this.nameEn.equals("")) item.put("name", this.nameEn);
+            else item.put("name", this.id);
         }
-        else{
-            if(!this.nameEn.equals("")) item.put("name",this.nameEn);
-            else item.put("name",this.id);
-        }
-        if(!this.comment.equals("")) des += "评论 "+this.comment+"\n";
-        item.put("des",des);
+        if (!this.comment.equals("")) des += "评论 " + this.comment + "\n";
+        item.put("des", des);
         switch (this.division) {
             case "String":
                 item.put("category", "1");
@@ -51,18 +50,17 @@ public class EntityPo {
         return item;
     }
 
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        if(!this.nameCn.equals("")){
+        if (!this.nameCn.equals("")) {
             sb.append("中文名 ").append(this.nameCn).append("\n");
             sb.append("英文名 ").append(this.nameEn).append("\n");
-        }
-        else{
-            if(!this.nameEn.equals(""))
+        } else {
+            if (!this.nameEn.equals(""))
                 sb.append("英文名 ").append(this.nameEn).append("\n");
-            else sb.append("id " ).append(this.id).append("\n");
+            else sb.append("id ").append(this.id).append("\n");
         }
-        if(!this.comment.equals("")) sb.append("评论 ").append(this.comment).append("\n");
+        if (!this.comment.equals("")) sb.append("评论 ").append(this.comment).append("\n");
         return sb.toString();
     }
 }

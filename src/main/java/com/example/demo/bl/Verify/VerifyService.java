@@ -4,5 +4,5 @@ import com.example.demo.util.ResultBean;
 
 public interface VerifyService {
 
-    ResultBean getDesKey(String ip,String modulus, String exponent) throws Exception;
+    ResultBean getDesKey(String ip, String modulus, String exponent) throws Exception;
 }

@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
 @RequestMapping("")
-public class FixController{
+public class FixController {
     @Autowired
     Recorder recorder;
     @Autowired
     GlobalLogger logger;
 
     @GetMapping("/saveRecorder")
-    public ResultBean saveRecorder(@RequestParam String key){
-        if(key.equals("wrng")){
+    public ResultBean saveRecorder(@RequestParam String key) {
+        if (key.equals("wrng")) {
             recorder.save();
             logger.log("save recorder");
         }
@@ -27,8 +27,8 @@ public class FixController{
     }
 
     @GetMapping("/loadRecorder")
-    public ResultBean loadRecorder(@RequestParam String key){
-        if(key.equals("wrng")) {
+    public ResultBean loadRecorder(@RequestParam String key) {
+        if (key.equals("wrng")) {
             recorder.load();
             logger.log("load recorder");
         }

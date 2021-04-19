@@ -28,31 +28,31 @@ public class Recorder {
         this.M = m;
     }
 
-    public void init(){
+    public void init() {
         this.currentTableId = -1;
         this.seed = 1453;
         this.currentSeed = seed;
         this.base = 19181107;
         this.A = 2;
         this.B = 1949;
-        this.M = 19911225-19181107;
+        this.M = 19911225 - 19181107;
     }
 
-    public Recorder(){
+    public Recorder() {
         load();
     }
 
-    public String getRecordId(){
+    public String getRecordId() {
         currentSeed = (A * currentSeed + B) % M;
-        return String.valueOf(base+currentSeed);
+        return String.valueOf(base + currentSeed);
     }
 
-    public String getTableId(){
+    public String getTableId() {
         this.currentTableId += 1;
         return String.valueOf(this.currentTableId);
     }
 
-    public void load(){
+    public void load() {
         JSONObject jo = JSONObject.parseObject(GlobalTrans.getJsonString("src/main/resources/recorder.json"));
         currentTableId = jo.getInteger("currentTableId");
         currentSeed = jo.getInteger("currentSeed");
@@ -63,15 +63,15 @@ public class Recorder {
         M = jo.getInteger("M");
     }
 
-    public void save(){
+    public void save() {
         JSONObject jo = new JSONObject();
-        jo.put("currentTableId",currentTableId);
-        jo.put("currentSeed",currentSeed);
-        jo.put("seed",seed);
-        jo.put("base",base);
-        jo.put("A",A);
-        jo.put("B",B);
-        jo.put("M",M);
+        jo.put("currentTableId", currentTableId);
+        jo.put("currentSeed", currentSeed);
+        jo.put("seed", seed);
+        jo.put("base", base);
+        jo.put("A", A);
+        jo.put("B", B);
+        jo.put("M", M);
         BufferedWriter out = null;
         try {
             out = new BufferedWriter(new FileWriter("src/main/resources/recorder.json"));

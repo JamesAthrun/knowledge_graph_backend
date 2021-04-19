@@ -3,7 +3,8 @@
 <mapper namespace="com.example.demo.data.KG.QuestionMapper">
 
     <select id="getAll" resultMap="QuestionPo">
-        select keyWords, help, relatedIds from nkg.question;
+        select keyWords, help, relatedIds
+        from nkg.question;
     </select>
 
     <resultMap id="QuestionPo" type="com.example.demo.po.QuestionPo">

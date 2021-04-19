@@ -7,9 +7,9 @@ import java.util.List;
 
 @Repository
 public interface PropertyMapper {
-    
+
     void insert(PropertyPo propertyPO);
-    
+
     List<PropertyPo> searchByKeywords(String keywords);
 
     PropertyPo getByRecordId(String recordId);

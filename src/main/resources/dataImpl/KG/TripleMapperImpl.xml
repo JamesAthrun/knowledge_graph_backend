@@ -3,19 +3,28 @@
 <mapper namespace="com.example.demo.data.KG.TripleMapper">
 
     <insert id="insert" parameterType="com.example.demo.po.TriplePo">
-        insert into nkg.triple(tableId,head,relation,tail) values(#{tableId},#{head},#{relation},#{tail})
+        insert into nkg.triple(tableId, head, relation, tail)
+        values (#{tableId}, #{head}, #{relation}, #{tail})
     </insert>
 
     <select id="getListSize" resultType="java.lang.Integer">
-        select count(tableId) from nkg.triple
+        select count(tableId)
+        from nkg.triple
     </select>
 
     <select id="getRelatedTriples" resultMap="TriplePo">
-        select * from nkg.triple where head = #{id} or tail = #{id}
+        select *
+        from nkg.triple
+        where head = #{id}
+           or tail = #{id}
     </select>
 
     <delete id="delete">
-        delete from nkg.triple WHERE head =#{headId} and tail = #{tailId} and relation = #{relationId}
+        delete
+        from nkg.triple
+        WHERE head = #{headId}
+          and tail = #{tailId}
+          and relation = #{relationId}
     </delete>
 
     <resultMap id="TriplePo" type="com.example.demo.po.TriplePo">

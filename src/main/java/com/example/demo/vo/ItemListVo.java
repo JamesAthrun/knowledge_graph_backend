@@ -8,11 +8,11 @@ public class ItemListVo {
 
     public JSONArray data = new JSONArray();
 
-    public void addEntity(EntityPo entityPo){
+    public void addEntity(EntityPo entityPo) {
         data.add(entityPo.toJSONObject());
     }
 
-    public void addProperty(PropertyPo propertyPO){
+    public void addProperty(PropertyPo propertyPO) {
         data.add(propertyPO.toJSONObject());
     }
 

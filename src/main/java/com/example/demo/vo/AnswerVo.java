@@ -11,21 +11,21 @@ public class AnswerVo {
     private int count;
     private final EntityMapper entityMapper;
 
-    public AnswerVo(EntityMapper e,String h){
+    public AnswerVo(EntityMapper e, String h) {
         table = new JSONArray();
         entityMapper = e;
         help = h;
     }
 
-    private void addEntity(EntityPo e){
+    private void addEntity(EntityPo e) {
         JSONObject jo = new JSONObject();
-        if(!e.division.equals("String")) return;
+        if (!e.division.equals("String")) return;
         String context = e.id.substring(1);
-        jo.put(String.valueOf(count++),context);
+        jo.put(String.valueOf(count++), context);
         table.add(jo);
     }
 
-    public void addTableItem(String id){
+    public void addTableItem(String id) {
         EntityPo e = entityMapper.getByRecordId(id);
         addEntity(e);
     }

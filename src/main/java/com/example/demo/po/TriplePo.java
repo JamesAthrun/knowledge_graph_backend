@@ -15,21 +15,21 @@ public class TriplePo {
         this.tail = tail;
     }
 
-    public JSONObject toJSONObject(String name){
+    public JSONObject toJSONObject(String name) {
         JSONObject item = new JSONObject();
-        item.put("name",name);
-        item.put("source",this.head);
-        item.put("id",this.relation);
-        item.put("target",this.tail);
+        item.put("name", name);
+        item.put("source", this.head);
+        item.put("id", this.relation);
+        item.put("target", this.tail);
         return item;
     }
 
-    public JSONObject toJSONObject(){
+    public JSONObject toJSONObject() {
         JSONObject item = new JSONObject();
-        item.put("name",this.relation);
-        item.put("source",this.head);
-        item.put("id",this.relation);
-        item.put("target",this.tail);
+        item.put("name", this.relation);
+        item.put("source", this.head);
+        item.put("id", this.relation);
+        item.put("target", this.tail);
         return item;
     }
 }

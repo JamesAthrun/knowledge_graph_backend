@@ -12,20 +12,20 @@ public class QuestionPo {
     public String help;
     public String relatedIds;
 
-    public List<String> getKeyWords(){
+    public List<String> getKeyWords() {
         return JSONArrayToList(keyWords);
     }
 
-    public List<String> getRelatedIds(){
+    public List<String> getRelatedIds() {
         return JSONArrayToList(relatedIds);
     }
 
-    private List<String> JSONArrayToList(String s){
+    private List<String> JSONArrayToList(String s) {
         JSONArray ja = JSON.parseArray(s);
         List<String> res = new ArrayList<>();
         int count = 0;
-        for (Object item: ja){
-            JSONObject jo = (JSONObject)(item);
+        for (Object item : ja) {
+            JSONObject jo = (JSONObject) (item);
             res.add(jo.getString(String.valueOf(count++)));
         }
         return res;

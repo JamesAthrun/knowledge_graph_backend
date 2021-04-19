@@ -1,18 +1,71 @@
 {
   "entity": [
-    {"id": "E1", "comment": "", "recordId": "1", "nameEn": "Jack", "nameCn": "杰克", "division": "人", "from": "迭代二测试"},
-    {"id": "E2", "comment": "", "recordId": "2", "nameEn": "Peter", "nameCn": "皮特", "division": "人", "from": "迭代二测试"},
-    {"id": "E3", "comment": "", "recordId": "3", "nameEn": "Karl", "nameCn": "卡尔", "division": "人", "from": "迭代二测试"},
-    {"id": "E4", "comment": "", "recordId": "4", "nameEn": "Dyson", "nameCn": "戴森", "division": "人", "from": "迭代二测试"}
+    {
+      "id": "E1",
+      "comment": "",
+      "recordId": "1",
+      "nameEn": "Jack",
+      "nameCn": "杰克",
+      "division": "人",
+      "from": "迭代二测试"
+    },
+    {
+      "id": "E2",
+      "comment": "",
+      "recordId": "2",
+      "nameEn": "Peter",
+      "nameCn": "皮特",
+      "division": "人",
+      "from": "迭代二测试"
+    },
+    {
+      "id": "E3",
+      "comment": "",
+      "recordId": "3",
+      "nameEn": "Karl",
+      "nameCn": "卡尔",
+      "division": "人",
+      "from": "迭代二测试"
+    },
+    {
+      "id": "E4",
+      "comment": "",
+      "recordId": "4",
+      "nameEn": "Dyson",
+      "nameCn": "戴森",
+      "division": "人",
+      "from": "迭代二测试"
+    }
   ],
   "description": "一次简单的测试",
   "property": [
-    {"id": "P1", "comment": "", "recordId": "100", "nameEn": "dad and son", "nameCn": "父与子", "from": "迭代二测试", "domain": "人", "range": "人"}
+    {
+      "id": "P1",
+      "comment": "",
+      "recordId": "100",
+      "nameEn": "dad and son",
+      "nameCn": "父与子",
+      "from": "迭代二测试",
+      "domain": "人",
+      "range": "人"
+    }
   ],
   "triple": [
-    {"head": "1", "relation": "100", "tail": "3"},
-    {"head": "2", "relation": "100", "tail": "3"},
-    {"head": "3", "relation": "100", "tail": "4"}
+    {
+      "head": "1",
+      "relation": "100",
+      "tail": "3"
+    },
+    {
+      "head": "2",
+      "relation": "100",
+      "tail": "3"
+    },
+    {
+      "head": "3",
+      "relation": "100",
+      "tail": "4"
+    }
   ],
   "name": "父与子"
 }

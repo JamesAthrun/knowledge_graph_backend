@@ -39,12 +39,12 @@ public class SwaggerConfigure extends WebMvcConfigurationSupport {
     }
 
     private ApiInfo apiInfo() {
-        Contact contact = new Contact("TenThousand", "", "172.*@qq.com");
+        Contact contact = new Contact("TenThousand", "", "1720224284@qq.com");
         return new ApiInfoBuilder()
-                .title("SwaggerUI")
-                .description("接口文档")
+                .title("后端接口文档")
+                .description("用Swagger生成的后端接口文档，试用中，如有疑问请物理联系本人。")
                 .contact(contact)
-                .version("1.0")
+                .version("1.x")
                 .build();
     }
 

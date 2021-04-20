@@ -1,5 +1,6 @@
 package com.example.demo.util;
 
+import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,4 +35,8 @@ public class GlobalExceptionHandler {
         return ResultBean.error(4, "var must be unique");
     }
 
+    @ExceptionHandler
+    public void ioException(ClientAbortException e){
+        logger.log("client abort connection");
+    }
 }

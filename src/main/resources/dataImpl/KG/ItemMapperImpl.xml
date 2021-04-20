@@ -19,8 +19,8 @@
     <select id="searchByKeywords" resultMap="ItemPo">
         select *
         from nkg.item
-        where title like "%${keywords}%"
-           or name like "%${keywords}%"
+        where title like '%${keywords}%'
+           or name like '%${keywords}%'
     </select>
 
     <select id="getById" resultMap="ItemPo">

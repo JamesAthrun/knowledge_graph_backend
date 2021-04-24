@@ -17,7 +17,7 @@ class LocalFileTests {
 
     @Test
     void init() {
-        JSONObject jo = JSONObject.parseObject(GlobalTrans.getJsonString(gc.data_path));
+        JSONObject jo = JSONObject.parseObject(GlobalTrans.getJsonString("src/main/resources/data.json"));
         assertTrue(jo.containsKey("entity"));
         assertTrue(jo.containsKey("property"));
         assertTrue(jo.containsKey("triple"));

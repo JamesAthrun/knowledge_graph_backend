@@ -12,6 +12,7 @@ import com.example.demo.util.GlobalConfigure;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.Recorder;
 import com.example.demo.util.ResultBean;
+import com.example.demo.util.Timer;
 import com.example.demo.vo.AnswerVo;
 import com.example.demo.vo.GraphInfoVo;
 import com.example.demo.vo.ItemListVo;
@@ -36,27 +37,26 @@ public class KGServiceImpl implements KGService {
     QuestionMapper questionMapper;
     @Autowired
     Recorder recorder;
+    @Autowired
+    Timer timer;
 
     @Override
     public ResultBean searchEntity(String keywords) {
-        long t1 = System.currentTimeMillis();
-
+        timer.set();
         List<ItemPo> items = itemMapper.searchByKeywords(keywords);
         ItemListVo itemListVo = new ItemListVo();
         for (ItemPo e : items) {
             itemListVo.addItem(e);
         }
 
-        long t2 = System.currentTimeMillis();
-        logger.log("节点数 " + items.size() + " 搜索用时 " + (t2 - t1) + "ms");
+        logger.log("节点数 " + items.size() + " 搜索用时 " + timer.get());
 
         return ResultBean.success(itemListVo);
     }
 
     @Override
     public ResultBean getGraphData(String id) {
-        long t1 = System.currentTimeMillis();
-        ;
+        timer.set();
 
         List<TriplePo> related_link = new ArrayList<>();
         searchTriples(id, 3, 5, related_link);
@@ -66,16 +66,15 @@ public class KGServiceImpl implements KGService {
         for (TriplePo item : related_link) {
             go.addLink(item);
         }
-        long t2 = System.currentTimeMillis();
-        logger.log("相关节点数 " + related_link.size() + " 搜索用时 " + (t2 - t1) + "ms");
+
+        logger.log("相关节点数 " + related_link.size() + " 搜索用时 " + timer.get());
 
         return ResultBean.success(go);
     }
 
     @Override
     public ResultBean getTreeData(String id) {
-        long t1 = System.currentTimeMillis();
-        ;
+        timer.set();
 
         List<TriplePo> related_link = new ArrayList<>();
         searchTriples(id, 3, 5, related_link);
@@ -114,8 +113,7 @@ public class KGServiceImpl implements KGService {
             }
         }
 
-        long t2 = System.currentTimeMillis();
-        logger.log("相关节点数 " + related_link.size() + " 搜索用时 " + (t2 - t1) + "ms");
+        logger.log("相关节点数 " + related_link.size() + " 搜索用时 " + timer.get());
 
         return ResultBean.success(to.getRoot());
     }

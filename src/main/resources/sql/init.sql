@@ -9,8 +9,14 @@ create table `triple`(
     `tail` varchar(11) not null,
     primary key (`head`,`relation`,`tail`)
 )engine=MyISAM default charset=utf8;
-create index headIndex on triple (head);
-create index tailIndex on triple (tail);
+# create index headIndex on triple (head);
+# create index tailIndex on triple (tail); #700ms
+
+create index headIndex on triple (head,tail);
+create index tailIndex on triple (tail,head); #610ms
+
+# create index headIndex on triple (head,relation,tail,tableId);
+# create index tailIndex on triple (tail,relation,head,tableId); #600ms
 # 据测试，在进行图搜索时，这两个索引能带来200%~800%的速度提升
 
 create table `item`(

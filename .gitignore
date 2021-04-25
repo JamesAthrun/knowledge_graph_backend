@@ -35,3 +35,4 @@ build/
 
 src/main/resources/application.yml
 /src/main/resources/video/
+/src/main/java/com/example/demo/util/JedisTest.java

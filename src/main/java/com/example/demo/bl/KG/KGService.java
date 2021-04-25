@@ -1,7 +1,9 @@
 package com.example.demo.bl.KG;
 
 import com.example.demo.util.ResultBean;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public interface KGService {
 
     ResultBean searchEntity(String keywords);

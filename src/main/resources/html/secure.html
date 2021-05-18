@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/cryptico/0.0.1343522940/cryptico.min.js"></script>
+    <script src="https://cdn.bootcss.com/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<script>
+    function encryptByDES(message, key){
+        let keyHex = CryptoJS.enc.Hex.parse(key);
+        let encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Iso10126
+        });
+        return encrypted.ciphertext.toString();
+    }
+    //DES解密
+    function decryptByDES(ciphertext, key){
+        let keyHex = CryptoJS.enc.Hex.parse(key);
+        let decrypted = CryptoJS.DES.decrypt({
+            ciphertext: CryptoJS.enc.Hex.parse(ciphertext)
+        }, keyHex, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Iso10126
+        });
+        return CryptoJS.enc.Utf8.stringify(decrypted);
+    }
+
+    function getDesKey() {
+        let sth = Math.random().toString()
+        let k = cryptico.generateRSAKey(sth, 1024)
+        let modulus = String(k.n)
+        let exponent = String(k.e)
+        return $.ajax({
+            url: "http://localhost:8082/Verify/getDesKey",//url
+            type: "POST",
+            headers: {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+            data: JSON.stringify({"exponent": exponent, "modulus": modulus}),//发送公钥
+        }).then((response) => {
+                let des_key_s = JSON.parse(response.data).key
+                let des_key = k.decrypt(cryptico.b64to16(des_key_s))//私钥解密
+                //DES密钥
+                console.log(des_key)
+                console.log(encryptByDES("apple",des_key))
+                console.log(decryptByDES(encryptByDES("apple",des_key),des_key))
+            }
+        )
+    }
+
+    function sendInfo(desKey){
+        $.ajax({
+            url:"http://localhost:8082/login",//url
+            type:"POST",
+            headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+            data:encryptByDES(JSON.stringify({
+                username: "obama",
+                password: "123456",
+            }),desKey),
+        }).then((response)=>{
+            console.log(response)
+        })
+    }
+
+    getDesKey()
+
+</script>
+
+
+</body>
+</html>

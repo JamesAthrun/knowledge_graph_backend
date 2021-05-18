@@ -23,25 +23,25 @@ public class ItemPo {
         JSONObject item = new JSONObject();
         item.put("id", this.id);
         String des = "";
-        if (!this.name.equals("")) item.put("name", this.name);
+        if (!this.name.equals("")) item.put("text", this.name);
         else item.put("name", this.title);
         if (!this.comment.equals("")) des += "评论 " + this.comment + "\n";
         item.put("des", des);
         switch (this.division) {
             case "String":
-                item.put("category", "1");
+                item.put("nodeshape", "1");
                 break;
             case "Class":
-                item.put("category", "2");
+                item.put("nodeshape", "2");
                 break;
             case "Resource":
-                item.put("category", "3");
+                item.put("nodeshape", "3");
                 break;
             case "Property":
-                item.put("category", "4");
+                item.put("nodeshape", "4");
                 break;
             default:
-                item.put("category", "1");
+                item.put("nodeshape", "1");
         }
         return item;
     }

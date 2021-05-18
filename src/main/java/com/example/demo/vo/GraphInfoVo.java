@@ -22,11 +22,12 @@ public class GraphInfoVo {
     }
 
     public void addLink(TriplePo triplePo) {
-        String[] ids = {triplePo.head, triplePo.relation, triplePo.tail};
-        for (String id : ids) {
-            ItemPo i = itemMapper.getById(id);
-            this.addItem(i);
-        }
-        link.add(triplePo.toJSONObject());
+        ItemPo h,r,t;
+        h = itemMapper.getById(triplePo.head);
+        r = itemMapper.getById(triplePo.relation);
+        t = itemMapper.getById(triplePo.tail);
+        this.addItem(h);
+        this.addItem(t);
+        link.add(triplePo.toJSONObject(r.name));
     }
 }

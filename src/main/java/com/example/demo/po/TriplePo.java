@@ -17,19 +17,19 @@ public class TriplePo {
 
     public JSONObject toJSONObject(String name) {
         JSONObject item = new JSONObject();
-        item.put("name", name);
-        item.put("source", this.head);
+        item.put("text", name);
+        item.put("from", this.head);
         item.put("id", this.relation);
-        item.put("target", this.tail);
+        item.put("to", this.tail);
         return item;
     }
 
     public JSONObject toJSONObject() {
         JSONObject item = new JSONObject();
-        item.put("name", this.relation);
-        item.put("source", this.head);
+        item.put("text", this.relation);
+        item.put("from", this.head);
         item.put("id", this.relation);
-        item.put("target", this.tail);
+        item.put("to", this.tail);
         return item;
     }
 }

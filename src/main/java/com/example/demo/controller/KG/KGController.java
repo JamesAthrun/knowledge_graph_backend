@@ -103,6 +103,15 @@ public class KGController {
         return kgService.confirmChange(userName);
     }
 
+    @GetMapping("/rollBackChange")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean rollBackChange(@RequestParam String ver){
+        logger.log("KGController rollBackChange");
+        return kgService.rollBackChange(ver);
+    }
 
 //    @PostMapping("/createItem")
 //    @ApiOperation(

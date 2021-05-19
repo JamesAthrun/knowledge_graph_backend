@@ -90,7 +90,7 @@ public class GlobalConfigure {
             JSONObject jo = (JSONObject) o;
             String tmp = recorder.getRecordId();
             map.put(jo.getString("id"), tmp);
-            itemMapper.insert(new ItemPo(tmp, tableId, jo.getString("title"), jo.getString("name"), jo.getString("division"), jo.getString("comment")));
+            itemMapper.insert(new ItemPo(tmp, tableId, jo.getString("title"), jo.getString("name"), jo.getString("division"), jo.getString("comment"),"0","0"));
         }
 
         JSONArray triple_list = jojo.getJSONArray("triple");
@@ -99,7 +99,7 @@ public class GlobalConfigure {
             String real_head = map.get(jo.getString("head"));
             String real_relation = map.get(jo.getString("relation"));
             String real_tail = map.get(jo.getString("tail"));
-            tripleMapper.insert(new TriplePo(tableId, real_head, real_relation, real_tail));
+            tripleMapper.insert(new TriplePo(tableId, real_head, real_relation, real_tail,"0","0"));
         }
         logger.log("建图用时 " + timer.get());
 

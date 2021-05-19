@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.util.GlobalTrans;
 import com.example.demo.vo.KGEditFormVo;
@@ -26,5 +27,10 @@ public class TransTest {
                 GlobalTrans.javaObjectToJSONObject(f),
                 JSONObject.parse(GlobalTrans.javaObjectToJsonStr(f))
         );
+    }
+
+    @Test
+    void tmp(){
+        System.out.println(JSON.toJSONString("aaa"));
     }
 }

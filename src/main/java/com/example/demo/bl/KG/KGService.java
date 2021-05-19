@@ -34,4 +34,6 @@ public interface KGService {
     ResultBean cancelChange(KGEditFormVo f);
 
     ResultBean confirmChange(String userName);
+
+    ResultBean rollBackChange(String ver);
 }

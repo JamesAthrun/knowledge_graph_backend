@@ -3,11 +3,13 @@ create database nkg default charset utf8;
 USE nkg;
 
 create table `triple`(
-    `tableId` varchar(11) default null,
     `head` varchar(11) not null,
     `relation` varchar(11) not null,
     `tail` varchar(11) not null,
-    primary key (`head`,`relation`,`tail`)
+    `ver` varchar(11) not null,
+    `drop` varchar(11) default null,
+    `tableId` varchar(11) default null,
+    primary key (`head`,`relation`,`tail`,`ver`)
 )engine=MyISAM default charset=utf8;
 # create index headIndex on triple (head);
 # create index tailIndex on triple (tail); #700ms
@@ -21,12 +23,14 @@ create index tailIndex on triple (tail,head); #610ms
 
 create table `item`(
     `id` varchar(11) not null,
+    `ver` varchar(11) not null,
+    `drop` varchar(11) default null,
     `tableId` varchar(11) default null,
     `title` varchar(256) default null,
     `name` varchar(256) default null,
     `division` varchar(11) default null,
     `comment` varchar(256) default null,
-    primary key (`id`)
+    primary key (`id`,`ver`)
 )engine=MyISAM default charset=utf8;
 
 create table `verify`(

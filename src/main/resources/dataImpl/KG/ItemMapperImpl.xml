@@ -7,8 +7,8 @@
     <!--    </insert>-->
 
     <insert id="insert" parameterType="com.example.demo.po.ItemPo" useGeneratedKeys="true" keyProperty="recordId">
-        insert into nkg.item(id, tableId, title, name, division, comment)
-        values (#{id}, #{tableId}, #{title}, #{name}, #{division}, #{comment})
+        insert into nkg.item(id, ver, `drop`, tableId, title, name, division, comment)
+        values (#{id}, #{ver},#{drop},#{tableId}, #{title}, #{name}, #{division}, #{comment})
     </insert>
 
 

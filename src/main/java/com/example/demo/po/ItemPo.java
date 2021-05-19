@@ -9,14 +9,18 @@ public class ItemPo {
     public String name;
     public String division;
     public String comment;
+    public String ver;
+    public String drop;
 
-    public ItemPo(String id, String tableId, String title, String name, String division, String comment) {
+    public ItemPo(String id, String tableId, String title, String name, String division, String comment, String ver, String drop) {
         this.id = id;
         this.tableId = tableId;
         this.title = title;
         this.name = name;
         this.division = division;
         this.comment = comment;
+        this.ver = ver;
+        this.drop = drop;
     }
 
     public JSONObject toJSONObject() {

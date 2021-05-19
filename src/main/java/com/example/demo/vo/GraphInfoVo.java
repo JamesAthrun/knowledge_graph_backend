@@ -7,11 +7,11 @@ import com.example.demo.po.TriplePo;
 
 public class GraphInfoVo {
     private final ItemMapper itemMapper;
+    private final String ver;
     public JSONArray itemData;
     public JSONArray link;
-    private String ver;
 
-    public GraphInfoVo(ItemMapper i,String ver) {
+    public GraphInfoVo(ItemMapper i, String ver) {
         itemMapper = i;
         itemData = new JSONArray();
         link = new JSONArray();
@@ -24,7 +24,7 @@ public class GraphInfoVo {
     }
 
     public void addLink(TriplePo triplePo) {
-        ItemPo h,r,t;
+        ItemPo h, r, t;
         h = itemMapper.getById(triplePo.head, ver);
         r = itemMapper.getById(triplePo.relation, ver);
         t = itemMapper.getById(triplePo.tail, ver);

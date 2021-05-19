@@ -1,9 +1,11 @@
 package com.example.demo.blImpl.KG;
 
 import com.example.demo.bl.KG.KGService;
+import com.example.demo.data.KG.GraphMapper;
 import com.example.demo.data.KG.ItemMapper;
 import com.example.demo.data.KG.QuestionMapper;
 import com.example.demo.data.KG.TripleMapper;
+import com.example.demo.po.GraphPo;
 import com.example.demo.po.ItemPo;
 import com.example.demo.po.QuestionPo;
 import com.example.demo.po.TriplePo;
@@ -34,11 +36,42 @@ public class KGServiceImpl implements KGService {
     Timer timer;
     @Autowired
     RedisUtil redisUtil;
+    @Autowired
+    GraphMapper graphMapper;
+
+    //去重
+    private static <T> void MySet(List<T> in) {
+        HashSet<T> out = new HashSet<>(in);
+        for (T item : in) {
+            if (out.contains(item)) continue;
+            out.add(item);
+        }
+        in.clear();
+        in.addAll(out);
+    }
+
+    private static <T> List<T> getRandomList(List<T> paramList, int count) {
+        if (paramList.size() < count) {
+            return paramList;
+        }
+        Random random = new Random(0);
+        List<Integer> tempList = new ArrayList<>();
+        List<T> newList = new ArrayList<T>();
+        for (int i = 0, temp; i < count; ) {
+            temp = random.nextInt(paramList.size());
+            if (!tempList.contains(temp)) {
+                tempList.add(temp);
+                newList.add(paramList.get(temp));
+                i += 1;
+            }
+        }
+        return newList;
+    }
 
     @Override
     public ResultBean searchEntity(String keywords, String ver) {
         timer.set();
-        List<ItemPo> items = itemMapper.searchByKeywords(keywords,ver);
+        List<ItemPo> items = itemMapper.searchByKeywords(keywords, ver);
         ItemListVo itemListVo = new ItemListVo();
         for (ItemPo e : items) {
             itemListVo.addItem(e);
@@ -57,7 +90,7 @@ public class KGServiceImpl implements KGService {
         searchTriples(id, 3, 5, related_link, ver);
         //depth是递归查找上限，neighbors是每层头和尾的连接上限
 
-        GraphInfoVo go = new GraphInfoVo(itemMapper,ver);
+        GraphInfoVo go = new GraphInfoVo(itemMapper, ver);
         for (TriplePo item : related_link) {
             go.addLink(item);
         }
@@ -74,7 +107,7 @@ public class KGServiceImpl implements KGService {
         List<TriplePo> related_link = new ArrayList<>();
         searchTriples(id, 3, 5, related_link, ver);
 
-        TreeInfoVo to = new TreeInfoVo(id, itemMapper,ver);
+        TreeInfoVo to = new TreeInfoVo(id, itemMapper, ver);
 
         Queue<String> q = new LinkedList<>();
         q.offer(id);
@@ -134,25 +167,13 @@ public class KGServiceImpl implements KGService {
     @Override
     public ResultBean confirmChange(String userName) {
         Set<String> ops = redisUtil.getOpsOfUser(userName);
-        String ver = getVer();
-        return doOps(ops,ver);
-    }
-
-    @Override
-    public ResultBean rollBackChange(String ver) {
-        return undoOps(ver);
-    }
-
-    private String getVer() {
-        //todo
-        return "1";
-    }
-
-    private ResultBean doOps(Set<String> ops, String ver){
         List<ResultBean> resList = new ArrayList<>();
+        String tableId = GlobalTrans.jsonStrToJavaObject(ops.iterator().next(), KGEditFormVo.class).tableId;
+        String ver = graphMapper.getPresentVer(tableId);
 
         for (String op : ops) {
-            KGEditFormVo f = GlobalTrans.jsonStrToJavaObject(op,KGEditFormVo.class);
+            KGEditFormVo f = GlobalTrans.jsonStrToJavaObject(op, KGEditFormVo.class);
+            if (!f.tableId.equals(tableId)) return ResultBean.error(801, "cannot op more than 1 graph in 1 time");
             switch (f.op) {
                 case "createItem":
                     resList.add(createItem(
@@ -214,18 +235,31 @@ public class KGServiceImpl implements KGService {
                     resList.add(ResultBean.error(703, "op fail"));
             }
         }
-        for(ResultBean res:resList){
-            if(res.code!=1) return res;
+        for (ResultBean res : resList) {
+            if (res.code != 1) return res;
         }
 
-        //todo 在版本表中增加记录
+        graphMapper.confirmChange(incr(ver), tableId);
+        redisUtil.OpConfirmChange(userName);
         return ResultBean.success();
     }
 
-    private ResultBean undoOps(String ver){
-        //todo 根据给定版本号，回退到指定版本
-        //简单的做法是将版本号>=ver的数据行全部删除
+    @Override
+    public ResultBean rollBackChange(String ver, String tableId) {
+        graphMapper.rollBack(ver, tableId);
         return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean getGraphInfo(String tableId) {
+        GraphPo go = graphMapper.get(tableId);
+        return ResultBean.success(go);
+    }
+
+    @Override
+    public ResultBean getAllGraphInfo() {
+        List<GraphPo> goList = graphMapper.getAll();
+        return ResultBean.success(goList);
     }
 
     @Override
@@ -246,10 +280,10 @@ public class KGServiceImpl implements KGService {
         if (max == null) return ResultBean.error(0, "no match question");
 
         String ver = max.ver;
-        AnswerVo ao = new AnswerVo(itemMapper, max.help);
+        AnswerVo ao = new AnswerVo(itemMapper, max.help, ver);
         List<String> relatedIds = max.getRelatedIds();
         for (String id : relatedIds) {
-            ao.addTableItem(id, ver);
+            ao.addTableItem(id);
         }
         return ResultBean.success(ao);
     }
@@ -259,7 +293,7 @@ public class KGServiceImpl implements KGService {
         if (headId.equals("") && !relationId.equals("") && tailId.equals("")) {
             String tmp = recorder.getRecordId();
             //同id，版本号自动阻塞
-            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment,incr(ver),"0"));
+            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment, incr(ver), "0"));
             return ResultBean.success(tmp);
         }
 
@@ -267,9 +301,9 @@ public class KGServiceImpl implements KGService {
         if (headId.equals("") && !relationId.equals("")) {
             String tmp = recorder.getRecordId();
             //同id，版本号自动阻塞
-            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment,incr(ver),"0"));
+            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment, incr(ver), "0"));
             //同三元组，版本号自动阻塞
-            createLink(tableId, headId, relationId, tmp,ver);
+            createLink(tableId, headId, relationId, tmp, ver);
             return ResultBean.success(tmp);
         }
 
@@ -277,9 +311,9 @@ public class KGServiceImpl implements KGService {
         if (!headId.equals("") && !relationId.equals("") && tailId.equals("")) {
             String tmp = recorder.getRecordId();
             //同id，版本号自动阻塞
-            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment,incr(ver),"0"));
+            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment, incr(ver), "0"));
             //同三元组，版本号自动阻塞
-            createLink(tableId, tmp, relationId, tailId,ver);
+            createLink(tableId, tmp, relationId, tailId, ver);
             return ResultBean.success(tmp);
         }
 
@@ -288,30 +322,30 @@ public class KGServiceImpl implements KGService {
 
     private ResultBean createLink(String tableId, String headId, String relationId, String tailId, String ver) {
         //同三元组，版本号自动阻塞
-        tripleMapper.insert(new TriplePo(tableId, headId, relationId, tailId,incr(ver),"0"));
+        tripleMapper.insert(new TriplePo(tableId, headId, relationId, tailId, incr(ver), "0"));
         return ResultBean.success();
     }
 
     private ResultBean updateItem(String id, String tableId, String title, String name, String division, String comment, String ver) {
         //同id，版本号自动阻塞，不删除原有
-        itemMapper.insert(new ItemPo(id, tableId, title, name, division, comment,incr(ver),"0"));
+        itemMapper.insert(new ItemPo(id, tableId, title, name, division, comment, incr(ver), "0"));
         return ResultBean.success();
     }
 
     private ResultBean replaceItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment, String ver) {
         if (id.equals(headId)) {
             //阻塞掉原有
-            deleteLink(headId, relationId, tailId,ver);
-            return createItem("", relationId, tailId, tableId, title, name, division, comment,ver);
+            deleteLink(headId, relationId, tailId, ver);
+            return createItem("", relationId, tailId, tableId, title, name, division, comment, ver);
         } else if (id.equals(tailId)) {
             //阻塞掉原有
-            deleteLink(headId, relationId, tailId,ver);
-            return createItem(headId, relationId, "", tableId, title, name, division, comment,ver);
+            deleteLink(headId, relationId, tailId, ver);
+            return createItem(headId, relationId, "", tableId, title, name, division, comment, ver);
         } else if (id.equals(relationId)) {
             //阻塞掉原有
-            deleteLink(headId, relationId, tailId,ver);
-            String newRelationId = createItem(headId, relationId, tailId, tableId, title, name, division, comment,ver).data;
-            createLink(newRelationId, headId, newRelationId, tailId,ver);
+            deleteLink(headId, relationId, tailId, ver);
+            String newRelationId = createItem(headId, relationId, tailId, tableId, title, name, division, comment, ver).data;
+            createLink(newRelationId, headId, newRelationId, tailId, ver);
             return ResultBean.success();
         }
         return ResultBean.error(205, "Replace item failed");
@@ -327,12 +361,12 @@ public class KGServiceImpl implements KGService {
     }
 
     private ResultBean deleteLink(String headId, String relationId, String tailId, String ver) {
-        TriplePo tmpTri = new TriplePo(tailId,headId,relationId,tailId,incr(ver),"1");
+        TriplePo tmpTri = new TriplePo(tailId, headId, relationId, tailId, incr(ver), "1");
         tripleMapper.insert(tmpTri);
         return ResultBean.success();
     }
 
-    private void searchTriples(String id, int depth, int neighbors, List<TriplePo> res,String ver) {
+    private void searchTriples(String id, int depth, int neighbors, List<TriplePo> res, String ver) {
         if (depth == 0) return;
         MySet(res);
         List<TriplePo> cases = tripleMapper.getRelatedTriples(id, ver);
@@ -357,40 +391,11 @@ public class KGServiceImpl implements KGService {
         //作为关系节点时，不进行相关搜索
         //作为尾节点时，对头节点进行相关搜索
         for (TriplePo tri : tmp_h) {
-            if (!tri.tail.equals(id)) searchTriples(tri.tail, depth - 1, neighbors, res,ver);
+            if (!tri.tail.equals(id)) searchTriples(tri.tail, depth - 1, neighbors, res, ver);
         }
         for (TriplePo tri : tmp_t) {
-            if (!tri.head.equals(id)) searchTriples(tri.head, depth - 1, neighbors, res,ver);
+            if (!tri.head.equals(id)) searchTriples(tri.head, depth - 1, neighbors, res, ver);
         }
-    }
-
-    //去重
-    private static <T> void MySet(List<T> in) {
-        HashSet<T> out = new HashSet<>(in);
-        for (T item : in) {
-            if (out.contains(item)) continue;
-            out.add(item);
-        }
-        in.clear();
-        in.addAll(out);
-    }
-
-    private static <T> List<T> getRandomList(List<T> paramList, int count) {
-        if (paramList.size() < count) {
-            return paramList;
-        }
-        Random random = new Random(0);
-        List<Integer> tempList = new ArrayList<>();
-        List<T> newList = new ArrayList<T>();
-        for (int i = 0, temp; i < count; ) {
-            temp = random.nextInt(paramList.size());
-            if (!tempList.contains(temp)) {
-                tempList.add(temp);
-                newList.add(paramList.get(temp));
-                i += 1;
-            }
-        }
-        return newList;
     }
 
     private boolean triple_existed(List<TriplePo> list, TriplePo item) {
@@ -401,7 +406,7 @@ public class KGServiceImpl implements KGService {
         return false;
     }
 
-    private String incr(String s){
-        return String.valueOf(Integer.parseInt(s)+1);
+    private String incr(String s) {
+        return String.valueOf(Integer.parseInt(s) + 1);
     }
 }

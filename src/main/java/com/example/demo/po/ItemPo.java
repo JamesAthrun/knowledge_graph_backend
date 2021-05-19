@@ -38,11 +38,11 @@ public class ItemPo {
         String des = "";
         if (!this.name.equals("")) item.put("text", this.name);
         else {
-            if(this.title.length()<10)
+            if (this.title.length() < 10)
                 item.put("text", this.title);
             else
-                item.put("text", this.title.substring(0,10)+"...");
-                item.put("content",this.title);
+                item.put("text", this.title.substring(0, 10) + "...");
+            item.put("content", this.title);
         }
         if (!this.comment.equals("")) des += "评论 " + this.comment + "\n";
         item.put("des", des);

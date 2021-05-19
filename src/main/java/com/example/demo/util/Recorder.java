@@ -28,6 +28,10 @@ public class Recorder {
         this.M = m;
     }
 
+    public Recorder() {
+        load();
+    }
+
     public void init() {
         this.currentTableId = -1;
         this.seed = 1453;
@@ -36,10 +40,6 @@ public class Recorder {
         this.A = 2;
         this.B = 1949;
         this.M = 19911225 - 19181107;
-    }
-
-    public Recorder() {
-        load();
     }
 
     public String getRecordId() {

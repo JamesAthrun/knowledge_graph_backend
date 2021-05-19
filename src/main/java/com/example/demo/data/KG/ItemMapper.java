@@ -11,10 +11,9 @@ public interface ItemMapper {
 
     void insert(ItemPo itemPo);
 
-    List<ItemPo> searchByKeywords(@Param("keywords")String keywords, @Param("ver")String ver);
+    List<ItemPo> searchByKeywords(@Param("keywords") String keywords, @Param("ver") String ver);
 
     ItemPo getById(@Param("id") String id, @Param("ver") String ver);
 
     void deleteById(String id);
-
 }

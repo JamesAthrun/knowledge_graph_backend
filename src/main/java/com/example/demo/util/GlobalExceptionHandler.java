@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public void ioException(ClientAbortException e){
+    public void ioException(ClientAbortException e) {
         logger.log("client abort connection");
     }
 }

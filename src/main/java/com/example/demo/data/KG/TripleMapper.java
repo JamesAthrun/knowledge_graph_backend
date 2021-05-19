@@ -11,7 +11,7 @@ public interface TripleMapper {
 
     void insert(TriplePo triplePo);
 
-    List<TriplePo> getRelatedTriples(@Param("id")String id, @Param("ver") String ver);
+    List<TriplePo> getRelatedTriples(@Param("id") String id, @Param("ver") String ver);
 
     Integer getListSize();
 

@@ -23,5 +23,9 @@ public interface KGService {
 
     ResultBean confirmChange(String userName);
 
-    ResultBean rollBackChange(String ver);
+    ResultBean rollBackChange(String ver, String tableId);
+
+    ResultBean getGraphInfo(String tableId);
+
+    ResultBean getAllGraphInfo();
 }

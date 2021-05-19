@@ -9,22 +9,21 @@ public class Timer {
     @Autowired
     GlobalLogger logger;
 
-    Timer(){
+    Timer() {
         this.t = -1;
     }
 
-    public void set(){
-        if(t==-1) this.t = System.currentTimeMillis();
+    public void set() {
+        if (t == -1) this.t = System.currentTimeMillis();
         else logger.error("timer set error");
     }
 
-    public String get(){
-        if(t==-1){
+    public String get() {
+        if (t == -1) {
             logger.error("timer get error");
             return "error";
-        }
-        else{
-            String s = System.currentTimeMillis()-t+"ms";
+        } else {
+            String s = System.currentTimeMillis() - t + "ms";
             t = -1;
             return s;
         }

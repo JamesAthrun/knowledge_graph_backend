@@ -62,12 +62,8 @@ public class GlobalConfigure {
 
     @Bean
     public void init() {
-        if(autoInitDB)
-            runSqlScript(sqlPath,propertyPath);
-        if (graphMapper.getSize() != 0) {
-            logger.log("data existed");
-        }
-        else {
+        if (autoInitDB) {
+            runSqlScript(sqlPath, propertyPath);
             recorder.init();
             logger.log("data load begin");
             String jsonString = getJsonString(dataPath);
@@ -81,7 +77,7 @@ public class GlobalConfigure {
 
         String tableId = recorder.getTableId();
         JSONObject jojo = JSONObject.parseObject(jsonString);
-        graphMapper.insert(new GraphPo(tableId, jojo.getString("name"), jojo.getString("description")));
+        graphMapper.insert(new GraphPo(tableId, jojo.getString("name"), jojo.getString("description"), "0"));
 
         JSONArray entity_list = jojo.getJSONArray("item");
         HashMap<String, String> map = new HashMap<>();
@@ -90,7 +86,7 @@ public class GlobalConfigure {
             JSONObject jo = (JSONObject) o;
             String tmp = recorder.getRecordId();
             map.put(jo.getString("id"), tmp);
-            itemMapper.insert(new ItemPo(tmp, tableId, jo.getString("title"), jo.getString("name"), jo.getString("division"), jo.getString("comment"),"0","0"));
+            itemMapper.insert(new ItemPo(tmp, tableId, jo.getString("title"), jo.getString("name"), jo.getString("division"), jo.getString("comment"), "0", "0"));
         }
 
         JSONArray triple_list = jojo.getJSONArray("triple");
@@ -99,7 +95,7 @@ public class GlobalConfigure {
             String real_head = map.get(jo.getString("head"));
             String real_relation = map.get(jo.getString("relation"));
             String real_tail = map.get(jo.getString("tail"));
-            tripleMapper.insert(new TriplePo(tableId, real_head, real_relation, real_tail,"0","0"));
+            tripleMapper.insert(new TriplePo(tableId, real_head, real_relation, real_tail, "0", "0"));
         }
         logger.log("建图用时 " + timer.get());
 
@@ -125,7 +121,7 @@ public class GlobalConfigure {
         }
     }
 
-    private void runSqlScript(String sqlFilePath,String propertyPath){
+    private void runSqlScript(String sqlFilePath, String propertyPath) {
         try {
             // 获取数据库相关配置信息
             Properties props = Resources.getResourceAsProperties(propertyPath);
@@ -145,8 +141,7 @@ public class GlobalConfigure {
             conn.close();
             // 若成功，打印提示信息
             logger.log("exec sql script " + sqlFilePath);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

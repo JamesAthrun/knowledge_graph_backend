@@ -3,25 +3,50 @@
 <mapper namespace="com.example.demo.data.KG.GraphMapper">
 
     <insert id="insert" parameterType="com.example.demo.po.GraphPo" useGeneratedKeys="true" keyProperty="tableId">
-        replace into nkg.graph(tableId, name, description)
-        values (#{tableId}, #{name}, #{description})
+        replace into nkg.graph(tableId, name, description, ver)
+        values (#{tableId}, #{name}, #{description}, #{ver})
     </insert>
 
+    <update id="confirmChange">
+        update nkg.graph
+        set ver = #{ver}
+        where tableId = #{tableId};
+    </update>
+
     <select id="get" resultMap="GraphPo">
-        select tableId, name, description
+        select tableId, name, description, ver
         from nkg.graph
         where tableId = #{tableId}
     </select>
 
-    <select id="getSize" resultType="java.lang.Integer">
-        select count(tableId)
+    <select id="getAll" resultMap="GraphPo">
+        select tableId, name, description, ver
         from nkg.graph
     </select>
+
+    <select id="getPresentVer" resultType="java.lang.String">
+        select ver
+        from nkg.graph
+        where tableId = #{tableId}
+    </select>
+
+    <delete id="rollBack">
+        delete
+        from nkg.triple
+        where ver &gt; #{ver};
+        delete
+        from nkg.item
+        where ver &gt; #{ver};
+        update nkg.graph
+        set ver = #{ver}
+        where tableId = #{tableId};
+    </delete>
 
     <resultMap id="GraphPo" type="com.example.demo.po.GraphPo">
         <id column="tableId" property="tableId"/>
         <result column="name" property="name"/>
         <result column="description" property="description"/>
+        <result column="ver" property="ver"/>
     </resultMap>
 
 </mapper>

@@ -17,28 +17,28 @@ class KGTests {
 
     @Test
     void searchEntity1() {
-        ResultBean res = kgService.searchEntity("佩戴","0");
+        ResultBean res = kgService.searchEntity("佩戴", "0");
         assertEquals(res.code, 1);
         assertNotEquals(res.data, "{\"data\":[]}");
     }
 
     @Test
     void searchEntity2() {
-        ResultBean res = kgService.searchEntity("__#+1%&^9","0");
+        ResultBean res = kgService.searchEntity("__#+1%&^9", "0");
         assertEquals(res.code, 1);
         assertEquals(res.data, "{\"data\":[]}");
     }
 
     @Test
     void getGraphData1() {
-        ResultBean res = kgService.getGraphData("19185962","0");
+        ResultBean res = kgService.getGraphData("19185962", "0");
         assertEquals(res.code, 1);
         assertNotEquals(res.data, "{\"data\":[]}");
     }
 
     @Test
     void getGraphData2() {
-        ResultBean res = kgService.getGraphData("19185962","0");
+        ResultBean res = kgService.getGraphData("19185962", "0");
         assertEquals(res.code, 1);
         assertNotEquals(res.data, "{\"data\":[]}");
     }

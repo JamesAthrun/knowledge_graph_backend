@@ -15,7 +15,8 @@ public class KGEditFormVo {
     public String op;
     public String user;
 
-    public KGEditFormVo() {}
+    public KGEditFormVo() {
+    }
 
     public KGEditFormVo(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment, String op, String user) {
         this.headId = headId;

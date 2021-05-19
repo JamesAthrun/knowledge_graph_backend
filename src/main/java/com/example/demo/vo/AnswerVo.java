@@ -6,15 +6,17 @@ import com.example.demo.data.KG.ItemMapper;
 import com.example.demo.po.ItemPo;
 
 public class AnswerVo {
+    private final ItemMapper itemMapper;
+    private final String ver;
     public JSONArray table;
     public String help;
     private int count;
-    private final ItemMapper itemMapper;
 
-    public AnswerVo(ItemMapper e, String h) {
+    public AnswerVo(ItemMapper e, String h, String ver) {
         table = new JSONArray();
         itemMapper = e;
         help = h;
+        this.ver = ver;
     }
 
     private void addEntity(ItemPo e) {
@@ -25,7 +27,7 @@ public class AnswerVo {
         table.add(jo);
     }
 
-    public void addTableItem(String id, String ver) {
+    public void addTableItem(String id) {
         ItemPo e = itemMapper.getById(id, ver);
         addEntity(e);
     }

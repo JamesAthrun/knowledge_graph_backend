@@ -3,7 +3,7 @@
 <mapper namespace="com.example.demo.data.KG.TripleMapper">
 
     <insert id="insert" parameterType="com.example.demo.po.TriplePo">
-        insert into nkg.triple(tableId, head, relation, tail, ver,`drop`)
+        insert into nkg.triple(tableId, head, relation, tail, ver, `drop`)
         values (#{tableId}, #{head}, #{relation}, #{tail}, #{ver}, #{drop})
     </insert>
 
@@ -15,20 +15,23 @@
     <select id="getRelatedTriples" resultMap="TriplePo">
         select t2.head head, t2.relation relation, t2.tail tail, tableId
         from ((
-            select head, relation, tail, max(ver) ver from (
-               select head, relation, tail, ver
-               from nkg.triple
-               where ver &lt;= #{ver} and (head = #{id} or tail = #{id})
-           ) t1 group by head,relation,tail )t2
-            join nkg.triple t3
-            on (t3.head = t2.head and t3.relation =t2.relation and t3.tail =t2.tail) and t3.ver = t2.ver)
-        where `drop`='0';
+                  select head, relation, tail, max(ver) ver
+                  from (
+                           select head, relation, tail, ver
+                           from nkg.triple
+                           where ver &lt;= #{ver}
+                             and (head = #{id} or tail = #{id})
+                       ) t1
+                  group by head, relation, tail) t2
+                 join nkg.triple t3
+                      on (t3.head = t2.head and t3.relation = t2.relation and t3.tail = t2.tail) and t3.ver = t2.ver)
+        where `drop` = '0';
     </select>
 
     <delete id="delete">
         delete
         from nkg.triple
-        WHERE head = #{headId}
+        where head = #{headId}
           and tail = #{tailId}
           and relation = #{relationId}
     </delete>
@@ -39,5 +42,6 @@
         <result column="relation" property="relation"/>
         <result column="tail" property="tail"/>
     </resultMap>
+
 
 </mapper>

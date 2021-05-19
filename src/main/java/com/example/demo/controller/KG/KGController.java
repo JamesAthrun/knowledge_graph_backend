@@ -30,7 +30,7 @@ public class KGController {
     )
     public ResultBean search(@RequestParam String keywords, @RequestParam String ver) {
         logger.log("KGController search");
-        return kgService.searchEntity(keywords,ver);
+        return kgService.searchEntity(keywords, ver);
     }
 
     @GetMapping("/getGraphData")
@@ -40,7 +40,7 @@ public class KGController {
     )
     public ResultBean getGraphData(@RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getGraphData");
-        return kgService.getGraphData(id,ver);
+        return kgService.getGraphData(id, ver);
     }
 
     @GetMapping("/getTreeData")
@@ -50,7 +50,7 @@ public class KGController {
     )
     public ResultBean getTreeData(@RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getTreeData");
-        return kgService.getTreeData(id,ver);
+        return kgService.getTreeData(id, ver);
     }
 
     @PostMapping("/createGraphByJsonStr")
@@ -78,7 +78,7 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean commitChange(@RequestBody KGEditFormVo f){
+    public ResultBean commitChange(@RequestBody KGEditFormVo f) {
         logger.log("KGController commitChange");
         return kgService.commitChange(f);
     }
@@ -88,7 +88,7 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean cancelChange(@RequestBody KGEditFormVo f){
+    public ResultBean cancelChange(@RequestBody KGEditFormVo f) {
         logger.log("KGController cancelChange");
         return kgService.cancelChange(f);
     }
@@ -98,7 +98,7 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean confirmChange(@RequestParam String userName){
+    public ResultBean confirmChange(@RequestParam String userName) {
         logger.log("KGController confirmChange");
         return kgService.confirmChange(userName);
     }
@@ -108,9 +108,9 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean rollBackChange(@RequestParam String ver){
+    public ResultBean rollBackChange(@RequestParam String ver, @RequestParam String tableId) {
         logger.log("KGController rollBackChange");
-        return kgService.rollBackChange(ver);
+        return kgService.rollBackChange(ver, tableId);
     }
 
     @PostMapping("/ask")
@@ -121,6 +121,26 @@ public class KGController {
     public ResultBean ask(@RequestBody String questionStr) {
         logger.log("KGController ask");
         return kgService.ask(questionStr);
+    }
+
+    @GetMapping("/getGraphInfo")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean getGraphInfo(@RequestParam String tableId) {
+        logger.log("KGController rollBackChange");
+        return kgService.getGraphInfo(tableId);
+    }
+
+    @GetMapping("/getAllGraphInfo")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean getAllGraphInfo() {
+        logger.log("KGController rollBackChange");
+        return kgService.getAllGraphInfo();
     }
 
 }

@@ -24,7 +24,7 @@ public class ItemPo {
         item.put("id", this.id);
         String des = "";
         if (!this.name.equals("")) item.put("text", this.name);
-        else item.put("name", this.title);
+        else item.put("text", this.title);
         if (!this.comment.equals("")) des += "评论 " + this.comment + "\n";
         item.put("des", des);
         switch (this.division) {

@@ -25,8 +25,8 @@ public class AnswerVo {
         table.add(jo);
     }
 
-    public void addTableItem(String id) {
-        ItemPo e = itemMapper.getById(id);
+    public void addTableItem(String id, String ver) {
+        ItemPo e = itemMapper.getById(id, ver);
         addEntity(e);
     }
 

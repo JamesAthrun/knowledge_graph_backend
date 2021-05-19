@@ -10,12 +10,14 @@ import java.util.ArrayList;
 public class TreeInfoVo {
     private final String root;
     private final ItemMapper itemMapper;
+    private final String ver;
     public ArrayList<JSONObject> nodes;
 
-    public TreeInfoVo(String r, ItemMapper i) {
+    public TreeInfoVo(String r, ItemMapper i,String ver) {
         this.root = r;
         this.itemMapper = i;
         nodes = new ArrayList<>();
+        this.ver = ver;
     }
 
     public JSONObject getNode(String id) {
@@ -28,7 +30,7 @@ public class TreeInfoVo {
     private JSONObject createNode(String id) {
         JSONObject jo = new JSONObject();
         jo.put("id", id);
-        ItemPo i = itemMapper.getById(id);
+        ItemPo i = itemMapper.getById(id,ver);
         jo.put("name", i.toString());
         jo.put("children", new JSONArray());
         nodes.add(jo);

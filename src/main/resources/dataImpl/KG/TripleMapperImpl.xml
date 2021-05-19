@@ -13,10 +13,16 @@
     </select>
 
     <select id="getRelatedTriples" resultMap="TriplePo">
-        select head,relation,tail,tableId
-        from nkg.triple
-        where head = #{id}
-           or tail = #{id}
+        select t2.head head, t2.relation relation, t2.tail tail, tableId
+        from ((
+            select head, relation, tail, max(ver) ver from (
+               select head, relation, tail, ver
+               from nkg.triple
+               where ver &lt;= #{ver} and (head = #{id} or tail = #{id})
+           ) t1 group by head,relation,tail )t2
+            join nkg.triple t3
+            on (t3.head = t2.head and t3.relation =t2.relation and t3.tail =t2.tail) and t3.ver = t2.ver)
+        where `drop`='0';
     </select>
 
     <delete id="delete">

@@ -58,6 +58,7 @@ create table `question`(
     `keyWords` varchar(256) not null,
     `help` varchar(256) default null,
     `relatedIds` varchar(256) default null,
+    `ver` varchar(11) default null,
     primary key (`keyWords`)
 )engine=MyISAM default charset=utf8;
 
@@ -71,4 +72,4 @@ create table `question`(
 
 insert into account (name, pwd, email, authority) values ('trump','123456','magg@trump.com','president');
 insert into account (name, pwd, email, authority) values ('obama','123456','blm@obama.com','president');
-insert into question (keyWords, help, relatedIds) values ('[{"0":"农民工"},{"1":"预防"}]','请仔细阅读以上内容，在完成的项后打勾，如果您已经全部完成，说明您已经百毒不侵，可以下地干活了！','[{"0":"19321220"},{"1":"19747406"},{"2":"19261796"},{"3":"19509710"},{"4":"19771248"},{"5":"19357164"},{"6":"19891182"},{"7":"19836900"}]');
+insert into question (keyWords, help, relatedIds,ver) values ('[{"0":"农民工"},{"1":"预防"}]','请仔细阅读以上内容，在完成的项后打勾，如果您已经全部完成，说明您已经百毒不侵，可以下地干活了！','[{"0":"19321220"},{"1":"19747406"},{"2":"19261796"},{"3":"19509710"},{"4":"19771248"},{"5":"19357164"},{"6":"19891182"},{"7":"19836900"}]','0');

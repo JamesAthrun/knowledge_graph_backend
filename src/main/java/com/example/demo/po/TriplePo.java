@@ -10,6 +10,13 @@ public class TriplePo {
     public String ver;
     public String drop;
 
+    public TriplePo(String tableId, String head, String relation, String tail) {
+        this.tableId = tableId;
+        this.head = head;
+        this.relation = relation;
+        this.tail = tail;
+    }
+
     public TriplePo(String tableId, String head, String relation, String tail, String ver, String drop) {
         this.tableId = tableId;
         this.head = head;

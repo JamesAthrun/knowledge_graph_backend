@@ -36,9 +36,9 @@ public class KGServiceImpl implements KGService {
     RedisUtil redisUtil;
 
     @Override
-    public ResultBean searchEntity(String keywords) {
+    public ResultBean searchEntity(String keywords, String ver) {
         timer.set();
-        List<ItemPo> items = itemMapper.searchByKeywords(keywords);
+        List<ItemPo> items = itemMapper.searchByKeywords(keywords,ver);
         ItemListVo itemListVo = new ItemListVo();
         for (ItemPo e : items) {
             itemListVo.addItem(e);
@@ -50,14 +50,14 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean getGraphData(String id) {
+    public ResultBean getGraphData(String id, String ver) {
         timer.set();
 
         List<TriplePo> related_link = new ArrayList<>();
-        searchTriples(id, 3, 5, related_link);
+        searchTriples(id, 3, 5, related_link, ver);
         //depth是递归查找上限，neighbors是每层头和尾的连接上限
 
-        GraphInfoVo go = new GraphInfoVo(itemMapper);
+        GraphInfoVo go = new GraphInfoVo(itemMapper,ver);
         for (TriplePo item : related_link) {
             go.addLink(item);
         }
@@ -68,13 +68,13 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean getTreeData(String id) {
+    public ResultBean getTreeData(String id, String ver) {
         timer.set();
 
         List<TriplePo> related_link = new ArrayList<>();
-        searchTriples(id, 3, 5, related_link);
+        searchTriples(id, 3, 5, related_link, ver);
 
-        TreeInfoVo to = new TreeInfoVo(id, itemMapper);
+        TreeInfoVo to = new TreeInfoVo(id, itemMapper,ver);
 
         Queue<String> q = new LinkedList<>();
         q.offer(id);
@@ -245,10 +245,11 @@ public class KGServiceImpl implements KGService {
             if (votes.get(q) > votes.get(max)) max = q;
         if (max == null) return ResultBean.error(0, "no match question");
 
+        String ver = max.ver;
         AnswerVo ao = new AnswerVo(itemMapper, max.help);
         List<String> relatedIds = max.getRelatedIds();
         for (String id : relatedIds) {
-            ao.addTableItem(id);
+            ao.addTableItem(id, ver);
         }
         return ResultBean.success(ao);
     }
@@ -317,7 +318,7 @@ public class KGServiceImpl implements KGService {
     }
 
     private ResultBean deleteItem(String id, String ver) {
-        ItemPo tmpItem = itemMapper.getById(id);
+        ItemPo tmpItem = itemMapper.getById(id, ver);
         tmpItem.ver = incr(ver);
         //标记位置1，表示阻塞
         tmpItem.drop = "1";
@@ -331,10 +332,10 @@ public class KGServiceImpl implements KGService {
         return ResultBean.success();
     }
 
-    private void searchTriples(String id, int depth, int neighbors, List<TriplePo> res) {
+    private void searchTriples(String id, int depth, int neighbors, List<TriplePo> res,String ver) {
         if (depth == 0) return;
         MySet(res);
-        List<TriplePo> cases = tripleMapper.getRelatedTriples(id);
+        List<TriplePo> cases = tripleMapper.getRelatedTriples(id, ver);
         List<TriplePo> tmp_h = new ArrayList<>();
         List<TriplePo> tmp_r = new ArrayList<>();
         List<TriplePo> tmp_t = new ArrayList<>();
@@ -356,10 +357,10 @@ public class KGServiceImpl implements KGService {
         //作为关系节点时，不进行相关搜索
         //作为尾节点时，对头节点进行相关搜索
         for (TriplePo tri : tmp_h) {
-            if (!tri.tail.equals(id)) searchTriples(tri.tail, depth - 1, neighbors, res);
+            if (!tri.tail.equals(id)) searchTriples(tri.tail, depth - 1, neighbors, res,ver);
         }
         for (TriplePo tri : tmp_t) {
-            if (!tri.head.equals(id)) searchTriples(tri.head, depth - 1, neighbors, res);
+            if (!tri.head.equals(id)) searchTriples(tri.head, depth - 1, neighbors, res,ver);
         }
     }
 

@@ -28,9 +28,9 @@ public class KGController {
             value = "接受一个关键词，返回匹配的item列表",
             notes = "匹配的范围包括编号、中英文名、字符串内容"
     )
-    public ResultBean search(@RequestParam String keywords) {
+    public ResultBean search(@RequestParam String keywords, @RequestParam String ver) {
         logger.log("KGController search");
-        return kgService.searchEntity(keywords);
+        return kgService.searchEntity(keywords,ver);
     }
 
     @GetMapping("/getGraphData")
@@ -38,9 +38,9 @@ public class KGController {
             value = "接受一个节点的id，返回该节点所在的知识图谱局部的信息",
             notes = "孤立节点的返回是不正常的"
     )
-    public ResultBean getGraphData(@RequestParam String id) {
+    public ResultBean getGraphData(@RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getGraphData");
-        return kgService.getGraphData(id);
+        return kgService.getGraphData(id,ver);
     }
 
     @GetMapping("/getTreeData")
@@ -48,9 +48,9 @@ public class KGController {
             value = "和getGraphData类似，不过返回信息是树形结构",
             notes = ""
     )
-    public ResultBean getTreeData(@RequestParam String id) {
+    public ResultBean getTreeData(@RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getTreeData");
-        return kgService.getTreeData(id);
+        return kgService.getTreeData(id,ver);
     }
 
     @PostMapping("/createGraphByJsonStr")
@@ -112,99 +112,6 @@ public class KGController {
         logger.log("KGController rollBackChange");
         return kgService.rollBackChange(ver);
     }
-
-//    @PostMapping("/createItem")
-//    @ApiOperation(
-//            value = "",
-//            notes = ""
-//    )
-//    public ResultBean createItem(@RequestBody KGEditFormVo f) {
-//        logger.log("KGController createItem");
-//        return kgService.createItem(
-//                f.headId,
-//                f.relationId,
-//                f.tailId,
-//                f.tableId,
-//                f.title,
-//                f.name,
-//                f.division,
-//                f.comment
-//        );
-//    }
-//
-//    @PostMapping("/createLink")
-//    @ApiOperation(
-//            value = "",
-//            notes = ""
-//    )
-//    public ResultBean createLink(@RequestBody KGEditFormVo f) {
-//        logger.log("KGController createLink");
-//        return kgService.createLink(
-//                f.tableId,
-//                f.headId,
-//                f.relationId,
-//                f.tailId);
-//    }
-//
-//    @PostMapping("/updateItem")
-//    @ApiOperation(
-//            value = "",
-//            notes = ""
-//    )
-//    public ResultBean updateItem(@RequestBody KGEditFormVo f) {
-//        logger.log("KGController updateItem");
-//        return kgService.updateItem(
-//                f.id,
-//                f.tableId,
-//                f.title,
-//                f.name,
-//                f.division,
-//                f.comment
-//        );
-//    }
-//
-//    @PostMapping("/replaceItem")
-//    @ApiOperation(
-//            value = "",
-//            notes = ""
-//    )
-//    public ResultBean replaceItem(@RequestBody KGEditFormVo f) {
-//        logger.log("KGController replaceItem");
-//        return kgService.replaceItem(
-//                f.headId,
-//                f.relationId,
-//                f.tailId,
-//                f.id,
-//                f.tableId,
-//                f.title,
-//                f.name,
-//                f.division,
-//                f.comment
-//        );
-//    }
-//
-//    @PostMapping("/deleteItem")
-//    @ApiOperation(
-//            value = "",
-//            notes = ""
-//    )
-//    public ResultBean deleteItem(@RequestBody KGEditFormVo f) {
-//        logger.log("KGController deleteItem");
-//        return kgService.deleteItem(f.id);
-//    }
-//
-//    @PostMapping("/deleteLink")
-//    @ApiOperation(
-//            value = "",
-//            notes = ""
-//    )
-//    public ResultBean deleteLink(@RequestBody KGEditFormVo f) {
-//        logger.log("KGController deleteLink");
-//        return kgService.deleteLink(
-//                f.headId,
-//                f.relationId,
-//                f.tailId);
-//    }
 
     @PostMapping("/ask")
     @ApiOperation(

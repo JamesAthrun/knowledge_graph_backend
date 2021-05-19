@@ -12,6 +12,15 @@ public class ItemPo {
     public String ver;
     public String drop;
 
+    public ItemPo(String id, String tableId, String title, String name, String division, String comment) {
+        this.id = id;
+        this.tableId = tableId;
+        this.title = title;
+        this.name = name;
+        this.division = division;
+        this.comment = comment;
+    }
+
     public ItemPo(String id, String tableId, String title, String name, String division, String comment, String ver, String drop) {
         this.id = id;
         this.tableId = tableId;

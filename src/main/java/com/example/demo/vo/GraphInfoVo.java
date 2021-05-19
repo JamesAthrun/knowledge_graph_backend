@@ -9,11 +9,13 @@ public class GraphInfoVo {
     private final ItemMapper itemMapper;
     public JSONArray itemData;
     public JSONArray link;
+    private String ver;
 
-    public GraphInfoVo(ItemMapper i) {
+    public GraphInfoVo(ItemMapper i,String ver) {
         itemMapper = i;
         itemData = new JSONArray();
         link = new JSONArray();
+        this.ver = ver;
     }
 
     private void addItem(ItemPo itemPo) {
@@ -23,9 +25,9 @@ public class GraphInfoVo {
 
     public void addLink(TriplePo triplePo) {
         ItemPo h,r,t;
-        h = itemMapper.getById(triplePo.head);
-        r = itemMapper.getById(triplePo.relation);
-        t = itemMapper.getById(triplePo.tail);
+        h = itemMapper.getById(triplePo.head, ver);
+        r = itemMapper.getById(triplePo.relation, ver);
+        t = itemMapper.getById(triplePo.tail, ver);
         this.addItem(h);
         this.addItem(t);
         link.add(triplePo.toJSONObject(r.name));

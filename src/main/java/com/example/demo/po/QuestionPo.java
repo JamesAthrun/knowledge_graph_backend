@@ -11,6 +11,7 @@ public class QuestionPo {
     public String keyWords;
     public String help;
     public String relatedIds;
+    public String ver;
 
     public List<String> getKeyWords() {
         return JSONArrayToList(keyWords);

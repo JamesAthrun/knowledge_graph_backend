@@ -38,6 +38,22 @@
         where `drop` = '0';
     </select>
 
+    <select id="getByTitle" resultType="com.example.demo.po.ItemPo">
+        select t2.id as id, tableId, title, name, division, comment
+        from (
+              (select id, max(ver) ver
+               from (
+                        select id, ver
+                        from nkg.item
+                        where title = #{title}
+                          and ver &lt;= #{ver}
+                    ) t1
+               group by id) t2
+                 join nkg.item t3
+                      on t3.id = t2.id and t3.ver = t2.ver)
+        where `drop` = '0';
+    </select>
+
     <delete id="deleteById">
         delete
         from nkg.item

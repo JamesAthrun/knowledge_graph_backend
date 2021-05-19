@@ -164,15 +164,39 @@ public class KGServiceImpl implements KGService {
         return res == 1 ? ResultBean.success() : ResultBean.error(702, "cancel fail");
     }
 
+    private List<KGEditFormVo> handleId(List<KGEditFormVo> fs) {
+        List<String> idToMap = new ArrayList<>();
+        for (KGEditFormVo f : fs) {
+            String[] ids = {f.headId, f.relationId, f.tailId, f.id};
+            idToMap.addAll(Arrays.asList(ids));
+        }
+        HashMap<String, String> idMap = recorder.getFutureRecordId(idToMap);
+        for (KGEditFormVo f : fs) {
+            f.headId = idMap.get(f.headId);
+            f.relationId = idMap.get(f.relationId);
+            f.tailId = idMap.get(f.tailId);
+            f.id = idMap.get(f.id);
+        }
+        return fs;
+    }
+
     @Override
     public ResultBean confirmChange(String userName) {
-        Set<String> ops = redisUtil.getOpsOfUser(userName);
+        List<String> ops = redisUtil.getOpsOfUser(userName);
         List<ResultBean> resList = new ArrayList<>();
         String tableId = GlobalTrans.jsonStrToJavaObject(ops.iterator().next(), KGEditFormVo.class).tableId;
         String ver = graphMapper.getPresentVer(tableId);
 
+        List<KGEditFormVo> fs = new ArrayList<>();
         for (String op : ops) {
-            KGEditFormVo f = GlobalTrans.jsonStrToJavaObject(op, KGEditFormVo.class);
+            fs.add(GlobalTrans.jsonStrToJavaObject(op, KGEditFormVo.class));
+        }
+
+        fs = handleId(fs);
+
+        for (KGEditFormVo f : fs) {
+            // id映射
+
             if (!f.tableId.equals(tableId)) return ResultBean.error(801, "cannot op more than 1 graph in 1 time");
             switch (f.op) {
                 case "createItem":
@@ -180,6 +204,7 @@ public class KGServiceImpl implements KGService {
                             f.headId,
                             f.relationId,
                             f.tailId,
+                            f.id,
                             f.tableId,
                             f.title,
                             f.name,
@@ -229,6 +254,7 @@ public class KGServiceImpl implements KGService {
                             f.headId,
                             f.relationId,
                             f.tailId,
+                            f.tableId,
                             ver));
                     break;
                 default:
@@ -288,36 +314,10 @@ public class KGServiceImpl implements KGService {
         return ResultBean.success(ao);
     }
 
-    private ResultBean createItem(String headId, String relationId, String tailId, String tableId, String title, String name, String division, String comment, String ver) {
-        //010 新建property
-        if (headId.equals("") && !relationId.equals("") && tailId.equals("")) {
-            String tmp = recorder.getRecordId();
-            //同id，版本号自动阻塞
-            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment, incr(ver), "0"));
-            return ResultBean.success(tmp);
-        }
-
-        //011 新建头item
-        if (headId.equals("") && !relationId.equals("")) {
-            String tmp = recorder.getRecordId();
-            //同id，版本号自动阻塞
-            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment, incr(ver), "0"));
-            //同三元组，版本号自动阻塞
-            createLink(tableId, headId, relationId, tmp, ver);
-            return ResultBean.success(tmp);
-        }
-
-        //110 新建尾item
-        if (!headId.equals("") && !relationId.equals("") && tailId.equals("")) {
-            String tmp = recorder.getRecordId();
-            //同id，版本号自动阻塞
-            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment, incr(ver), "0"));
-            //同三元组，版本号自动阻塞
-            createLink(tableId, tmp, relationId, tailId, ver);
-            return ResultBean.success(tmp);
-        }
-
-        return ResultBean.error(105, "h-r-t must be 010 or 011 or 110");
+    private ResultBean createItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment, String ver) {
+        itemMapper.insert(new ItemPo(id, tableId, title, name, division, comment, incr(ver), "0"));
+        if (!relationId.equals(id)) createLink(tableId, headId, relationId, tailId, ver);
+        return ResultBean.success();
     }
 
     private ResultBean createLink(String tableId, String headId, String relationId, String tailId, String ver) {
@@ -333,22 +333,20 @@ public class KGServiceImpl implements KGService {
     }
 
     private ResultBean replaceItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment, String ver) {
-        if (id.equals(headId)) {
+        String tmp = recorder.getRecordId();
+        if (headId.equals(id)) {
+            deleteLink(headId, relationId, tailId, tableId, ver);
+            createItem(tmp, relationId, tailId, tmp, tableId, title, name, division, comment, ver);
+        } else if (tailId.equals(id)) {
+            deleteLink(headId, relationId, tailId, tableId, ver);
+            createItem(headId, relationId, tmp, tmp, tableId, title, name, division, comment, ver);
+        } else if (relationId.equals(id)) {
             //阻塞掉原有
-            deleteLink(headId, relationId, tailId, ver);
-            return createItem("", relationId, tailId, tableId, title, name, division, comment, ver);
-        } else if (id.equals(tailId)) {
-            //阻塞掉原有
-            deleteLink(headId, relationId, tailId, ver);
-            return createItem(headId, relationId, "", tableId, title, name, division, comment, ver);
-        } else if (id.equals(relationId)) {
-            //阻塞掉原有
-            deleteLink(headId, relationId, tailId, ver);
-            String newRelationId = createItem(headId, relationId, tailId, tableId, title, name, division, comment, ver).data;
-            createLink(newRelationId, headId, newRelationId, tailId, ver);
-            return ResultBean.success();
+            deleteLink(headId, relationId, tailId, tableId, ver);
+            createItem(headId, tmp, tailId, tmp, tableId, title, name, division, comment, ver);
+            createLink(tableId, headId, tmp, tailId, ver);
         }
-        return ResultBean.error(205, "Replace item failed");
+        return ResultBean.success();
     }
 
     private ResultBean deleteItem(String id, String ver) {
@@ -360,8 +358,8 @@ public class KGServiceImpl implements KGService {
         return ResultBean.success();
     }
 
-    private ResultBean deleteLink(String headId, String relationId, String tailId, String ver) {
-        TriplePo tmpTri = new TriplePo(tailId, headId, relationId, tailId, incr(ver), "1");
+    private ResultBean deleteLink(String headId, String relationId, String tailId, String tableId, String ver) {
+        TriplePo tmpTri = new TriplePo(tableId, headId, relationId, tailId, incr(ver), "1");
         tripleMapper.insert(tmpTri);
         return ResultBean.success();
     }

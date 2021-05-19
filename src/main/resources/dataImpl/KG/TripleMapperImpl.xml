@@ -3,7 +3,7 @@
 <mapper namespace="com.example.demo.data.KG.TripleMapper">
 
     <insert id="insert" parameterType="com.example.demo.po.TriplePo">
-        insert into nkg.triple(tableId, head, relation, tail, ver, `drop`)
+        replace into nkg.triple(tableId, head, relation, tail, ver, `drop`)
         values (#{tableId}, #{head}, #{relation}, #{tail}, #{ver}, #{drop})
     </insert>
 

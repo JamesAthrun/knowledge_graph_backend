@@ -15,5 +15,7 @@ public interface ItemMapper {
 
     ItemPo getById(@Param("id") String id, @Param("ver") String ver);
 
+    ItemPo getByTitle(@Param("title") String title, @Param("ver") String ver);
+
     void deleteById(String id);
 }

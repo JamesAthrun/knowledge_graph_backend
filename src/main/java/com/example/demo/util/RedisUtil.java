@@ -4,8 +4,7 @@ import com.example.demo.vo.KGEditFormVo;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 @Component
 public class RedisUtil {
@@ -19,7 +18,7 @@ public class RedisUtil {
     }
 
     public Integer OpCommitItemChange(KGEditFormVo f) {
-        long res = jedis.hset("IC:" + f.user, GlobalTrans.javaObjectToJsonStr(f), "");
+        long res = jedis.rpush("IC:" + f.user, GlobalTrans.javaObjectToJsonStr(f));
         if (res == 1L) {
             jedis.expire(f.user, 3600L);
             return 1;
@@ -28,13 +27,13 @@ public class RedisUtil {
     }
 
     public Integer OpCancelItemChange(KGEditFormVo f) {
-        long res = jedis.hdel("IC:" + f.user, GlobalTrans.javaObjectToJsonStr(f));
-        return res == 1L ? 1 : 0;
+        String res = jedis.lpop("IC:" + f.user);
+        return res.equals("OK") ? 1 : 0;
     }
 
-    public Set<String> getOpsOfUser(String userName) {
-        Map<String, String> map = jedis.hgetAll("IC:" + userName);
-        return map.keySet();
+    public List<String> getOpsOfUser(String userName) {
+        long size = jedis.llen("IC:" + userName);
+        return jedis.lrange("IC:" + userName, 0, size);
     }
 
 

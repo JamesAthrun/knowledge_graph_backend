@@ -118,4 +118,21 @@ public class GlobalTrans {
 //        }
 //        return res;
 //    }
+
+    // JsonStr->JSONObject->JavaObject
+    public static <T> T jsonStrToJavaObject(String jsonStr,Class<T> type){
+        return JSON.toJavaObject(JSON.parseObject(jsonStr),type);
+    }
+
+    // JavaObject->JSONObject->JsonStr
+    public static <T> String javaObjectToJsonStr(T pojo){
+        JSONObject jo =  (JSONObject)(JSON.toJSON(pojo));
+        return jo.toJSONString();
+    }
+
+    // JavaObject->JSONObject
+    public static <T> JSONObject javaObjectToJSONObject(T pojo){
+        return (JSONObject)(JSON.toJSON(pojo));
+    }
+
 }

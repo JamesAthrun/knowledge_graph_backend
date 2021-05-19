@@ -73,98 +73,129 @@ public class KGController {
         return ResultBean.success();
     }
 
-    @PostMapping("/createItem")
+    @PostMapping("/commitChange")
     @ApiOperation(
             value = "",
             notes = ""
     )
-    public ResultBean createItem(@RequestBody KGEditFormVo f) {
-        logger.log("KGController createItem");
-        return kgService.createItem(
-                f.headId,
-                f.relationId,
-                f.tailId,
-                f.tableId,
-                f.title,
-                f.name,
-                f.division,
-                f.comment
-        );
+    public ResultBean commitChange(@RequestBody KGEditFormVo f){
+        logger.log("KGController commitChange");
+        return kgService.commitChange(f);
     }
 
-    @PostMapping("/createLink")
+    @PostMapping("/cancelChange")
     @ApiOperation(
             value = "",
             notes = ""
     )
-    public ResultBean createLink(@RequestBody KGEditFormVo f) {
-        logger.log("KGController createLink");
-        return kgService.createLink(
-                f.tableId,
-                f.headId,
-                f.relationId,
-                f.tailId);
+    public ResultBean cancelChange(@RequestBody KGEditFormVo f){
+        logger.log("KGController cancelChange");
+        return kgService.cancelChange(f);
     }
 
-    @PostMapping("/updateItem")
+    @GetMapping("/confirmChange")
     @ApiOperation(
             value = "",
             notes = ""
     )
-    public ResultBean updateItem(@RequestBody KGEditFormVo f) {
-        logger.log("KGController updateItem");
-        return kgService.updateItem(
-                f.id,
-                f.tableId,
-                f.title,
-                f.name,
-                f.division,
-                f.comment
-        );
+    public ResultBean confirmChange(@RequestParam String userName){
+        logger.log("KGController confirmChange");
+        return kgService.confirmChange(userName);
     }
 
-    @PostMapping("/replaceItem")
-    @ApiOperation(
-            value = "",
-            notes = ""
-    )
-    public ResultBean replaceItem(@RequestBody KGEditFormVo f) {
-        logger.log("KGController replaceItem");
-        return kgService.replaceItem(
-                f.headId,
-                f.relationId,
-                f.tailId,
-                f.id,
-                f.tableId,
-                f.title,
-                f.name,
-                f.division,
-                f.comment
-        );
-    }
 
-    @PostMapping("/deleteItem")
-    @ApiOperation(
-            value = "",
-            notes = ""
-    )
-    public ResultBean deleteItem(@RequestBody KGEditFormVo f) {
-        logger.log("KGController deleteItem");
-        return kgService.deleteItem(f.id);
-    }
-
-    @PostMapping("/deleteLink")
-    @ApiOperation(
-            value = "",
-            notes = ""
-    )
-    public ResultBean deleteLink(@RequestBody KGEditFormVo f) {
-        logger.log("KGController deleteLink");
-        return kgService.deleteLink(
-                f.headId,
-                f.relationId,
-                f.tailId);
-    }
+//    @PostMapping("/createItem")
+//    @ApiOperation(
+//            value = "",
+//            notes = ""
+//    )
+//    public ResultBean createItem(@RequestBody KGEditFormVo f) {
+//        logger.log("KGController createItem");
+//        return kgService.createItem(
+//                f.headId,
+//                f.relationId,
+//                f.tailId,
+//                f.tableId,
+//                f.title,
+//                f.name,
+//                f.division,
+//                f.comment
+//        );
+//    }
+//
+//    @PostMapping("/createLink")
+//    @ApiOperation(
+//            value = "",
+//            notes = ""
+//    )
+//    public ResultBean createLink(@RequestBody KGEditFormVo f) {
+//        logger.log("KGController createLink");
+//        return kgService.createLink(
+//                f.tableId,
+//                f.headId,
+//                f.relationId,
+//                f.tailId);
+//    }
+//
+//    @PostMapping("/updateItem")
+//    @ApiOperation(
+//            value = "",
+//            notes = ""
+//    )
+//    public ResultBean updateItem(@RequestBody KGEditFormVo f) {
+//        logger.log("KGController updateItem");
+//        return kgService.updateItem(
+//                f.id,
+//                f.tableId,
+//                f.title,
+//                f.name,
+//                f.division,
+//                f.comment
+//        );
+//    }
+//
+//    @PostMapping("/replaceItem")
+//    @ApiOperation(
+//            value = "",
+//            notes = ""
+//    )
+//    public ResultBean replaceItem(@RequestBody KGEditFormVo f) {
+//        logger.log("KGController replaceItem");
+//        return kgService.replaceItem(
+//                f.headId,
+//                f.relationId,
+//                f.tailId,
+//                f.id,
+//                f.tableId,
+//                f.title,
+//                f.name,
+//                f.division,
+//                f.comment
+//        );
+//    }
+//
+//    @PostMapping("/deleteItem")
+//    @ApiOperation(
+//            value = "",
+//            notes = ""
+//    )
+//    public ResultBean deleteItem(@RequestBody KGEditFormVo f) {
+//        logger.log("KGController deleteItem");
+//        return kgService.deleteItem(f.id);
+//    }
+//
+//    @PostMapping("/deleteLink")
+//    @ApiOperation(
+//            value = "",
+//            notes = ""
+//    )
+//    public ResultBean deleteLink(@RequestBody KGEditFormVo f) {
+//        logger.log("KGController deleteLink");
+//        return kgService.deleteLink(
+//                f.headId,
+//                f.relationId,
+//                f.tailId);
+//    }
 
     @PostMapping("/ask")
     @ApiOperation(

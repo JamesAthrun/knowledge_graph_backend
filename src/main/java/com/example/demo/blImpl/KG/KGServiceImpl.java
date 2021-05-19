@@ -8,15 +8,9 @@ import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.ItemPo;
 import com.example.demo.po.QuestionPo;
 import com.example.demo.po.TriplePo;
-import com.example.demo.util.GlobalConfigure;
-import com.example.demo.util.GlobalLogger;
-import com.example.demo.util.Recorder;
-import com.example.demo.util.ResultBean;
 import com.example.demo.util.Timer;
-import com.example.demo.vo.AnswerVo;
-import com.example.demo.vo.GraphInfoVo;
-import com.example.demo.vo.ItemListVo;
-import com.example.demo.vo.TreeInfoVo;
+import com.example.demo.util.*;
+import com.example.demo.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +33,8 @@ public class KGServiceImpl implements KGService {
     Recorder recorder;
     @Autowired
     Timer timer;
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public ResultBean searchEntity(String keywords) {
@@ -125,102 +121,79 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean createItem(String headId, String relationId, String tailId, String tableId, String title, String name, String division, String comment) {
-        //010
-        if (headId.equals("") && !relationId.equals("") && tailId.equals("")) {
-            String tmp = recorder.getRecordId();
-            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment));
-            return ResultBean.success(tmp);
-        }
-
-        //011
-        if (headId.equals("") && !relationId.equals("") && !tailId.equals("")) {
-            String tmp = recorder.getRecordId();
-            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment));
-            createLink(tableId, headId, relationId, tmp);
-            return ResultBean.success(tmp);
-        }
-
-        //110
-        if (!headId.equals("") && !relationId.equals("") && tailId.equals("")) {
-            String tmp = recorder.getRecordId();
-            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment));
-            createLink(tableId, tmp, relationId, tailId);
-            return ResultBean.success(tmp);
-        }
-
-        return ResultBean.error(105, "h-r-t must be 010 or 011 or 110");
+    public ResultBean commitChange(KGEditFormVo f) {
+        Integer res = redisUtil.OpCommitItemChange(f);
+        return res == 1 ? ResultBean.success() : ResultBean.error(701, "commit fail");
     }
 
     @Override
-    public ResultBean createLink(String tableId, String headId, String relationId, String tailId) {
-        if (headId.equals("")) return ResultBean.error(102, "HeadId not given");
-        if (relationId.equals("")) return ResultBean.error(103, "RelationId not given");
-        if (tailId.equals("")) return ResultBean.error(104, "TailId not given");
-        try {
-            tripleMapper.insert(new TriplePo(tableId, headId, relationId, tailId));
-        } catch (Exception e) {
-            return ResultBean.error(201, "Create Link failed");
-        }
-        return ResultBean.success();
+    public ResultBean cancelChange(KGEditFormVo f) {
+        Integer res = redisUtil.OpCancelItemChange(f);
+        return res == 1 ? ResultBean.success() : ResultBean.error(702, "cancel fail");
     }
 
     @Override
-    public ResultBean updateItem(String id, String tableId, String title, String name, String division, String comment) {
-        ItemPo i = itemMapper.getById(id);
-        if (i != null) {
-            itemMapper.deleteById(id);
-            itemMapper.insert(new ItemPo(id, tableId, title, name, division, comment)); // 错误处理未做
-            return ResultBean.success();
-        }
-        return ResultBean.error(202, "Update item failed");
-    }
+    public ResultBean confirmChange(String userName) {
+        Set<String> ops = redisUtil.getOpsOfUser(userName);
+        List<ResultBean> resList = new ArrayList<>();
+        for (String op : ops) {
+            KGEditFormVo f = GlobalTrans.jsonStrToJavaObject(op,KGEditFormVo.class);
+            switch (f.op) {
+                case "createItem":
+                    resList.add(createItem(
+                            f.headId,
+                            f.relationId,
+                            f.tailId,
+                            f.tableId,
+                            f.title,
+                            f.name,
+                            f.division,
+                            f.comment));
+                    break;
+                case "createLink":
+                    resList.add(createLink(
+                            f.tableId,
+                            f.headId,
+                            f.relationId,
+                            f.tailId));
+                    break;
+                case "updateItem":
+                    resList.add(updateItem(
+                            f.id,
+                            f.tableId,
+                            f.title,
+                            f.name,
+                            f.division,
+                            f.comment));
 
-
-    @Override
-    public ResultBean replaceItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment) {
-        // 这个函数没有进行合理性检查
-        if (id.equals(headId)) {
-            deleteLink(headId, relationId, tailId);
-            return createItem("", relationId, tailId, tableId, title, name, division, comment);
-        } else if (id.equals(tailId)) {
-            deleteLink(headId, relationId, tailId);
-            return createItem(headId, relationId, "", tableId, title, name, division, comment);
-        } else if (id.equals(relationId)) {
-            deleteLink(headId, relationId, tailId);
-            ResultBean code = createItem(headId, relationId, tailId, tableId, title, name, division, comment);
-            String newRelationId = (String) JSON.parse(code.data);
-            createLink(newRelationId, headId, newRelationId, tailId);
-            return ResultBean.success();
-        } else {
-            return ResultBean.error(205, "Replace item failed");
-        }
-    }
-
-    @Override
-    public ResultBean deleteItem(String id) {
-        if (id.equals("")) return ResultBean.error(101, "Id not given");
-        try {
-            itemMapper.deleteById(id);
-        } catch (Exception e1) {
-            try {
-                itemMapper.deleteById(id);
-            } catch (Exception e2) {
-                return ResultBean.error(203, "Delete item failed");
+                    break;
+                case "replaceItem":
+                    resList.add(replaceItem(
+                            f.headId,
+                            f.relationId,
+                            f.tailId,
+                            f.id,
+                            f.tableId,
+                            f.title,
+                            f.name,
+                            f.division,
+                            f.comment));
+                    break;
+                case "deleteItem":
+                    resList.add(deleteItem(f.id));
+                    break;
+                case "deleteLink":
+                    resList.add(deleteLink(
+                            f.headId,
+                            f.relationId,
+                            f.tailId));
+                    break;
+                default:
+                    resList.add(ResultBean.error(703, "op fail"));
             }
         }
-        return ResultBean.success();
-    }
-
-    @Override
-    public ResultBean deleteLink(String headId, String relationId, String tailId) {
-        if (headId.equals("")) return ResultBean.error(102, "HeadId not given");
-        if (relationId.equals("")) return ResultBean.error(103, "RelationId not given");
-        if (tailId.equals("")) return ResultBean.error(104, "TailId not given");
-        try {
-            tripleMapper.delete(headId, relationId, tailId);
-        } catch (Exception e) {
-            return ResultBean.error(201, "Delete link failed");
+        for(ResultBean res:resList){
+            if(res.code!=1) return res;
         }
         return ResultBean.success();
     }
@@ -249,6 +222,101 @@ public class KGServiceImpl implements KGService {
         }
         return ResultBean.success(ao);
     }
+
+    private ResultBean createItem(String headId, String relationId, String tailId, String tableId, String title, String name, String division, String comment) {
+        //010
+        if (headId.equals("") && !relationId.equals("") && tailId.equals("")) {
+            String tmp = recorder.getRecordId();
+            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment));
+            return ResultBean.success(tmp);
+        }
+
+        //011
+        if (headId.equals("") && !relationId.equals("") && !tailId.equals("")) {
+            String tmp = recorder.getRecordId();
+            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment));
+            createLink(tableId, headId, relationId, tmp);
+            return ResultBean.success(tmp);
+        }
+
+        //110
+        if (!headId.equals("") && !relationId.equals("") && tailId.equals("")) {
+            String tmp = recorder.getRecordId();
+            itemMapper.insert(new ItemPo(tmp, tableId, title, name, division, comment));
+            createLink(tableId, tmp, relationId, tailId);
+            return ResultBean.success(tmp);
+        }
+
+        return ResultBean.error(105, "h-r-t must be 010 or 011 or 110");
+    }
+
+    private ResultBean createLink(String tableId, String headId, String relationId, String tailId) {
+        if (headId.equals("")) return ResultBean.error(102, "HeadId not given");
+        if (relationId.equals("")) return ResultBean.error(103, "RelationId not given");
+        if (tailId.equals("")) return ResultBean.error(104, "TailId not given");
+        try {
+            tripleMapper.insert(new TriplePo(tableId, headId, relationId, tailId));
+        } catch (Exception e) {
+            return ResultBean.error(201, "Create Link failed");
+        }
+        return ResultBean.success();
+    }
+
+    private ResultBean updateItem(String id, String tableId, String title, String name, String division, String comment) {
+        ItemPo i = itemMapper.getById(id);
+        if (i != null) {
+            itemMapper.deleteById(id);
+            itemMapper.insert(new ItemPo(id, tableId, title, name, division, comment)); // 错误处理未做
+            return ResultBean.success();
+        }
+        return ResultBean.error(202, "Update item failed");
+    }
+
+    private ResultBean replaceItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment) {
+        // 这个函数没有进行合理性检查
+        if (id.equals(headId)) {
+            deleteLink(headId, relationId, tailId);
+            return createItem("", relationId, tailId, tableId, title, name, division, comment);
+        } else if (id.equals(tailId)) {
+            deleteLink(headId, relationId, tailId);
+            return createItem(headId, relationId, "", tableId, title, name, division, comment);
+        } else if (id.equals(relationId)) {
+            deleteLink(headId, relationId, tailId);
+            ResultBean code = createItem(headId, relationId, tailId, tableId, title, name, division, comment);
+            String newRelationId = (String) JSON.parse(code.data);
+            createLink(newRelationId, headId, newRelationId, tailId);
+            return ResultBean.success();
+        } else {
+            return ResultBean.error(205, "Replace item failed");
+        }
+    }
+
+    private ResultBean deleteItem(String id) {
+        if (id.equals("")) return ResultBean.error(101, "Id not given");
+        try {
+            itemMapper.deleteById(id);
+        } catch (Exception e1) {
+            try {
+                itemMapper.deleteById(id);
+            } catch (Exception e2) {
+                return ResultBean.error(203, "Delete item failed");
+            }
+        }
+        return ResultBean.success();
+    }
+
+    private ResultBean deleteLink(String headId, String relationId, String tailId) {
+        if (headId.equals("")) return ResultBean.error(102, "HeadId not given");
+        if (relationId.equals("")) return ResultBean.error(103, "RelationId not given");
+        if (tailId.equals("")) return ResultBean.error(104, "TailId not given");
+        try {
+            tripleMapper.delete(headId, relationId, tailId);
+        } catch (Exception e) {
+            return ResultBean.error(201, "Delete link failed");
+        }
+        return ResultBean.success();
+    }
+
 
     private void searchTriples(String id, int depth, int neighbors, List<TriplePo> res) {
         if (depth == 0) return;

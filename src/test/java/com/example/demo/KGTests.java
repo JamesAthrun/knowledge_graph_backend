@@ -31,14 +31,14 @@ class KGTests {
 
     @Test
     void getGraphData1() {
-        ResultBean res = kgService.getGraphData("103774");
+        ResultBean res = kgService.getGraphData("19185962");
         assertEquals(res.code, 1);
         assertNotEquals(res.data, "{\"data\":[]}");
     }
 
     @Test
     void getGraphData2() {
-        ResultBean res = kgService.getGraphData("103775");
+        ResultBean res = kgService.getGraphData("19185962");
         assertEquals(res.code, 1);
         assertNotEquals(res.data, "{\"data\":[]}");
     }

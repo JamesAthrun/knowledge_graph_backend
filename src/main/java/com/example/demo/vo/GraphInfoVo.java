@@ -30,6 +30,6 @@ public class GraphInfoVo {
         t = itemMapper.getById(triplePo.tail, ver);
         this.addItem(h);
         this.addItem(t);
-        link.add(triplePo.toJSONObject(r.name));
+        link.add(triplePo.toJSONObject(r.getNameSplit()[0]));
     }
 }

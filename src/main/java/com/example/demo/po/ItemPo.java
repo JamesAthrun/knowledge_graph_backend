@@ -35,17 +35,30 @@ public class ItemPo {
     public JSONObject toJSONObject() {
         JSONObject item = new JSONObject();
         item.put("id", this.id);
-        String des = "";
-        if (!this.name.equals("")) item.put("text", this.name);
-        else {
-            if (this.title.length() < 10)
-                item.put("text", this.title);
-            else
-                item.put("text", this.title.substring(0, 10) + "...");
-            item.put("content", this.title);
+        JSONObject data = new JSONObject();
+        if (!this.name.equals("")){
+            if(name.contains(" ")) {
+                item.put("text",getNameSplit()[0]);
+                data.put("nameEn",getNameSplit()[1]);
+            }
+            else {
+                item.put("text", this.name);
+                data.put("nameEn","");
+            }
         }
-        if (!this.comment.equals("")) des += "评论 " + this.comment + "\n";
-        item.put("des", des);
+        else {
+            if(!this.division.equals("String"))
+                item.put("text","");
+            else {
+                if (this.title.length() < 10)
+                    item.put("text", this.title);
+                else
+                    item.put("text", this.title.substring(0, 10) + "...");
+            }
+            data.put("content", this.title);
+        }
+        item.put("data",data);
+
         switch (this.division) {
             case "String":
                 item.put("nodeshape", "1");
@@ -63,6 +76,15 @@ public class ItemPo {
                 item.put("nodeshape", "1");
         }
         return item;
+    }
+
+    public String[] getNameSplit(){
+        String[] splits = name.split(" ");
+        String nameCn = splits[splits.length-1];
+        StringBuilder nameEn = new StringBuilder();
+        for(int i=0;i<splits.length-1;i++)
+            nameEn.append(splits[i]);
+        return new String[]{nameCn,nameEn.toString().replace("_"," ")};
     }
 
     public String toString() {

@@ -35,28 +35,12 @@ public class ItemPo {
     public JSONObject toJSONObject() {
         JSONObject item = new JSONObject();
         item.put("id", this.id);
+
+        item.put("text",getNormName());
+
         JSONObject data = new JSONObject();
-        if (!this.name.equals("")){
-            if(name.contains(" ")) {
-                item.put("text",getNameSplit()[0]);
-                data.put("nameEn",getNameSplit()[1]);
-            }
-            else {
-                item.put("text", this.name);
-                data.put("nameEn","");
-            }
-        }
-        else {
-            if(!this.division.equals("String"))
-                item.put("text","");
-            else {
-                if (this.title.length() < 10)
-                    item.put("text", this.title);
-                else
-                    item.put("text", this.title.substring(0, 10) + "...");
-            }
-            data.put("content", this.title);
-        }
+        data.put("content",getFullName());
+
         item.put("data",data);
 
         switch (this.division) {
@@ -78,14 +62,22 @@ public class ItemPo {
         return item;
     }
 
-    public String[] getNameSplit(){
-        String[] splits = name.split(" ");
-        String nameCn = splits[splits.length-1];
-        StringBuilder nameEn = new StringBuilder();
-        for(int i=0;i<splits.length-1;i++)
-            nameEn.append(splits[i]);
-        return new String[]{nameCn,nameEn.toString().replace("_"," ")};
+    public String getNormName(){
+        String tmp;
+        if(!this.name.equals(""))
+            tmp = this.name;
+        else
+            tmp = this.title;
+        if(tmp.length()<=10) return tmp;
+        else return tmp.substring(0,10)+"...";
     }
+
+    public String getFullName(){
+        if(!this.name.equals("")) return name;
+        else return title;
+    }
+
+
 
     public String toString() {
         StringBuilder sb = new StringBuilder();

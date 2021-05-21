@@ -26,9 +26,15 @@ public class TriplePo {
         this.drop = drop;
     }
 
-    public JSONObject toJSONObject(String name) {
+    public JSONObject toJSONObject(ItemPo property) {
         JSONObject item = new JSONObject();
-        item.put("text", name);
+
+        item.put("text",property.getNormName());
+
+        JSONObject data = new JSONObject();
+        data.put("content",property.getFullName());
+
+        item.put("data",data);
         item.put("from", this.head);
         item.put("id", this.relation);
         item.put("to", this.tail);

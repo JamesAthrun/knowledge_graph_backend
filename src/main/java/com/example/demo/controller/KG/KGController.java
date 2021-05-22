@@ -1,10 +1,11 @@
 package com.example.demo.controller.KG;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
+import com.example.demo.vo.KGEditFormVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController()
 @RequestMapping("/KG")
+@Api(
+        value = "知识图谱相关，增删查改",
+        tags = "知识图谱"
+)
 public class KGController {
     @Autowired
     KGService kgService;
@@ -19,131 +24,123 @@ public class KGController {
     GlobalLogger logger;
 
     @GetMapping("/search")
-    public ResultBean search(@RequestParam String keywords){
+    @ApiOperation(
+            value = "接受一个关键词，返回匹配的item列表",
+            notes = "匹配的范围包括编号、中英文名、字符串内容"
+    )
+    public ResultBean search(@RequestParam String keywords, @RequestParam String ver) {
         logger.log("KGController search");
-        return kgService.searchEntity(keywords);
+        return kgService.searchEntity(keywords, ver);
     }
 
     @GetMapping("/getGraphData")
-    public ResultBean getGraphData(@RequestParam String id){
+    @ApiOperation(
+            value = "接受一个节点的id，返回该节点所在的知识图谱局部的信息",
+            notes = "孤立节点的返回是不正常的"
+    )
+    public ResultBean getGraphData(@RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getGraphData");
-        return kgService.getGraphData(id);
+        return kgService.getGraphData(id, ver);
     }
 
     @GetMapping("/getTreeData")
-    public ResultBean getTreeData(@RequestParam String id){
+    @ApiOperation(
+            value = "和getGraphData类似，不过返回信息是树形结构",
+            notes = ""
+    )
+    public ResultBean getTreeData(@RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getTreeData");
-        //todo
-        return kgService.getTreeData(id);
+        return kgService.getTreeData(id, ver);
     }
 
     @PostMapping("/createGraphByJsonStr")
-    public ResultBean createGraphByJsonStr(@RequestBody String jsonStr){
+    @ApiOperation(
+            value = "通过一个jsonStr创建一张知识图谱",
+            notes = ""
+    )
+    public ResultBean createGraphByJsonStr(@RequestBody String jsonStr) {
         logger.log("KGController createGraphByJsonStr");
         return kgService.createGraphByJsonStr(jsonStr);
     }
 
     @PostMapping("/uploadFile")
-    public ResultBean uploadFile(HttpServletRequest request){
+    @ApiOperation(
+            value = "上传文件时用到的假接口",
+            notes = ""
+    )
+    public ResultBean uploadFile(HttpServletRequest request) {
         logger.log("uploading");
         return ResultBean.success();
     }
-    
-    @PostMapping("/createEntity")
-    public ResultBean createEntity(@RequestBody String jsonStr){
-        logger.log("KGController createEntity");
-        JSONObject jo = JSON.parseObject(jsonStr);
-        return kgService.createEntity(
-                jo.getString("headId"),
-                jo.getString("relationId"),
-                jo.getString("tailId"),
-                jo.getString("name"),
-                jo.getString("comment"),
-                jo.getString("nameEn"),
-                jo.getString("nameCn"),
-                jo.getString("division"),
-                jo.getString("from")
-        );
+
+    @PostMapping("/commitChange")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean commitChange(@RequestBody KGEditFormVo f) {
+        logger.log("KGController commitChange");
+        return kgService.commitChange(f);
     }
 
-    @PostMapping("/createProperty")
-    public ResultBean createProperty(@RequestBody String jsonStr){
-        logger.log("KGController createProperty");
-        JSONObject jo = JSON.parseObject(jsonStr);
-        return kgService.createProperty(
-                jo.getString("id"),
-                jo.getString("comment"),
-                jo.getString("nameEn"),
-                jo.getString("nameCn"),
-                jo.getString("from"),
-                jo.getString("domain"),
-                jo.getString("range"));
+    @PostMapping("/cancelChange")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean cancelChange(@RequestBody KGEditFormVo f) {
+        logger.log("KGController cancelChange");
+        return kgService.cancelChange(f);
     }
 
-    @PostMapping("/createLink")
-    public ResultBean createLink(@RequestBody String jsonStr){
-        logger.log("KGController createLink");
-        JSONObject jo = JSON.parseObject(jsonStr);
-        return kgService.createLink(
-                jo.getString("headId"),
-                jo.getString("relationId"),
-                jo.getString("tailId"));
+    @GetMapping("/confirmChange")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean confirmChange(@RequestParam String userName) {
+        logger.log("KGController confirmChange");
+        return kgService.confirmChange(userName);
     }
 
-    @PostMapping("/updateItem")
-    public ResultBean updateItem(@RequestBody String jsonStr){
-        logger.log("KGController updateItem");
-        JSONObject jo = JSON.parseObject(jsonStr);
-        return kgService.updateItem(
-                jo.getString("id"),
-                jo.getString("comment"),
-                jo.getString("nameEn"),
-                jo.getString("nameCn"),
-                jo.getString("division"),
-                jo.getString("from"),
-                jo.getString("domain"),
-                jo.getString("range"));
-    }
-
-    @PostMapping("/replaceItem")
-    public ResultBean replaceItem(@RequestBody String jsonStr){
-        logger.log("KGController replaceItem");
-        JSONObject jo = JSON.parseObject(jsonStr);
-        return kgService.replaceItem(
-                jo.getString("id"),
-                jo.getString("headId"),
-                jo.getString("relationId"),
-                jo.getString("tailId"),
-                jo.getString("name"),
-                jo.getString("comment"),
-                jo.getString("nameEn"),
-                jo.getString("nameCn"),
-                jo.getString("division"),
-                jo.getString("from"),
-                jo.getString("domain"),
-                jo.getString("range"));
-    }
-
-    @PostMapping("/deleteItem")
-    public ResultBean deleteItem(@RequestBody String id){
-        logger.log("KGController deleteItem");
-        return kgService.deleteItem(id);
-    }
-
-    @PostMapping("/deleteLink")
-    public ResultBean deleteLink(@RequestBody String jsonStr){
-        logger.log("KGController deleteLink");
-        JSONObject jo = JSON.parseObject(jsonStr);
-        return kgService.deleteLink(
-                jo.getString("headId"),
-                jo.getString("relationId"),
-                jo.getString("tailId"));
+    @GetMapping("/rollBackChange")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean rollBackChange(@RequestParam String ver, @RequestParam String tableId) {
+        logger.log("KGController rollBackChange");
+        return kgService.rollBackChange(ver, tableId);
     }
 
     @PostMapping("/ask")
-    public ResultBean ask(@RequestBody String questionStr){
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean ask(@RequestBody String questionStr) {
         logger.log("KGController ask");
         return kgService.ask(questionStr);
+    }
+
+    @GetMapping("/getGraphInfo")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean getGraphInfo(@RequestParam String tableId) {
+        logger.log("KGController rollBackChange");
+        return kgService.getGraphInfo(tableId);
+    }
+
+    @GetMapping("/getAllGraphInfo")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean getAllGraphInfo() {
+        logger.log("KGController rollBackChange");
+        return kgService.getAllGraphInfo();
     }
 
 }

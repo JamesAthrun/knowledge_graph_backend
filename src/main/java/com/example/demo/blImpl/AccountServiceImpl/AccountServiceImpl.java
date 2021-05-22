@@ -22,21 +22,20 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResultBean login(String name, String pwd) {
-        AccountPo accountPo = accountMapper.selectPwdByName(name);
-        if(pwd.equals(accountPo.pwd)) {
+        AccountPo accountPo = accountMapper.selectAccountByName(name);
+        if (pwd.equals(accountPo.pwd)) {
             JSONObject jo = new JSONObject();
-            jo.put("authority",accountPo.authority);
+            jo.put("authority", accountPo.authority);
             return ResultBean.success(jo);
-        }
-        else{
+        } else {
             logger.log("pwd not match");
-            return ResultBean.error(3,"pwd not match");
+            return ResultBean.error(3, "pwd not match");
         }
     }
 
     @Override
-    public ResultBean register(String name,String pwd, String email){
-        accountMapper.register(new AccountPo(name,pwd,email,"client"));
+    public ResultBean register(String name, String pwd, String email) {
+        accountMapper.register(new AccountPo(name, pwd, email, "client"));
         return ResultBean.success();
     }
 }

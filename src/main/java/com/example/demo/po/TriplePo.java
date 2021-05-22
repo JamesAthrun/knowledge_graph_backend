@@ -7,6 +7,8 @@ public class TriplePo {
     public String head;
     public String relation;
     public String tail;
+    public String ver;
+    public String drop;
 
     public TriplePo(String tableId, String head, String relation, String tail) {
         this.tableId = tableId;
@@ -15,21 +17,36 @@ public class TriplePo {
         this.tail = tail;
     }
 
-    public JSONObject toJSONObject(String name){
+    public TriplePo(String tableId, String head, String relation, String tail, String ver, String drop) {
+        this.tableId = tableId;
+        this.head = head;
+        this.relation = relation;
+        this.tail = tail;
+        this.ver = ver;
+        this.drop = drop;
+    }
+
+    public JSONObject toJSONObject(ItemPo property) {
         JSONObject item = new JSONObject();
-        item.put("name",name);
-        item.put("source",this.head);
-        item.put("id",this.relation);
-        item.put("target",this.tail);
+
+        item.put("text",property.getNormName());
+
+        JSONObject data = new JSONObject();
+        data.put("content",property.getFullName());
+
+        item.put("data",data);
+        item.put("from", this.head);
+        item.put("id", this.relation);
+        item.put("to", this.tail);
         return item;
     }
 
-    public JSONObject toJSONObject(){
+    public JSONObject toJSONObject() {
         JSONObject item = new JSONObject();
-        item.put("name",this.relation);
-        item.put("source",this.head);
-        item.put("id",this.relation);
-        item.put("target",this.tail);
+        item.put("text", this.relation);
+        item.put("from", this.head);
+        item.put("id", this.relation);
+        item.put("to", this.tail);
         return item;
     }
 }

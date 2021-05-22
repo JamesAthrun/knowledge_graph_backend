@@ -10,17 +10,17 @@ public class GlobalLogger {
 
     final Logger logger;
 
-    public GlobalLogger(){
+    public GlobalLogger() {
         this.logger = Logger.getLogger("GlobalLogger");
 //        this.logger.addHandler(new ConsoleHandler());
     }
 
-    public void log(String info){
-        logger.log(Level.INFO,info);
+    public void log(String info) {
+        logger.log(Level.INFO, info);
     }
 
-    public void error(String info){
-        logger.log(Level.INFO,info);
+    public void error(String info) {
+        logger.log(Level.INFO, info);
     }
 
 }

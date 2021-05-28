@@ -36,12 +36,12 @@ public class ItemPo {
         JSONObject item = new JSONObject();
         item.put("id", this.id);
 
-        item.put("text",getNormName());
+        item.put("text", getNormName());
 
         JSONObject data = new JSONObject();
-        data.put("content",getFullName());
+        data.put("content", getFullName());
 
-        item.put("data",data);
+        item.put("data", data);
 
         switch (this.division) {
             case "String":
@@ -62,21 +62,20 @@ public class ItemPo {
         return item;
     }
 
-    public String getNormName(){
+    public String getNormName() {
         String tmp;
-        if(!this.name.equals(""))
+        if (!this.name.equals(""))
             tmp = this.name;
         else
             tmp = this.title;
-        if(tmp.length()<=10) return tmp;
-        else return tmp.substring(0,10)+"...";
+        if (tmp.length() <= 10) return tmp;
+        else return tmp.substring(0, 10) + "...";
     }
 
-    public String getFullName(){
-        if(!this.name.equals("")) return name;
+    public String getFullName() {
+        if (!this.name.equals("")) return name;
         else return title;
     }
-
 
 
     public String toString() {

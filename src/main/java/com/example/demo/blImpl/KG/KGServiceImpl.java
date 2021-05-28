@@ -184,12 +184,12 @@ public class KGServiceImpl implements KGService {
     public ResultBean confirmChange(String userName) {
         List<String> ops = redisUtil.getOpsOfUser(userName);
         List<ResultBean> resList = new ArrayList<>();
-        String tableId = GlobalTrans.jsonStrToJavaObject(ops.iterator().next(), KGEditFormVo.class).tableId;
+        String tableId = Trans.jsonStrToJavaObject(ops.iterator().next(), KGEditFormVo.class).tableId;
         String ver = graphMapper.getPresentVer(tableId);
 
         List<KGEditFormVo> fs = new ArrayList<>();
         for (String op : ops) {
-            fs.add(GlobalTrans.jsonStrToJavaObject(op, KGEditFormVo.class));
+            fs.add(Trans.jsonStrToJavaObject(op, KGEditFormVo.class));
         }
 
         fs = handleId(fs);

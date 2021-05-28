@@ -23,7 +23,7 @@ import java.sql.DriverManager;
 import java.util.HashMap;
 import java.util.Properties;
 
-import static com.example.demo.util.GlobalTrans.getJsonString;
+import static com.example.demo.util.Trans.getJsonString;
 
 @Configuration
 public class GlobalConfigure {

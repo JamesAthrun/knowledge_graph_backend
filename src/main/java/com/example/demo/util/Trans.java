@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 
-public class GlobalTrans {
+public class Trans {
 
     public static String getJsonString(String filepath) {
         try {
@@ -79,11 +79,11 @@ public class GlobalTrans {
         return result;
     }
 
-    public static byte hexStrToByte(String inHex) {
+    private static byte hexStrToByte(String inHex) {
         return (byte) Integer.parseInt(inHex, 16);
     }
 
-    public static Key getDesKeyFromHexString(String hexStr) throws Exception {
+    private static Key getDesKeyFromHexString(String hexStr) throws Exception {
         byte[] bytes = hexStrToBytes(hexStr);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
         DESKeySpec keySpec = new DESKeySpec(bytes);
@@ -97,27 +97,23 @@ public class GlobalTrans {
         return sb.toString();
     }
 
-    public static JSONObject secretJsonStrToJsonObject(String ip, VerifyMapper verifyMapper, String secretJsonStr) throws Exception {
+    public static String secretStrToPlainStr(String ip, VerifyMapper verifyMapper, String secretJsonStr) throws Exception {
         String hexStr = verifyMapper.getDesKey(ip);
-        Key key = GlobalTrans.getDesKeyFromHexString(hexStr);
+        Key key = Trans.getDesKeyFromHexString(hexStr);
 
         Cipher cipher = Cipher.getInstance("DES/ECB/ISO10126Padding");
         cipher.init(Cipher.DECRYPT_MODE, key);
 
-        String jsonStr = bytesToStr(cipher.doFinal(hexStrToBytes(secretJsonStr)));
-        return JSON.parseObject(jsonStr);
+        return bytesToStr(cipher.doFinal(hexStrToBytes(secretJsonStr)));
     }
 
-//    public static HashMap<String,String> postBodyJsonStrToHashMap(String jsonStr){
-//        JSONObject jo = JSONObject.parseObject(jsonStr);
-//        HashMap<String,String> res = new HashMap<>();
-//        for(Object o:jo.keySet()){
-//            String key = (String)o;
-//            String value = jo.getString(key);
-//            res.put(key,value);
-//        }
-//        return res;
-//    }
+    public static String plainStrToSecretStr(String ip, VerifyMapper verifyMapper, String plainStr) throws Exception {
+        String hexStr = verifyMapper.getDesKey(ip);
+        Key key = Trans.getDesKeyFromHexString(hexStr);
+        Cipher cipher = Cipher.getInstance("DES/ECB/ISO10126Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        return bytesToHexStr(cipher.doFinal(plainStr.getBytes()));
+    }
 
     // JsonStr->JSONObject->JavaObject
     public static <T> T jsonStrToJavaObject(String jsonStr, Class<T> type) {

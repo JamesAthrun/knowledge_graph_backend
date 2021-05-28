@@ -66,7 +66,7 @@ public class Recorder {
     }
 
     public void load() {
-        JSONObject jo = JSONObject.parseObject(GlobalTrans.getJsonString("src/main/resources/recorder.json"));
+        JSONObject jo = JSONObject.parseObject(Trans.getJsonString("src/main/resources/recorder.json"));
         currentTableId = jo.getInteger("currentTableId");
         currentSeed = jo.getInteger("currentSeed");
         seed = jo.getInteger("seed");

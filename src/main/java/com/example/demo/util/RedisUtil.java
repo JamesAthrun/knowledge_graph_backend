@@ -18,7 +18,7 @@ public class RedisUtil {
     }
 
     public Integer OpCommitItemChange(KGEditFormVo f) {
-        long res = jedis.rpush("IC:" + f.user, GlobalTrans.javaObjectToJsonStr(f));
+        long res = jedis.rpush("IC:" + f.user, Trans.javaObjectToJsonStr(f));
         if (res == 1L) {
             jedis.expire(f.user, 3600L);
             return 1;

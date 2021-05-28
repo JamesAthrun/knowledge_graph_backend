@@ -118,7 +118,7 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean ask(@RequestBody String questionStr) {
+    public ResultBean ask(HttpServletRequest request, @RequestBody String questionStr) {
         logger.log("KGController ask");
         return kgService.ask(questionStr);
     }

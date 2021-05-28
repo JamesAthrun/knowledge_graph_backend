@@ -12,6 +12,10 @@
         set ver = #{ver}
         where tableId = #{tableId};
     </update>
+    <insert id="createHistory">
+        insert into nkg.history(tableId, ver, time, detail)
+        values (#{tableId}, #{ver}, #{time}, #{detail})
+    </insert>
 
     <select id="get" resultMap="GraphPo">
         select tableId, name, description, ver
@@ -28,6 +32,13 @@
         select ver
         from nkg.graph
         where tableId = #{tableId}
+    </select>
+
+    <select id="getHistory" resultType="com.example.demo.po.HistoryPo">
+        select tableId, time, ver, detail
+        from nkg.history
+        where tableId = #{tableId}
+        order by time desc
     </select>
 
     <delete id="rollBack">

@@ -28,4 +28,6 @@ public interface KGService {
     ResultBean getGraphInfo(String tableId);
 
     ResultBean getAllGraphInfo();
+
+    ResultBean getGraphHistory(String tableId);
 }

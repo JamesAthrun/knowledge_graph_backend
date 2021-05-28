@@ -76,12 +76,14 @@ create table `question`
 ) engine = MyISAM
   default charset = utf8;
 
-create table `commit`
+create table `history`
 (
-    `tableId` varchar(11) not null,
-    `ver`     varchar(11) not null,
-    `time`    varchar(256) default null,
-    primary key (`tableId`, `ver`)
+    `id`      int(11) auto_increment,
+    `tableId` varchar(11)   not null,
+    `ver`     varchar(11)   not null,
+    `time`    varchar(256)  not null,
+    `detail`  varchar(1024) not null,
+    primary key (`id`)
 ) engine = MyISAM
   default charset = utf8;
 

@@ -143,4 +143,14 @@ public class KGController {
         return kgService.getAllGraphInfo();
     }
 
+    @GetMapping("/getGraphHistory")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean getGraphHistory(@RequestParam String tableId) {
+        logger.log("KGController getGraphHistory");
+        return kgService.getGraphHistory(tableId);
+    }
+
 }

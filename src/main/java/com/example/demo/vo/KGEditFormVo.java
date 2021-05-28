@@ -1,5 +1,8 @@
 package com.example.demo.vo;
 
+import com.alibaba.fastjson.JSONObject;
+import com.example.demo.util.Trans;
+
 public class KGEditFormVo {
     public String headId;
     public String relationId;
@@ -32,4 +35,15 @@ public class KGEditFormVo {
         this.user = user;
     }
 
+    public JSONObject toJSONObject() {
+        return Trans.javaObjectToJSONObject(this);
+    }
+
+    public JSONObject toJSONObject(Integer mode) {
+        if (mode == 0) {
+            //todo 具体的翻译规则
+            return Trans.javaObjectToJSONObject(this);
+        }
+        return null;
+    }
 }

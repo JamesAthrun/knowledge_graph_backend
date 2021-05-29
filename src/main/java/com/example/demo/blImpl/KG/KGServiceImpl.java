@@ -1,14 +1,12 @@
 package com.example.demo.blImpl.KG;
 
+import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.KG.GraphMapper;
 import com.example.demo.data.KG.ItemMapper;
 import com.example.demo.data.KG.QuestionMapper;
 import com.example.demo.data.KG.TripleMapper;
-import com.example.demo.po.GraphPo;
-import com.example.demo.po.ItemPo;
-import com.example.demo.po.QuestionPo;
-import com.example.demo.po.TriplePo;
+import com.example.demo.po.*;
 import com.example.demo.util.Timer;
 import com.example.demo.util.*;
 import com.example.demo.vo.*;
@@ -184,15 +182,16 @@ public class KGServiceImpl implements KGService {
     public ResultBean confirmChange(String userName) {
         List<String> ops = redisUtil.getOpsOfUser(userName);
         List<ResultBean> resList = new ArrayList<>();
-        String tableId = GlobalTrans.jsonStrToJavaObject(ops.iterator().next(), KGEditFormVo.class).tableId;
+        String tableId = Trans.jsonStrToJavaObject(ops.iterator().next(), KGEditFormVo.class).tableId;
         String ver = graphMapper.getPresentVer(tableId);
 
         List<KGEditFormVo> fs = new ArrayList<>();
         for (String op : ops) {
-            fs.add(GlobalTrans.jsonStrToJavaObject(op, KGEditFormVo.class));
+            fs.add(Trans.jsonStrToJavaObject(op, KGEditFormVo.class));
         }
 
-        fs = handleId(fs);
+        handleId(fs);
+        JSONArray detail = new JSONArray();
 
         for (KGEditFormVo f : fs) {
             // id映射
@@ -260,12 +259,14 @@ public class KGServiceImpl implements KGService {
                 default:
                     resList.add(ResultBean.error(703, "op fail"));
             }
+            detail.add(f.toJSONObject());
         }
         for (ResultBean res : resList) {
             if (res.code != 1) return res;
         }
 
         graphMapper.confirmChange(incr(ver), tableId);
+        graphMapper.createHistory(tableId, incr(ver), Timer.getFormatTime(), detail.toJSONString());
         redisUtil.OpConfirmChange(userName);
         return ResultBean.success();
     }
@@ -273,6 +274,7 @@ public class KGServiceImpl implements KGService {
     @Override
     public ResultBean rollBackChange(String ver, String tableId) {
         graphMapper.rollBack(ver, tableId);
+        graphMapper.createHistory(tableId, ver, Timer.getFormatTime(), "NKG: roll back to ver " + ver);
         return ResultBean.success();
     }
 
@@ -286,6 +288,12 @@ public class KGServiceImpl implements KGService {
     public ResultBean getAllGraphInfo() {
         List<GraphPo> goList = graphMapper.getAll();
         return ResultBean.success(goList);
+    }
+
+    @Override
+    public ResultBean getGraphHistory(String tableId) {
+        List<HistoryPo> hisList = graphMapper.getHistory(tableId);
+        return ResultBean.success(HistoryPo.toJsonArray(hisList));
     }
 
     @Override

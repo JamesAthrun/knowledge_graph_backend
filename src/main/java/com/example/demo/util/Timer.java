@@ -3,6 +3,9 @@ package com.example.demo.util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Component
 public class Timer {
     long t;
@@ -11,6 +14,10 @@ public class Timer {
 
     Timer() {
         this.t = -1;
+    }
+
+    public static String getFormatTime() {
+        return new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
     }
 
     public void set() {
@@ -29,3 +36,4 @@ public class Timer {
         }
     }
 }
+

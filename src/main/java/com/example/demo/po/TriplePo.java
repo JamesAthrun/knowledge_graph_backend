@@ -29,12 +29,12 @@ public class TriplePo {
     public JSONObject toJSONObject(ItemPo property) {
         JSONObject item = new JSONObject();
 
-        item.put("text",property.getNormName());
+        item.put("text", property.getNormName());
 
         JSONObject data = new JSONObject();
-        data.put("content",property.getFullName());
+        data.put("content", property.getFullName());
 
-        item.put("data",data);
+        item.put("data", data);
         item.put("from", this.head);
         item.put("id", this.relation);
         item.put("to", this.tail);

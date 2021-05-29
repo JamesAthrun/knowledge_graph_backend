@@ -76,12 +76,14 @@ create table `question`
 ) engine = MyISAM
   default charset = utf8;
 
-create table `commit`
+create table `history`
 (
-    `tableId` varchar(11) not null,
-    `ver`     varchar(11) not null,
-    `time`    varchar(256) default null,
-    primary key (`tableId`, `ver`)
+    `id`      int(11) auto_increment,
+    `tableId` varchar(11)   not null,
+    `ver`     varchar(11)   not null,
+    `time`    varchar(256)  not null,
+    `detail`  varchar(1024) not null,
+    primary key (`id`)
 ) engine = MyISAM
   default charset = utf8;
 
@@ -93,3 +95,6 @@ insert into question (keyWords, help, relatedIds, ver)
 values ('[{"0":"农民工"},{"1":"预防"}]', '请仔细阅读以上内容，在完成的项后打勾，如果您已经全部完成，说明您已经百毒不侵，可以下地干活了！',
         '[{"0":"19321220"},{"1":"19747406"},{"2":"19261796"},{"3":"19509710"},{"4":"19771248"},{"5":"19357164"},{"6":"19891182"},{"7":"19836900"}]',
         '0');
+
+insert into verify(ip, desKey)
+values ('0:0:0:0:0:0:0:1', '9d791cf70b167002');

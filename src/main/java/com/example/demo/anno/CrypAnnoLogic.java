@@ -4,6 +4,7 @@ import com.example.demo.data.Verify.VerifyMapper;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
 import com.example.demo.util.Trans;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 
 @Aspect
 @Component
@@ -38,7 +40,10 @@ public class CrypAnnoLogic {
         if (request.getMethod().equals("POST")) {
             String ip = request.getRemoteAddr();
             String body = (String) objs[1];
-            objs[1] = Trans.secretStrToPlainStr(ip, verifyMapper, body);
+            String plainStr = Trans.secretStrToPlainStr(ip, verifyMapper, body);
+
+            objs[1] = plainStr;
+//            objs[1] = getConvertVoClass(joinPoint).getConstructor(String.class).newInstance(plainStr);
             ResultBean res = (ResultBean) joinPoint.proceed(objs);
             logger.log("handle result bean");
             res.setAsSecret(verifyMapper, ip);
@@ -47,5 +52,20 @@ public class CrypAnnoLogic {
             //todo 使用该注解后，get请求的参数不加密，但返回的data加密
             return joinPoint.proceed(joinPoint.getArgs());
         } else return joinPoint.proceed(joinPoint.getArgs());
+    }
+
+    private Class<?> getConvertVoClass(JoinPoint joinPoint) throws Exception {
+        String mName = joinPoint.getSignature().getName();
+        Method[] ms = joinPoint.getSignature().getDeclaringType().getDeclaredMethods();
+        Method joinMethod = null;
+        for (Method m :
+                ms) {
+            if (m.getName().equals(mName)) {
+                joinMethod = m;
+                break;
+            }
+        }
+        if (joinMethod == null) throw new Exception();
+        return joinMethod.getParameterTypes()[1];
     }
 }

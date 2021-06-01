@@ -298,7 +298,7 @@ public class KGServiceImpl implements KGService {
 
     private ResultBean createItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment, String ver) {
         itemMapper.insert(new ItemPo(id, tableId, title, name, division, comment, incr(ver), "0"));
-        if (!relationId.equals(id)) createLink(tableId, headId, relationId, tailId, ver);
+        if (id.equals(headId) || id.equals(relationId) || id.equals(tailId)) createLink(tableId, headId, relationId, tailId, ver);
         return ResultBean.success();
     }
 

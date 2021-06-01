@@ -9,7 +9,10 @@ import com.example.demo.data.KG.TripleMapper;
 import com.example.demo.po.*;
 import com.example.demo.util.Timer;
 import com.example.demo.util.*;
-import com.example.demo.vo.*;
+import com.example.demo.vo.AnswerVo;
+import com.example.demo.vo.GraphInfoVo;
+import com.example.demo.vo.ItemListVo;
+import com.example.demo.vo.KGEditFormVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -104,44 +107,26 @@ public class KGServiceImpl implements KGService {
 
         List<TriplePo> related_link = new ArrayList<>();
         searchTriples(id, 3, 5, related_link, ver);
+        //depth是递归查找上限，neighbors是每层头和尾的连接上限
 
-        TreeInfoVo to = new TreeInfoVo(id, itemMapper, ver);
+        HashMap<String, Integer> counter = new HashMap<>();
 
-        Queue<String> q = new LinkedList<>();
-        q.offer(id);
-        HashMap<String, ArrayList<TriplePo>> visited = new HashMap<>();
+        GraphInfoVo go = new GraphInfoVo(itemMapper, ver);
 
-        while (q.size() > 0) {
-            String pId = q.poll();
-            for (TriplePo triplePo : related_link) {
-                if (visited.get(triplePo.relation) != null && visited.get(triplePo.relation).contains(triplePo))
-                    continue;
-                if (triplePo.head.equals(pId)) {
-                    to.itemAdd(
-                            to.addItem(triplePo.head, triplePo.relation),
-                            triplePo.tail);
-                    q.offer(triplePo.tail);
-                    //p->relation->tail
-                    if (!visited.containsKey(triplePo.relation)) visited.put(triplePo.relation, new ArrayList<>());
-                    visited.get(triplePo.relation).add(triplePo);//不走原路
-                }
-                if (triplePo.tail.equals(pId)) {
-                    if (!(visited.get(triplePo.tail) != null && visited.get(triplePo.tail).contains(triplePo))) {
-                        to.itemAdd(
-                                to.addItem(triplePo.tail, triplePo.relation),
-                                triplePo.head);
-                        q.offer(triplePo.head);
-                        //p->relation->head
-                        if (!visited.containsKey(triplePo.relation)) visited.put(triplePo.relation, new ArrayList<>());
-                        visited.get(triplePo.relation).add(triplePo);
-                    }
-                }
+        for (TriplePo tri : related_link) {
+            if (!counter.containsKey(tri.tail)) {
+                go.addLink(tri);
+                counter.put(tri.tail, 1);
+            } else {
+                go.addLinkCopy(tri, counter.get(tri.tail));
+                counter.merge(tri.tail, 0, (oldValue, newValue) -> oldValue + 1);
             }
         }
 
         logger.log("相关节点数 " + related_link.size() + " 搜索用时 " + timer.get());
 
-        return ResultBean.success(to.getRoot());
+        return ResultBean.success(go);
+
     }
 
     @Override
@@ -162,22 +147,6 @@ public class KGServiceImpl implements KGService {
         return res == 1 ? ResultBean.success() : ResultBean.error(702, "cancel fail");
     }
 
-    private List<KGEditFormVo> handleId(List<KGEditFormVo> fs) {
-        List<String> idToMap = new ArrayList<>();
-        for (KGEditFormVo f : fs) {
-            String[] ids = {f.headId, f.relationId, f.tailId, f.id};
-            idToMap.addAll(Arrays.asList(ids));
-        }
-        HashMap<String, String> idMap = recorder.getFutureRecordId(idToMap);
-        for (KGEditFormVo f : fs) {
-            f.headId = idMap.get(f.headId);
-            f.relationId = idMap.get(f.relationId);
-            f.tailId = idMap.get(f.tailId);
-            f.id = idMap.get(f.id);
-        }
-        return fs;
-    }
-
     @Override
     public ResultBean confirmChange(String userName) {
         List<String> ops = redisUtil.getOpsOfUser(userName);
@@ -190,13 +159,15 @@ public class KGServiceImpl implements KGService {
             fs.add(Trans.jsonStrToJavaObject(op, KGEditFormVo.class));
         }
 
-        handleId(fs);
+        HashMap<KGEditFormVo, String> replaceMap = KGEditFormVo.handleId(fs, recorder);
         JSONArray detail = new JSONArray();
 
         for (KGEditFormVo f : fs) {
-            // id映射
-
             if (!f.tableId.equals(tableId)) return ResultBean.error(801, "cannot op more than 1 graph in 1 time");
+        }
+
+        for (KGEditFormVo f : fs) {
+            // id映射
             switch (f.op) {
                 case "createItem":
                     resList.add(createItem(
@@ -236,6 +207,7 @@ public class KGServiceImpl implements KGService {
                             f.relationId,
                             f.tailId,
                             f.id,
+                            replaceMap.get(f),
                             f.tableId,
                             f.title,
                             f.name,
@@ -261,13 +233,15 @@ public class KGServiceImpl implements KGService {
             }
             detail.add(f.toJSONObject());
         }
+
         for (ResultBean res : resList) {
             if (res.code != 1) return res;
         }
 
-        graphMapper.confirmChange(incr(ver), tableId);
-        graphMapper.createHistory(tableId, incr(ver), Timer.getFormatTime(), detail.toJSONString());
-        redisUtil.OpConfirmChange(userName);
+        graphMapper.confirmChange(incr(ver), tableId);//图谱版本号+1
+        graphMapper.createHistory(tableId, incr(ver), Timer.getFormatTime(), detail.toJSONString());//记录操作历史
+        redisUtil.OpConfirmChange(userName);//清除redis中的记录
+
         return ResultBean.success();
     }
 
@@ -340,19 +314,23 @@ public class KGServiceImpl implements KGService {
         return ResultBean.success();
     }
 
-    private ResultBean replaceItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment, String ver) {
+    private ResultBean replaceItem(String headId, String relationId, String tailId, String id, String position, String tableId, String title, String name, String division, String comment, String ver) {
         String tmp = recorder.getRecordId();
-        if (headId.equals(id)) {
-            deleteLink(headId, relationId, tailId, tableId, ver);
-            createItem(tmp, relationId, tailId, tmp, tableId, title, name, division, comment, ver);
-        } else if (tailId.equals(id)) {
-            deleteLink(headId, relationId, tailId, tableId, ver);
-            createItem(headId, relationId, tmp, tmp, tableId, title, name, division, comment, ver);
-        } else if (relationId.equals(id)) {
-            //阻塞掉原有
-            deleteLink(headId, relationId, tailId, tableId, ver);
-            createItem(headId, tmp, tailId, tmp, tableId, title, name, division, comment, ver);
-            createLink(tableId, headId, tmp, tailId, ver);
+        switch (position) {
+            case "head":
+                deleteLink(headId, relationId, tailId, tableId, ver);
+                createItem(tmp, relationId, tailId, tmp, tableId, title, name, division, comment, ver);
+                break;
+            case "tail":
+                deleteLink(headId, relationId, tailId, tableId, ver);
+                createItem(headId, relationId, tmp, tmp, tableId, title, name, division, comment, ver);
+                break;
+            case "relation":
+                //阻塞掉原有
+                deleteLink(headId, relationId, tailId, tableId, ver);
+                createItem(headId, tmp, tailId, tmp, tableId, title, name, division, comment, ver);
+                createLink(tableId, headId, tmp, tailId, ver);
+                break;
         }
         return ResultBean.success();
     }
@@ -381,7 +359,7 @@ public class KGServiceImpl implements KGService {
         List<TriplePo> tmp_t = new ArrayList<>();
         for (TriplePo tri : cases) {
             //注意避免re_hit的情况
-            if (!triple_existed(res, tri)) {
+            if (!tri.existIn(res)) {
                 if (tri.head.equals(id)) tmp_h.add(tri);
                 if (tri.relation.equals(id)) tmp_r.add(tri);
                 if (tri.tail.equals(id)) tmp_t.add(tri);
@@ -402,14 +380,6 @@ public class KGServiceImpl implements KGService {
         for (TriplePo tri : tmp_t) {
             if (!tri.head.equals(id)) searchTriples(tri.head, depth - 1, neighbors, res, ver);
         }
-    }
-
-    private boolean triple_existed(List<TriplePo> list, TriplePo item) {
-        for (TriplePo tmp : list) {
-            if (tmp.head.equals(item.head) && tmp.relation.equals(item.relation) && tmp.tail.equals(item.tail))
-                return true;
-        }
-        return false;
     }
 
     private String incr(String s) {

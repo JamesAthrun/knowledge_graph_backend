@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 
 @Component
 public class Recorder {
@@ -45,23 +43,16 @@ public class Recorder {
     }
 
     public String getRecordId() {
-        currentSeed = (A * currentSeed + B) % M;
+        synchronized (this) {
+            currentSeed = (A * currentSeed + B) % M;
+        }
         return String.valueOf(base + currentSeed);
     }
 
-    public HashMap<String, String> getFutureRecordId(List<String> idToMap) {
-        int currentSeedPresent = currentSeed;
-        HashMap<String, String> idMap = new HashMap<>();
-        for (String key : idToMap) {
-            if (!key.equals("") && Integer.parseInt(key) <= 1000) idMap.put(key, getRecordId());
-            else idMap.put(key, key);
-        }
-        currentSeed = currentSeedPresent;
-        return idMap;
-    }
-
     public String getTableId() {
-        this.currentTableId += 1;
+        synchronized (this) {
+            this.currentTableId += 1;
+        }
         return String.valueOf(this.currentTableId);
     }
 

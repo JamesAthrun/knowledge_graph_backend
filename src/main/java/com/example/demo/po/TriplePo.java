@@ -2,6 +2,8 @@ package com.example.demo.po;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.List;
+
 public class TriplePo {
     public String tableId;
     public String head;
@@ -48,5 +50,13 @@ public class TriplePo {
         item.put("id", this.relation);
         item.put("to", this.tail);
         return item;
+    }
+
+    public boolean existIn(List<TriplePo> list) {
+        for (TriplePo tmp : list) {
+            if (tmp.head.equals(head) && tmp.relation.equals(relation) && tmp.tail.equals(tail))
+                return true;
+        }
+        return false;
     }
 }

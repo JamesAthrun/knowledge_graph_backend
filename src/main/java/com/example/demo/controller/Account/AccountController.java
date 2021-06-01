@@ -7,6 +7,7 @@ import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
 import com.example.demo.vo.AccountVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,7 @@ public class AccountController {
             value = "用户登录",
             notes = ""
     )
+    @ApiImplicitParam(name = "s", value = "加密后的json字符串，如{\"name\":\"obama\",\"pwd\":\"123456\",\"email\":\"example@qq.com\"} -encrypt-> hexStr")
     public ResultBean login(HttpServletRequest request, @RequestBody String s) throws Exception {
         AccountVo account = new AccountVo(s);
         logger.log("AccountController login");
@@ -48,6 +50,7 @@ public class AccountController {
             value = "用户注册",
             notes = ""
     )
+    @ApiImplicitParam(name = "s", value = "加密后的json字符串，如{\"name\":\"obama\",\"pwd\":\"123456\",\"email\":\"example@qq.com\"} -encrypt-> hexStr")
     public ResultBean register(HttpServletRequest request, @RequestBody String s) throws Exception {
         AccountVo account = new AccountVo(s);
         logger.log("AccountController signup");

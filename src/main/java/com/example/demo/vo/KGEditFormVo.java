@@ -1,7 +1,13 @@
 package com.example.demo.vo;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.demo.util.Recorder;
 import com.example.demo.util.Trans;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class KGEditFormVo {
     public String headId;
@@ -35,6 +41,35 @@ public class KGEditFormVo {
         this.user = user;
     }
 
+    public static HashMap<KGEditFormVo, String> handleId(List<KGEditFormVo> fs, Recorder recorder) {
+        List<String> idToMap = new ArrayList<>();
+        HashMap<KGEditFormVo, String> replaceMap = new HashMap<>();
+        for (KGEditFormVo f : fs) {
+            String[] ids = {f.headId, f.relationId, f.tailId, f.id};
+            idToMap.addAll(Arrays.asList(ids));
+            if (f.op.equals("replaceItem")) {
+                replaceMap.put(f, f.getReplacePosition());
+            }
+        }
+
+        HashMap<String, String> idMap = new HashMap<>();
+        for (String key : idToMap) {
+            if (!key.equals("") && Integer.parseInt(key) <= 1000) idMap.put(key, recorder.getRecordId());
+        }
+
+        for (KGEditFormVo f : fs) {
+            if (idMap.containsKey(f.headId))
+                f.headId = idMap.get(f.headId);
+            if (idMap.containsKey(f.relationId))
+                f.relationId = idMap.get(f.relationId);
+            if (idMap.containsKey(f.tailId))
+                f.tailId = idMap.get(f.tailId);
+            if (idMap.containsKey(f.id))
+                f.id = idMap.get(f.id);
+        }
+        return replaceMap;
+    }
+
     public JSONObject toJSONObject() {
         return Trans.javaObjectToJSONObject(this);
     }
@@ -45,5 +80,15 @@ public class KGEditFormVo {
             return Trans.javaObjectToJSONObject(this);
         }
         return null;
+    }
+
+    private String getReplacePosition() {
+        if (id.equals(headId))
+            return "head";
+        else if (id.equals(relationId))
+            return "relation";
+        else if (id.equals(tailId))
+            return "tail";
+        else return null;
     }
 }

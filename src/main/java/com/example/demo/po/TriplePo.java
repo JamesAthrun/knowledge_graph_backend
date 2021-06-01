@@ -1,6 +1,7 @@
 package com.example.demo.po;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.demo.util.Trans;
 
 import java.util.List;
 
@@ -33,10 +34,9 @@ public class TriplePo {
 
         item.put("text", property.getNormName());
 
-        JSONObject data = new JSONObject();
-        data.put("content", property.getFullName());
-
+        JSONObject data = Trans.javaObjectToJSONObject(property);
         item.put("data", data);
+
         item.put("from", this.head);
         item.put("id", this.relation);
         item.put("to", this.tail);

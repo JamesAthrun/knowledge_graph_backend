@@ -101,6 +101,24 @@ public class KGServiceImpl implements KGService {
         return ResultBean.success(go);
     }
 
+    private List<String> getAllRoots(List<TriplePo> tris){
+        List<String> res = new ArrayList<>();
+        HashMap<String, Integer> tmp = new HashMap<>();
+        for (TriplePo tri :
+                tris) {
+            tmp.merge(tri.head,0,(o,n)->o);
+            tmp.merge(tri.relation,1,(o,n)->1);
+            tmp.merge(tri.tail,1,(o,n)->1);
+        }
+        for (String id :
+                tmp.keySet()) {
+            if(tmp.get(id).equals(0)){
+                res.add(id);
+            }
+        }
+        return res;
+    }
+
     @Override
     public ResultBean getTreeData(String id, String ver) {
         timer.set();
@@ -112,6 +130,15 @@ public class KGServiceImpl implements KGService {
         HashMap<String, Integer> counter = new HashMap<>();
 
         GraphInfoVo go = new GraphInfoVo(itemMapper, ver);
+
+        List<String> roots = getAllRoots(related_link);
+        final String TreeRoot = "19822994";
+        final String SubRoot = "19736712";
+        for (String root :
+                roots) {
+            related_link.add(new TriplePo(null,TreeRoot,SubRoot,root));
+        }
+        //找到所有的root，然后将其连接到一个统一的虚根上，以表示为一棵树
 
         for (TriplePo tri : related_link) {
             if (!counter.containsKey(tri.tail)) {
@@ -147,6 +174,45 @@ public class KGServiceImpl implements KGService {
         return res == 1 ? ResultBean.success() : ResultBean.error(702, "cancel fail");
     }
 
+    private String getReplacePosition(KGEditFormVo f) {
+        if (f.id.equals(f.headId))
+            return "head";
+        else if (f.id.equals(f.relationId))
+            return "relation";
+        else if (f.id.equals(f.tailId))
+            return "tail";
+        else return null;
+    }
+
+    private HashMap<KGEditFormVo, String> handleId(List<KGEditFormVo> fs, Recorder recorder) {
+        List<String> idToMap = new ArrayList<>();
+        HashMap<KGEditFormVo, String> replaceMap = new HashMap<>();
+        for (KGEditFormVo f : fs) {
+            String[] ids = {f.headId, f.relationId, f.tailId, f.id};
+            idToMap.addAll(Arrays.asList(ids));
+            if (f.op.equals("replaceItem")) {
+                replaceMap.put(f, getReplacePosition(f));
+            }
+        }
+
+        HashMap<String, String> idMap = new HashMap<>();
+        for (String key : idToMap) {
+            if (!key.equals("") && Integer.parseInt(key) <= 1000) idMap.put(key, recorder.getRecordId());
+        }
+
+        for (KGEditFormVo f : fs) {
+            if (idMap.containsKey(f.headId))
+                f.headId = idMap.get(f.headId);
+            if (idMap.containsKey(f.relationId))
+                f.relationId = idMap.get(f.relationId);
+            if (idMap.containsKey(f.tailId))
+                f.tailId = idMap.get(f.tailId);
+            if (idMap.containsKey(f.id))
+                f.id = idMap.get(f.id);
+        }
+        return replaceMap;
+    }
+
     @Override
     public ResultBean confirmChange(String userName) {
         List<String> ops = redisUtil.getOpsOfUser(userName);
@@ -159,7 +225,7 @@ public class KGServiceImpl implements KGService {
             fs.add(Trans.jsonStrToJavaObject(op, KGEditFormVo.class));
         }
 
-        HashMap<KGEditFormVo, String> replaceMap = KGEditFormVo.handleId(fs, recorder);
+        HashMap<KGEditFormVo, String> replaceMap = handleId(fs, recorder);
         JSONArray detail = new JSONArray();
 
         for (KGEditFormVo f : fs) {

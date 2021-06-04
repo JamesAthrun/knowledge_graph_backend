@@ -3,8 +3,8 @@
 <mapper namespace="com.example.demo.data.KG.GraphMapper">
 
     <insert id="insert" parameterType="com.example.demo.po.GraphPo" useGeneratedKeys="true" keyProperty="tableId">
-        replace into nkg.graph(tableId, name, description, ver)
-        values (#{tableId}, #{name}, #{description}, #{ver})
+        replace into nkg.graph(tableId, name, description, ver, userId, groupId, authority)
+        values (#{tableId}, #{name}, #{description}, #{ver}, #{userId}, #{groupId}, #{authority})
     </insert>
 
     <update id="confirmChange">
@@ -42,11 +42,19 @@
         where tableId = #{tableId};
     </delete>
 
+    <update id="updateAuthority">
+        update nkg.graph set `authority`=#{authority}
+        where tableId = #{tableId}
+    </update>
+
     <resultMap id="GraphPo" type="com.example.demo.po.GraphPo">
         <id column="tableId" property="tableId"/>
         <result column="name" property="name"/>
         <result column="description" property="description"/>
         <result column="ver" property="ver"/>
+        <result column="userId" property="userId"/>
+        <result column="groupId" property="groupId"/>
+        <result column="authority" property="authority"/>
     </resultMap>
 
 </mapper>

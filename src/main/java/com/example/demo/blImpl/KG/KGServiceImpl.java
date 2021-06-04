@@ -1,14 +1,12 @@
 package com.example.demo.blImpl.KG;
 
 import com.example.demo.bl.KG.KGService;
+import com.example.demo.data.Account.UserGroupMapper;
 import com.example.demo.data.KG.GraphMapper;
 import com.example.demo.data.KG.ItemMapper;
 import com.example.demo.data.KG.QuestionMapper;
 import com.example.demo.data.KG.TripleMapper;
-import com.example.demo.po.GraphPo;
-import com.example.demo.po.ItemPo;
-import com.example.demo.po.QuestionPo;
-import com.example.demo.po.TriplePo;
+import com.example.demo.po.*;
 import com.example.demo.util.Timer;
 import com.example.demo.util.*;
 import com.example.demo.vo.*;
@@ -38,6 +36,8 @@ public class KGServiceImpl implements KGService {
     RedisUtil redisUtil;
     @Autowired
     GraphMapper graphMapper;
+    @Autowired
+    UserGroupMapper userGroupMapper;
 
     //去重
     private static <T> void MySet(List<T> in) {
@@ -286,6 +286,39 @@ public class KGServiceImpl implements KGService {
     public ResultBean getAllGraphInfo() {
         List<GraphPo> goList = graphMapper.getAll();
         return ResultBean.success(goList);
+    }
+
+    @Override
+    public boolean getWritePermission(String tableId, int userId) {
+        GraphPo go = graphMapper.get(tableId);
+        if(go.userId == userId && go.authority / 100 >= 1) return true;
+        if(go.userId == userId && (go.authority / 10) % 10 >= 1) {
+            List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
+            for(GroupPo groupPo: groupPoList) {
+                if (groupPo.groupId == go.groupId) return true;
+            }
+        }
+        return go.userId == userId && go.authority % 10 >= 1;
+    }
+
+    @Override
+    public boolean getReadPermission(String tableId, int userId) {
+        GraphPo go = graphMapper.get(tableId);
+        if(go.userId == userId && go.authority / 100 == 2) return true;
+        if(go.userId == userId && (go.authority / 10) % 10 == 2) {
+            List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
+            for(GroupPo groupPo: groupPoList) {
+                if (groupPo.groupId == go.groupId) return true;
+            }
+        }
+        return go.userId == userId && go.authority % 10 == 2;
+    }
+
+    @Override
+    public ResultBean changeTablePermission(String tableId, int authority) {
+        if(authority <0 || authority / 100 > 2 || (authority / 10) % 10 > 2 || authority % 10 > 2) return ResultBean.error(-1, "权限设置错误");
+        graphMapper.updateAuthority(tableId, authority);
+        return ResultBean.success();
     }
 
     @Override

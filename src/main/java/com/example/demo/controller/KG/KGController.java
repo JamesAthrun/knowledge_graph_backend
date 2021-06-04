@@ -143,4 +143,13 @@ public class KGController {
         return kgService.getAllGraphInfo();
     }
 
+    @GetMapping("/updateGraphAuthority")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean updateGraphAuthority(@RequestParam String tableId, @RequestParam int authority) {
+        return kgService.changeTablePermission(tableId, authority);
+    }
+
 }

@@ -9,10 +9,7 @@ import com.example.demo.util.ResultBean;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -54,5 +51,14 @@ public class AccountController {
         JSONObject jo = GlobalTrans.secretJsonStrToJsonObject(ip, verifyMapper, s);
         String name = jo.getString("username"), pwd = jo.getString("password"), email = jo.getString("email");
         return accountService.register(name, pwd, email);
+    }
+
+    @GetMapping("/getGroupList")
+    @ApiOperation(
+            value = "获取特定用户用户组列表",
+            notes = ""
+    )
+    public ResultBean getGroupList(@RequestParam int userId) {
+        return accountService.getGroupList(userId);
     }
 }

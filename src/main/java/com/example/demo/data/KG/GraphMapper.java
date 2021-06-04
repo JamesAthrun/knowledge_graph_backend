@@ -20,4 +20,6 @@ public interface GraphMapper {
     void confirmChange(@Param("ver") String ver, @Param("tableId") String tableId);
 
     void rollBack(@Param("ver") String ver, @Param("tableId") String tableId);
+
+    void updateAuthority(@Param("tableId") String tableId, @Param("authority") int authority);
 }

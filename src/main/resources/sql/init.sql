@@ -48,13 +48,29 @@ create table `verify`
 
 create table `account`
 (
+    `userId`    int primary key AUTO_INCREMENT,
     `name`      varchar(256) not null,
     `pwd`       varchar(256) default null,
-    `email`     varchar(256) default null,
-    `authority` varchar(256) default null,
-    primary key (`name`)
+    `email`     varchar(256) default null
 ) engine = MyISAM
   default charset = utf8;
+
+create table `group`
+(
+    `groupId`    int primary key AUTO_INCREMENT,
+    `name`       varchar(256) not null,
+    `description`varchar(1024) default null
+) engine = MyISAM
+  default charset = utf8;
+
+
+create table `userGroup`
+(
+    `userId`  int,
+    `groupId` int,
+    primary key (`userId`, `groupId`)
+)
+default charset = utf8;
 
 create table `graph`
 (
@@ -62,6 +78,9 @@ create table `graph`
     `name`        varchar(256) default null,
     `description` varchar(256) default null,
     `ver`         varchar(11)  default null,
+    `userId`      int,
+    `groupId`     int,
+    `authority`   int,
     primary key (`tableId`)
 ) engine = MyISAM
   default charset = utf8;
@@ -85,10 +104,20 @@ create table `commit`
 ) engine = MyISAM
   default charset = utf8;
 
-insert into account (name, pwd, email, authority)
-values ('trump', '123456', 'magg@trump.com', 'president');
-insert into account (name, pwd, email, authority)
-values ('obama', '123456', 'blm@obama.com', 'president');
+insert into account (name, pwd, email)
+values ('trump', '123456', 'magg@trump.com');
+insert into account (name, pwd, email)
+values ('obama', '123456', 'blm@obama.com');
+insert into `group` (name, description)
+values ('common', 'common user');
+insert into `group` (name, description)
+values ('root', 'Administrator');
+insert into userGroup(userId, groupId)
+values (1, 1);
+insert into userGroup(userId, groupId)
+values (2, 1);
+insert into userGroup(userId, groupId)
+values (1, 2);
 insert into question (keyWords, help, relatedIds, ver)
 values ('[{"0":"农民工"},{"1":"预防"}]', '请仔细阅读以上内容，在完成的项后打勾，如果您已经全部完成，说明您已经百毒不侵，可以下地干活了！',
         '[{"0":"19321220"},{"1":"19747406"},{"2":"19261796"},{"3":"19509710"},{"4":"19771248"},{"5":"19357164"},{"6":"19891182"},{"7":"19836900"}]',

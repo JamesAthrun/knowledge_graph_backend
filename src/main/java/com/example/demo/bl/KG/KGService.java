@@ -28,4 +28,10 @@ public interface KGService {
     ResultBean getGraphInfo(String tableId);
 
     ResultBean getAllGraphInfo();
+
+    boolean getWritePermission(String tableId, int userId);
+
+    boolean getReadPermission(String tableId, int userId);
+
+    ResultBean changeTablePermission(String tableId, int authority);
 }

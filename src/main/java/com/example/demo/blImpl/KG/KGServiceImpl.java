@@ -381,21 +381,20 @@ public class KGServiceImpl implements KGService {
     }
 
     private ResultBean replaceItem(String headId, String relationId, String tailId, String id, String position, String tableId, String title, String name, String division, String comment, String ver) {
-        String tmp = recorder.getRecordId();
         switch (position) {
             case "head":
                 deleteLink(headId, relationId, tailId, tableId, ver);
-                createItem(tmp, relationId, tailId, tmp, tableId, title, name, division, comment, ver);
+                createItem(id, relationId, tailId, id, tableId, title, name, division, comment, ver);
                 break;
             case "tail":
                 deleteLink(headId, relationId, tailId, tableId, ver);
-                createItem(headId, relationId, tmp, tmp, tableId, title, name, division, comment, ver);
+                createItem(headId, relationId, id, id, tableId, title, name, division, comment, ver);
                 break;
             case "relation":
                 //阻塞掉原有
                 deleteLink(headId, relationId, tailId, tableId, ver);
-                createItem(headId, tmp, tailId, tmp, tableId, title, name, division, comment, ver);
-                createLink(tableId, headId, tmp, tailId, ver);
+                createItem(headId, id, tailId, id, tableId, title, name, division, comment, ver);
+                createLink(tableId, headId, id, tailId, ver);
                 break;
         }
         return ResultBean.success();

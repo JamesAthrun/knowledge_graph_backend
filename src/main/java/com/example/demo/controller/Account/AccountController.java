@@ -1,12 +1,13 @@
 package com.example.demo.controller.Account;
 
-import com.alibaba.fastjson.JSONObject;
+import com.example.demo.anno.CrypAnno;
 import com.example.demo.bl.Account.AccountService;
 import com.example.demo.data.Verify.VerifyMapper;
 import com.example.demo.util.GlobalLogger;
-import com.example.demo.util.GlobalTrans;
 import com.example.demo.util.ResultBean;
+import com.example.demo.vo.AccountVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,30 +28,30 @@ public class AccountController {
     @Autowired
     GlobalLogger logger;
 
+    @CrypAnno
     @PostMapping("/login")
     @ApiOperation(
             value = "用户登录",
             notes = ""
     )
+    @ApiImplicitParam(name = "s", value = "加密后的json字符串，如{\"name\":\"obama\",\"pwd\":\"123456\",\"email\":\"example@qq.com\"} -encrypt-> hexStr")
     public ResultBean login(HttpServletRequest request, @RequestBody String s) throws Exception {
+        AccountVo account = new AccountVo(s);
         logger.log("AccountController login");
-        String ip = request.getRemoteAddr();
-        JSONObject jo = GlobalTrans.secretJsonStrToJsonObject(ip, verifyMapper, s);
-        String name = jo.getString("username"), pwd = jo.getString("password");
-        return accountService.login(name, pwd);
+        return accountService.login(account.name, account.pwd);
     }
 
+    @CrypAnno
     @PostMapping("/signup")
     @ApiOperation(
             value = "用户注册",
             notes = ""
     )
+    @ApiImplicitParam(name = "s", value = "加密后的json字符串，如{\"name\":\"obama\",\"pwd\":\"123456\",\"email\":\"example@qq.com\"} -encrypt-> hexStr")
     public ResultBean register(HttpServletRequest request, @RequestBody String s) throws Exception {
+        AccountVo account = new AccountVo(s);
         logger.log("AccountController signup");
-        String ip = request.getRemoteAddr();
-        JSONObject jo = GlobalTrans.secretJsonStrToJsonObject(ip, verifyMapper, s);
-        String name = jo.getString("username"), pwd = jo.getString("password"), email = jo.getString("email");
-        return accountService.register(name, pwd, email);
+        return accountService.register(account.name, account.pwd, account.email);
     }
 
     @GetMapping("/getGroupList")

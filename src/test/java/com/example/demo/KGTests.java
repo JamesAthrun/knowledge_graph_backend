@@ -72,4 +72,31 @@ class KGTests {
         assertNotNull(itemMapper.getByTitle("REP1", "1"));
         assertNotNull(itemMapper.getByTitle("REP2", "1"));
     }
+
+    @Test
+    void historyTest1() {
+        KGEditFormVo f1 = new KGEditFormVo("19246962", "19255764", "1", "1", "0", "NEW1", "新实体一", "String", "", "createItem", "xgs");
+        KGEditFormVo f2 = new KGEditFormVo("1", "19255764", "2", "2", "0", "NEW2", "新实体二", "String", "", "createItem", "xgs");
+
+        kgController.commitChange(f1);
+        kgController.commitChange(f2);
+        kgController.confirmChange("xgs");
+        ResultBean res = kgController.getGraphHistory("0");
+        assertNotNull(res.data);
+        assertEquals(1, res.code);
+    }
+
+    @Test
+    void historyTest2() throws InterruptedException {
+        KGEditFormVo f1 = new KGEditFormVo("19246962", "19255764", "1", "1", "0", "NEW1", "新实体一", "String", "", "createItem", "xgs");
+        KGEditFormVo f2 = new KGEditFormVo("1", "19255764", "2", "2", "0", "NEW2", "新实体二", "String", "", "createItem", "xgs");
+
+        kgController.commitChange(f1);
+        kgController.commitChange(f2);
+        kgController.confirmChange("xgs");
+        Thread.sleep(3000);
+        kgController.rollBackChange("0", "0");
+        ResultBean res = kgController.getGraphHistory("0");
+        assertEquals(1, res.code);
+    }
 }

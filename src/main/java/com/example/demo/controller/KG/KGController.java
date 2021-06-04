@@ -118,7 +118,7 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean ask(@RequestBody String questionStr) {
+    public ResultBean ask(HttpServletRequest request, @RequestBody String questionStr) {
         logger.log("KGController ask");
         return kgService.ask(questionStr);
     }
@@ -141,6 +141,16 @@ public class KGController {
     public ResultBean getAllGraphInfo() {
         logger.log("KGController rollBackChange");
         return kgService.getAllGraphInfo();
+    }
+
+    @GetMapping("/getGraphHistory")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean getGraphHistory(@RequestParam String tableId) {
+        logger.log("KGController getGraphHistory");
+        return kgService.getGraphHistory(tableId);
     }
 
     @GetMapping("/updateGraphAuthority")

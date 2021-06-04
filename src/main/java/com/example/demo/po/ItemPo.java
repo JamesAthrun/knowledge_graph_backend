@@ -1,6 +1,7 @@
 package com.example.demo.po;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.demo.util.Trans;
 
 public class ItemPo {
     public String id;
@@ -36,12 +37,7 @@ public class ItemPo {
         JSONObject item = new JSONObject();
         item.put("id", this.id);
 
-        item.put("text",getNormName());
-
-        JSONObject data = new JSONObject();
-        data.put("content",getFullName());
-
-        item.put("data",data);
+        item.put("text", getNormName());
 
         switch (this.division) {
             case "String":
@@ -59,24 +55,27 @@ public class ItemPo {
             default:
                 item.put("nodeshape", "1");
         }
+
+        JSONObject data = Trans.javaObjectToJSONObject(this);
+        item.put("data", data);
+
         return item;
     }
 
-    public String getNormName(){
+    protected String getNormName() {
         String tmp;
-        if(!this.name.equals(""))
+        if (!this.name.equals(""))
             tmp = this.name;
         else
             tmp = this.title;
-        if(tmp.length()<=10) return tmp;
-        else return tmp.substring(0,10)+"...";
+        if (tmp.length() <= 10) return tmp;
+        else return tmp.substring(0, 10) + "...";
     }
 
-    public String getFullName(){
-        if(!this.name.equals("")) return name;
+    protected String getFullName() {
+        if (!this.name.equals("")) return name;
         else return title;
     }
-
 
 
     public String toString() {

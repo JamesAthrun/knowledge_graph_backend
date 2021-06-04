@@ -29,6 +29,8 @@ public interface KGService {
 
     ResultBean getAllGraphInfo();
 
+    ResultBean getGraphHistory(String tableId);
+
     boolean getWritePermission(String tableId, int userId);
 
     boolean getReadPermission(String tableId, int userId);

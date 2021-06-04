@@ -28,9 +28,9 @@ public class RedisUtil {
         } else return 0;
     }
 
-    public Integer OpCancelItemChange(KGEditFormVo f) {
-        String res = jedis.lpop("IC:" + f.user);
-        return res.equals("OK") ? 1 : 0;
+    public Integer OpCancelItemChange(String userName) {
+        String res = jedis.rpop("IC:" + userName);
+        return res!=null ? 1 : 0;
     }
 
     public List<String> getOpsOfUser(String userName) {

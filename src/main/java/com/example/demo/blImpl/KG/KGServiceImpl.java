@@ -169,8 +169,8 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean cancelChange(KGEditFormVo f) {
-        Integer res = redisUtil.OpCancelItemChange(f);
+    public ResultBean cancelChange(String userName) {
+        Integer res = redisUtil.OpCancelItemChange(userName);
         return res == 1 ? ResultBean.success() : ResultBean.error(702, "cancel fail");
     }
 

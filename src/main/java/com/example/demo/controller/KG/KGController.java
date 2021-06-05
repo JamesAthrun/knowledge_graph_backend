@@ -83,14 +83,14 @@ public class KGController {
         return kgService.commitChange(f);
     }
 
-    @PostMapping("/cancelChange")
+    @GetMapping("/cancelChange")
     @ApiOperation(
             value = "",
             notes = ""
     )
-    public ResultBean cancelChange(@RequestBody KGEditFormVo f) {
+    public ResultBean cancelChange(@RequestParam String userName) {
         logger.log("KGController cancelChange");
-        return kgService.cancelChange(f);
+        return kgService.cancelChange(userName);
     }
 
     @GetMapping("/confirmChange")

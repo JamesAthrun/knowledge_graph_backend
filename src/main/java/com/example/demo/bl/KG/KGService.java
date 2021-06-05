@@ -19,7 +19,7 @@ public interface KGService {
 
     ResultBean commitChange(KGEditFormVo f);
 
-    ResultBean cancelChange(KGEditFormVo f);
+    ResultBean cancelChange(String userName);
 
     ResultBean confirmChange(String userName);
 

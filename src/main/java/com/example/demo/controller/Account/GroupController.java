@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.Account.GroupService;
 import com.example.demo.po.GroupPo;
 import com.example.demo.util.GlobalLogger;
-import com.example.demo.util.GlobalTrans;
 import com.example.demo.util.ResultBean;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

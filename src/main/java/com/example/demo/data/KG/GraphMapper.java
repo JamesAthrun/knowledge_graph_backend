@@ -22,7 +22,10 @@ public interface GraphMapper {
 
     void rollBack(@Param("ver") String ver, @Param("tableId") String tableId);
 
+    void updateAuthority(@Param("tableId") String tableId, @Param("authority") int authority);
+
     List<HistoryPo> getHistory(@Param("tableId") String tableId);
 
     void createHistory(@Param("tableId") String tableId, @Param("ver") String ver, @Param("time") String time, @Param("detail") String detail);
+
 }

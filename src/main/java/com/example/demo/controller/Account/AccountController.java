@@ -10,10 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,5 +52,14 @@ public class AccountController {
         AccountVo account = new AccountVo(s);
         logger.log("AccountController signup");
         return accountService.register(account.name, account.pwd, account.email);
+    }
+
+    @GetMapping("/getGroupList")
+    @ApiOperation(
+            value = "获取特定用户用户组列表",
+            notes = ""
+    )
+    public ResultBean getGroupList(@RequestParam int userId) {
+        return accountService.getGroupList(userId);
     }
 }

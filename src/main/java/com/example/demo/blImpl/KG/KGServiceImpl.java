@@ -2,6 +2,7 @@ package com.example.demo.blImpl.KG;
 
 import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bl.KG.KGService;
+import com.example.demo.data.Account.UserGroupMapper;
 import com.example.demo.data.KG.GraphMapper;
 import com.example.demo.data.KG.ItemMapper;
 import com.example.demo.data.KG.QuestionMapper;
@@ -39,7 +40,8 @@ public class KGServiceImpl implements KGService {
     RedisUtil redisUtil;
     @Autowired
     GraphMapper graphMapper;
-
+    @Autowired
+    UserGroupMapper userGroupMapper;
     //去重
     private static <T> void MySet(List<T> in) {
         HashSet<T> out = new HashSet<>(in);
@@ -101,6 +103,24 @@ public class KGServiceImpl implements KGService {
         return ResultBean.success(go);
     }
 
+    private List<String> getAllRoots(List<TriplePo> tris){
+        List<String> res = new ArrayList<>();
+        HashMap<String, Integer> tmp = new HashMap<>();
+        for (TriplePo tri :
+                tris) {
+            tmp.merge(tri.head,0,(o,n)->o);
+            tmp.merge(tri.relation,1,(o,n)->1);
+            tmp.merge(tri.tail,1,(o,n)->1);
+        }
+        for (String id :
+                tmp.keySet()) {
+            if(tmp.get(id).equals(0)){
+                res.add(id);
+            }
+        }
+        return res;
+    }
+
     @Override
     public ResultBean getTreeData(String id, String ver) {
         timer.set();
@@ -112,6 +132,15 @@ public class KGServiceImpl implements KGService {
         HashMap<String, Integer> counter = new HashMap<>();
 
         GraphInfoVo go = new GraphInfoVo(itemMapper, ver);
+
+        List<String> roots = getAllRoots(related_link);
+        final String TreeRoot = "19822994";
+        final String SubRoot = "19736712";
+        for (String root :
+                roots) {
+            related_link.add(new TriplePo(null,TreeRoot,SubRoot,root));
+        }
+        //找到所有的root，然后将其连接到一个统一的虚根上，以表示为一棵树
 
         for (TriplePo tri : related_link) {
             if (!counter.containsKey(tri.tail)) {
@@ -142,9 +171,48 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean cancelChange(KGEditFormVo f) {
-        Integer res = redisUtil.OpCancelItemChange(f);
+    public ResultBean cancelChange(String userName) {
+        Integer res = redisUtil.OpCancelItemChange(userName);
         return res == 1 ? ResultBean.success() : ResultBean.error(702, "cancel fail");
+    }
+
+    private String getReplacePosition(KGEditFormVo f) {
+        if (f.id.equals(f.headId))
+            return "head";
+        else if (f.id.equals(f.relationId))
+            return "relation";
+        else if (f.id.equals(f.tailId))
+            return "tail";
+        else return null;
+    }
+
+    private HashMap<KGEditFormVo, String> handleId(List<KGEditFormVo> fs, Recorder recorder) {
+        List<String> idToMap = new ArrayList<>();
+        HashMap<KGEditFormVo, String> replaceMap = new HashMap<>();
+        for (KGEditFormVo f : fs) {
+            String[] ids = {f.headId, f.relationId, f.tailId, f.id};
+            idToMap.addAll(Arrays.asList(ids));
+            if (f.op.equals("replaceItem")) {
+                replaceMap.put(f, getReplacePosition(f));
+            }
+        }
+
+        HashMap<String, String> idMap = new HashMap<>();
+        for (String key : idToMap) {
+            if (!key.equals("") && Integer.parseInt(key) <= 1000) idMap.put(key, recorder.getRecordId());
+        }
+
+        for (KGEditFormVo f : fs) {
+            if (idMap.containsKey(f.headId))
+                f.headId = idMap.get(f.headId);
+            if (idMap.containsKey(f.relationId))
+                f.relationId = idMap.get(f.relationId);
+            if (idMap.containsKey(f.tailId))
+                f.tailId = idMap.get(f.tailId);
+            if (idMap.containsKey(f.id))
+                f.id = idMap.get(f.id);
+        }
+        return replaceMap;
     }
 
     @Override
@@ -159,7 +227,7 @@ public class KGServiceImpl implements KGService {
             fs.add(Trans.jsonStrToJavaObject(op, KGEditFormVo.class));
         }
 
-        HashMap<KGEditFormVo, String> replaceMap = KGEditFormVo.handleId(fs, recorder);
+        HashMap<KGEditFormVo, String> replaceMap = handleId(fs, recorder);
         JSONArray detail = new JSONArray();
 
         for (KGEditFormVo f : fs) {
@@ -315,21 +383,20 @@ public class KGServiceImpl implements KGService {
     }
 
     private ResultBean replaceItem(String headId, String relationId, String tailId, String id, String position, String tableId, String title, String name, String division, String comment, String ver) {
-        String tmp = recorder.getRecordId();
         switch (position) {
             case "head":
                 deleteLink(headId, relationId, tailId, tableId, ver);
-                createItem(tmp, relationId, tailId, tmp, tableId, title, name, division, comment, ver);
+                createItem(id, relationId, tailId, id, tableId, title, name, division, comment, ver);
                 break;
             case "tail":
                 deleteLink(headId, relationId, tailId, tableId, ver);
-                createItem(headId, relationId, tmp, tmp, tableId, title, name, division, comment, ver);
+                createItem(headId, relationId, id, id, tableId, title, name, division, comment, ver);
                 break;
             case "relation":
                 //阻塞掉原有
                 deleteLink(headId, relationId, tailId, tableId, ver);
-                createItem(headId, tmp, tailId, tmp, tableId, title, name, division, comment, ver);
-                createLink(tableId, headId, tmp, tailId, ver);
+                createItem(headId, id, tailId, id, tableId, title, name, division, comment, ver);
+                createLink(tableId, headId, id, tailId, ver);
                 break;
         }
         return ResultBean.success();
@@ -384,5 +451,38 @@ public class KGServiceImpl implements KGService {
 
     private String incr(String s) {
         return String.valueOf(Integer.parseInt(s) + 1);
+    }
+
+    public boolean getWritePermission(String tableId, int userId) {
+        GraphPo go = graphMapper.get(tableId);
+        if(go.userId == userId && go.authority / 100 >= 1) return true;
+        if(go.userId == userId && (go.authority / 10) % 10 >= 1) {
+            List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
+            for(GroupPo groupPo: groupPoList) {
+                if (groupPo.groupId == go.groupId) return true;
+            }
+        }
+        return go.userId == userId && go.authority % 10 >= 1;
+    }
+
+    @Override
+    public boolean getReadPermission(String tableId, int userId) {
+        GraphPo go = graphMapper.get(tableId);
+        if(go.userId == userId && go.authority / 100 == 2) return true;
+        if(go.userId == userId && (go.authority / 10) % 10 == 2) {
+            List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
+            for(GroupPo groupPo: groupPoList) {
+                if (groupPo.groupId == go.groupId) return true;
+            }
+        }
+        return go.userId == userId && go.authority % 10 == 2;
+    }
+
+    @Override
+    public ResultBean changeTablePermission(String tableId, int authority) {
+        if (authority < 0 || authority / 100 > 2 || (authority / 10) % 10 > 2 || authority % 10 > 2)
+            return ResultBean.error(-1, "权限设置错误");
+        graphMapper.updateAuthority(tableId, authority);
+        return ResultBean.success();
     }
 }

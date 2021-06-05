@@ -83,14 +83,14 @@ public class KGController {
         return kgService.commitChange(f);
     }
 
-    @PostMapping("/cancelChange")
+    @GetMapping("/cancelChange")
     @ApiOperation(
             value = "",
             notes = ""
     )
-    public ResultBean cancelChange(@RequestBody KGEditFormVo f) {
+    public ResultBean cancelChange(@RequestParam String userName) {
         logger.log("KGController cancelChange");
-        return kgService.cancelChange(f);
+        return kgService.cancelChange(userName);
     }
 
     @GetMapping("/confirmChange")
@@ -151,6 +151,15 @@ public class KGController {
     public ResultBean getGraphHistory(@RequestParam String tableId) {
         logger.log("KGController getGraphHistory");
         return kgService.getGraphHistory(tableId);
+    }
+
+    @GetMapping("/updateGraphAuthority")
+    @ApiOperation(
+            value = "",
+            notes = ""
+    )
+    public ResultBean updateGraphAuthority(@RequestParam String tableId, @RequestParam int authority) {
+        return kgService.changeTablePermission(tableId, authority);
     }
 
 }

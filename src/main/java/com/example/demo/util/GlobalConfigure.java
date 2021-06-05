@@ -77,7 +77,8 @@ public class GlobalConfigure {
 
         String tableId = recorder.getTableId();
         JSONObject jojo = JSONObject.parseObject(jsonString);
-        graphMapper.insert(new GraphPo(tableId, jojo.getString("name"), jojo.getString("description"), "0"));
+        //todo 创建表应该由用户/管理员进行
+        graphMapper.insert(new GraphPo(tableId, jojo.getString("name"), jojo.getString("description"), "0", 1, 2, 210));
 
         JSONArray entity_list = jojo.getJSONArray("item");
         HashMap<String, String> map = new HashMap<>();

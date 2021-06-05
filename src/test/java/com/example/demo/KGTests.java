@@ -54,9 +54,9 @@ class KGTests {
         KGEditFormVo f1 = new KGEditFormVo("19246962", "19255764", "1", "1", "0", "NEW1", "新实体一", "String", "", "createItem", "xgs");
         KGEditFormVo f2 = new KGEditFormVo("1", "19255764", "2", "2", "0", "NEW2", "新实体二", "String", "", "createItem", "xgs");
 
-        kgController.commitChange(f1);
-        kgController.commitChange(f2);
-        kgController.confirmChange("xgs");
+        assertEquals(1,kgController.commitChange(f1).code);
+        assertEquals(1,kgController.commitChange(f2).code);
+        assertEquals(1,kgController.confirmChange("xgs").code);
         assertNotNull(itemMapper.getByTitle("NEW1", "1"));
         assertNotNull(itemMapper.getByTitle("NEW2", "1"));
     }
@@ -66,21 +66,35 @@ class KGTests {
         KGEditFormVo f1 = new KGEditFormVo("19246962", "19255764", "19613276", "19613276", "0", "REP1", "替换实体一", "String", "", "replaceItem", "xgs");
         KGEditFormVo f2 = new KGEditFormVo("19246962", "19255764", "1", "19255764", "0", "REP2", "替换实体二", "String", "", "replaceItem", "xgs");
 
-        kgController.commitChange(f1);
-        kgController.commitChange(f2);
-        kgController.confirmChange("xgs");
+        assertEquals(1,kgController.commitChange(f1).code);
+        assertEquals(1,kgController.commitChange(f2).code);
+        assertEquals(1,kgController.confirmChange("xgs").code);
         assertNotNull(itemMapper.getByTitle("REP1", "1"));
         assertNotNull(itemMapper.getByTitle("REP2", "1"));
     }
+
+    @Test
+    void cancelTest() {
+        KGEditFormVo f1 = new KGEditFormVo("19246962", "19255764", "19613276", "19613276", "0", "REP1", "替换实体一", "String", "", "replaceItem", "xgs");
+        KGEditFormVo f2 = new KGEditFormVo("19246962", "19255764", "1", "19255764", "0", "REP2", "替换实体二", "String", "", "replaceItem", "xgs");
+
+        assertEquals(1,kgController.commitChange(f1).code);
+        assertEquals(1,kgController.commitChange(f2).code);
+        assertEquals(1,kgController.cancelChange("xgs").code);
+        assertEquals(1,kgController.confirmChange("xgs").code);
+        assertNotNull(itemMapper.getByTitle("REP1", "1"));
+        assertNull(itemMapper.getByTitle("REP2", "1"));
+    }
+
 
     @Test
     void historyTest1() {
         KGEditFormVo f1 = new KGEditFormVo("19246962", "19255764", "1", "1", "0", "NEW1", "新实体一", "String", "", "createItem", "xgs");
         KGEditFormVo f2 = new KGEditFormVo("1", "19255764", "2", "2", "0", "NEW2", "新实体二", "String", "", "createItem", "xgs");
 
-        kgController.commitChange(f1);
-        kgController.commitChange(f2);
-        kgController.confirmChange("xgs");
+        assertEquals(1,kgController.commitChange(f1).code);
+        assertEquals(1,kgController.commitChange(f2).code);
+        assertEquals(1,kgController.confirmChange("xgs").code);
         ResultBean res = kgController.getGraphHistory("0");
         assertNotNull(res.data);
         assertEquals(1, res.code);
@@ -91,9 +105,9 @@ class KGTests {
         KGEditFormVo f1 = new KGEditFormVo("19246962", "19255764", "1", "1", "0", "NEW1", "新实体一", "String", "", "createItem", "xgs");
         KGEditFormVo f2 = new KGEditFormVo("1", "19255764", "2", "2", "0", "NEW2", "新实体二", "String", "", "createItem", "xgs");
 
-        kgController.commitChange(f1);
-        kgController.commitChange(f2);
-        kgController.confirmChange("xgs");
+        assertEquals(1,kgController.commitChange(f1).code);
+        assertEquals(1,kgController.commitChange(f2).code);
+        assertEquals(1,kgController.confirmChange("xgs").code);
         Thread.sleep(3000);
         kgController.rollBackChange("0", "0");
         ResultBean res = kgController.getGraphHistory("0");

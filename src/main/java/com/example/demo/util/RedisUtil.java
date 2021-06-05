@@ -1,6 +1,7 @@
 package com.example.demo.util;
 
 import com.example.demo.vo.KGEditFormVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
@@ -9,6 +10,8 @@ import java.util.List;
 @Component
 public class RedisUtil {
     Jedis jedis;
+    @Autowired
+    GlobalLogger logger;
 //    static SetParams ICParams;
 
     public RedisUtil() {
@@ -19,16 +22,15 @@ public class RedisUtil {
 
     public Integer OpCommitItemChange(KGEditFormVo f) {
         long res = jedis.rpush("IC:" + f.user, Trans.javaObjectToJsonStr(f));
-        if (res == 1L) {
-            jedis.expire(f.user, 3600L);
+        if (res > 0L) {
+            jedis.expire("IC:" + f.user, 3600L);
             return 1;
         } else return 0;
-
     }
 
-    public Integer OpCancelItemChange(KGEditFormVo f) {
-        String res = jedis.lpop("IC:" + f.user);
-        return res.equals("OK") ? 1 : 0;
+    public Integer OpCancelItemChange(String userName) {
+        String res = jedis.rpop("IC:" + userName);
+        return res!=null ? 1 : 0;
     }
 
     public List<String> getOpsOfUser(String userName) {

@@ -19,7 +19,7 @@ public interface KGService {
 
     ResultBean commitChange(KGEditFormVo f);
 
-    ResultBean cancelChange(KGEditFormVo f);
+    ResultBean cancelChange(String userName);
 
     ResultBean confirmChange(String userName);
 
@@ -30,4 +30,10 @@ public interface KGService {
     ResultBean getAllGraphInfo();
 
     ResultBean getGraphHistory(String tableId);
+
+    boolean getWritePermission(String tableId, int userId);
+
+    boolean getReadPermission(String tableId, int userId);
+
+    ResultBean changeTablePermission(String tableId, int authority);
 }

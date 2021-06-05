@@ -39,8 +39,10 @@ public class GraphInfoVo {
         r = itemMapper.getById(triplePo.relation, ver);
         t = itemMapper.getById(triplePo.tail, ver);
         ItemPo itemCopy = new ItemPo(t.id + "_copy_" + copyNum, t.tableId, t.title, t.name, t.division, t.comment);
+        this.addItem(h);
         this.addItem(itemCopy);
         TriplePo triCopy = new TriplePo(triplePo.tableId, h.id, r.id, itemCopy.id);
         link.add(triCopy.toJSONObject(r));
     }
+
 }

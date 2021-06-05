@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.data.Account.GroupMapper">
+
+    <insert id="addGroup" parameterType="com.example.demo.po.GroupPo">
+        insert into nkg.`group`(name, description)
+        values (#{name}, #{description})
+    </insert>
+
+    <select id="selectGroupById" resultType="com.example.demo.po.GroupPo">
+        select *
+        from nkg.`group`
+        where groupId = #{id}
+    </select>
+
+
+</mapper>

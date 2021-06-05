@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface GroupService {
 
-    ResultBean addGroup(String name, String description);
+    ResultBean addGroup(String jsonString);
 
     ResultBean getUserList(int groupId);
 

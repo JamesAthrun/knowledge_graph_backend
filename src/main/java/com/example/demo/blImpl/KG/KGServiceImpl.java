@@ -455,19 +455,6 @@ public class KGServiceImpl implements KGService {
 
     public boolean getWritePermission(String tableId, int userId) {
         GraphPo go = graphMapper.get(tableId);
-        if(go.userId == userId && go.authority / 100 >= 1) return true;
-        if(go.userId == userId && (go.authority / 10) % 10 >= 1) {
-            List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
-            for(GroupPo groupPo: groupPoList) {
-                if (groupPo.groupId == go.groupId) return true;
-            }
-        }
-        return go.userId == userId && go.authority % 10 >= 1;
-    }
-
-    @Override
-    public boolean getReadPermission(String tableId, int userId) {
-        GraphPo go = graphMapper.get(tableId);
         if(go.userId == userId && go.authority / 100 == 2) return true;
         if(go.userId == userId && (go.authority / 10) % 10 == 2) {
             List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
@@ -475,7 +462,20 @@ public class KGServiceImpl implements KGService {
                 if (groupPo.groupId == go.groupId) return true;
             }
         }
-        return go.userId == userId && go.authority % 10 == 2;
+        return go.authority % 10 == 2;
+    }
+
+    @Override
+    public boolean getReadPermission(String tableId, int userId) {
+        GraphPo go = graphMapper.get(tableId);
+        if(go.userId == userId && go.authority / 100 >= 1) return true;
+        if(go.userId == userId && (go.authority / 10) % 10 >= 1) {
+            List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
+            for(GroupPo groupPo: groupPoList) {
+                if (groupPo.groupId == go.groupId) return true;
+            }
+        }
+        return go.authority % 10 >= 1;
     }
 
     @Override

@@ -19,7 +19,10 @@ public class GroupServiceImpl implements GroupService {
     UserGroupMapper userGroupMapper;
 
     @Override
-    public ResultBean addGroup(String name, String description) {
+    public ResultBean addGroup(String jsonString) {
+        JSONObject jojo = JSONObject.parseObject(jsonString);
+        String name = jojo.getString("name");
+        String description = jojo.getString("description");
         groupMapper.addGroup(new GroupPo(name, description));
         return ResultBean.success();
     }

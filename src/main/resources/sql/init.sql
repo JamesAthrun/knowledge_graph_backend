@@ -42,6 +42,7 @@ create table `verify`
 (
     `ip`     varchar(256) not null,
     `desKey` varchar(256) default null,
+    `userName` varchar(256) default null,
     primary key (`ip`)
 ) engine = MyISAM
   default charset = utf8;
@@ -125,5 +126,5 @@ values ('[{"0":"农民工"},{"1":"预防"}]', '请仔细阅读以上内容，在
         '[{"0":"19321220"},{"1":"19747406"},{"2":"19261796"},{"3":"19509710"},{"4":"19771248"},{"5":"19357164"},{"6":"19891182"},{"7":"19836900"}]',
         '0');
 
-insert into verify(ip, desKey)
-values ('0:0:0:0:0:0:0:1', '9d791cf70b167002');
+insert into verify(ip, desKey, userName)
+values ('0:0:0:0:0:0:0:1', '9d791cf70b167002','obama');

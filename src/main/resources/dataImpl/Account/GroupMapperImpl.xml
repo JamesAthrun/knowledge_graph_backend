@@ -8,7 +8,7 @@
     </insert>
 
     <select id="selectGroupById" resultType="com.example.demo.po.GroupPo">
-        select *
+        select groupId, name, description
         from nkg.`group`
         where groupId = #{id}
     </select>

@@ -8,13 +8,13 @@
     </insert>
 
     <select id="selectAccountByName" resultType="com.example.demo.po.AccountPo">
-        select *
+        select userId, name, pwd, email
         from nkg.account
         where name = #{name}
     </select>
 
     <select id="selectAccountById" resultType="com.example.demo.po.AccountPo">
-        select *
+        select userId, name, pwd, email
         from nkg.account
         where userId = #{id}
     </select>

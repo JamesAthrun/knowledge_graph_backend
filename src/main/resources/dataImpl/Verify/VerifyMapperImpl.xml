@@ -6,11 +6,21 @@
         replace into nkg.verify(ip, desKey)
         values (#{ip}, #{desKey})
     </insert>
+    <update id="setUserName">
+        update nkg.verify
+        set `userName` = #{userName}
+        where `ip` = #{ip}
+    </update>
 
     <select id="getDesKey" resultType="java.lang.String">
-        select desKey
+        select `desKey`
         from nkg.verify
-        where ip = #{ip}
+        where `ip` = #{ip}
+    </select>
+    <select id="getUserNameByIp" resultType="java.lang.String">
+        select `userName`
+        from nkg.verify
+        where `ip` = #{ip}
     </select>
 
 </mapper>

@@ -29,8 +29,8 @@ public class GroupController {
             value = "创建用户组",
             notes = ""
     )
-    public ResultBean addGroup(@RequestBody String name, @RequestBody String description) throws Exception {
-        return groupService.addGroup(name, description);
+    public ResultBean addGroup(@RequestBody String jsonString){
+        return groupService.addGroup(jsonString);
     }
 
     @GetMapping("/getUserList")

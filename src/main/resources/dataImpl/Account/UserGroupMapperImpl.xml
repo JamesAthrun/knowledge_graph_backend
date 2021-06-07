@@ -8,7 +8,7 @@
     </insert>
 
     <select id="selectGroupsByUserId" resultType="com.example.demo.po.GroupPo">
-        select *
+        select groupId, name, description
         from nkg.`group` g
         where g.groupId in (
             select ug.groupId
@@ -18,7 +18,7 @@
     </select>
 
     <select id="selectGroupsByGroupId" resultType="com.example.demo.po.AccountPo">
-        select *
+        select userId, name, pwd, email
         from nkg.`account` a
         where a.userId in (
             select ug.userId

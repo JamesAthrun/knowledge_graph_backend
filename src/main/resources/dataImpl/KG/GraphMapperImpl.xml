@@ -18,7 +18,7 @@
     </insert>
 
     <select id="get" resultMap="GraphPo">
-        select *
+        select tableId, name, description, ver, userId, groupId, authority
         from nkg.graph
         where tableId = #{tableId}
     </select>

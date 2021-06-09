@@ -1,5 +1,8 @@
 package com.example.demo.controller.KG;
 
+import com.example.demo.anno.AuthAnno;
+import com.example.demo.anno.AuthTableIdAnno;
+import com.example.demo.anno.AuthUserNameAnno;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
@@ -28,6 +31,7 @@ public class KGController {
             value = "接受一个关键词，返回匹配的item列表",
             notes = "匹配的范围包括编号、中英文名、字符串内容"
     )
+    @AuthAnno(level = "")
     public ResultBean search(@RequestParam String keywords, @RequestParam String ver) {
         logger.log("KGController search");
         return kgService.searchEntity(keywords, ver);
@@ -38,6 +42,7 @@ public class KGController {
             value = "接受一个节点的id，返回该节点所在的知识图谱局部的信息",
             notes = "孤立节点的返回是不正常的"
     )
+    @AuthAnno(level = "r")
     public ResultBean getGraphData(@RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getGraphData");
         return kgService.getGraphData(id, ver);
@@ -48,6 +53,7 @@ public class KGController {
             value = "和getGraphData类似，不过返回信息是树形结构",
             notes = ""
     )
+    @AuthAnno(level = "r")
     public ResultBean getTreeData(@RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getTreeData");
         return kgService.getTreeData(id, ver);
@@ -78,8 +84,10 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean commitChange(@RequestBody KGEditFormVo f) {
+    @AuthAnno(level = "w")
+    public ResultBean commitChange(HttpServletRequest request, @AuthUserNameAnno String userName, @RequestBody KGEditFormVo f) {
         logger.log("KGController commitChange");
+        if(!userName.equals(f.user)) return ResultBean.error(-111,"invalid user");
         return kgService.commitChange(f);
     }
 
@@ -88,7 +96,8 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean cancelChange(@RequestParam String userName) {
+    @AuthAnno(level = "w")
+    public ResultBean cancelChange(HttpServletRequest request, @AuthUserNameAnno String userName) {
         logger.log("KGController cancelChange");
         return kgService.cancelChange(userName);
     }
@@ -98,7 +107,8 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean confirmChange(@RequestParam String userName) {
+    @AuthAnno(level = "w")
+    public ResultBean confirmChange(HttpServletRequest request, @AuthUserNameAnno String userName) {
         logger.log("KGController confirmChange");
         return kgService.confirmChange(userName);
     }
@@ -108,7 +118,8 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean rollBackChange(@RequestParam String ver, @RequestParam String tableId) {
+    @AuthAnno(level = "w")
+    public ResultBean rollBackChange(HttpServletRequest request, @RequestParam String ver, @AuthTableIdAnno String tableId) {
         logger.log("KGController rollBackChange");
         return kgService.rollBackChange(ver, tableId);
     }
@@ -118,6 +129,7 @@ public class KGController {
             value = "",
             notes = ""
     )
+    @AuthAnno(level = "r")
     public ResultBean ask(HttpServletRequest request, @RequestBody String questionStr) {
         logger.log("KGController ask");
         return kgService.ask(questionStr);
@@ -128,7 +140,8 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean getGraphInfo(@RequestParam String tableId) {
+    @AuthAnno(level = "r")
+    public ResultBean getGraphInfo(@AuthTableIdAnno String tableId) {
         logger.log("KGController rollBackChange");
         return kgService.getGraphInfo(tableId);
     }
@@ -138,6 +151,7 @@ public class KGController {
             value = "",
             notes = ""
     )
+    @AuthAnno(level = "r")
     public ResultBean getAllGraphInfo() {
         logger.log("KGController rollBackChange");
         return kgService.getAllGraphInfo();
@@ -148,7 +162,8 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean getGraphHistory(@RequestParam String tableId) {
+    @AuthAnno(level = "r")
+    public ResultBean getGraphHistory(@AuthTableIdAnno String tableId) {
         logger.log("KGController getGraphHistory");
         return kgService.getGraphHistory(tableId);
     }
@@ -158,7 +173,8 @@ public class KGController {
             value = "",
             notes = ""
     )
-    public ResultBean updateGraphAuthority(@RequestParam String tableId, @RequestParam int authority) {
+    @AuthAnno(level = "w")
+    public ResultBean updateGraphAuthority(@AuthTableIdAnno String tableId, @RequestParam int authority) {
         return kgService.changeTablePermission(tableId, authority);
     }
 

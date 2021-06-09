@@ -1,6 +1,5 @@
 package com.example.demo.controller.Account;
 
-import com.example.demo.anno.AuthAnno;
 import com.example.demo.anno.CryptAnno;
 import com.example.demo.bl.Account.AccountService;
 import com.example.demo.data.Verify.VerifyMapper;
@@ -55,7 +54,6 @@ public class AccountController {
         return accountService.register(account.name, account.pwd, account.email);
     }
 
-    @AuthAnno
     @GetMapping("/getGroupList")
     @ApiOperation(
             value = "获取特定用户用户组列表",

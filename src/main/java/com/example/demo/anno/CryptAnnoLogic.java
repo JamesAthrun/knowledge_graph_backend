@@ -29,6 +29,7 @@ public class CryptAnnoLogic {
     public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] objs = joinPoint.getArgs();
         HttpServletRequest request = AnnoUtil.getArgOfUniqueParamType(HttpServletRequest.class,joinPoint);
+        if(request==null) throw new Exception();
 
         if (request.getMethod().equals("POST")) {
             String ip = request.getRemoteAddr();

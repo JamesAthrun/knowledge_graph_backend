@@ -231,10 +231,6 @@ public class KGServiceImpl implements KGService {
         JSONArray detail = new JSONArray();
 
         for (KGEditFormVo f : fs) {
-            if (!f.tableId.equals(tableId)) return ResultBean.error(801, "cannot op more than 1 graph in 1 time");
-        }
-
-        for (KGEditFormVo f : fs) {
             // id映射
             switch (f.op) {
                 case "createItem":

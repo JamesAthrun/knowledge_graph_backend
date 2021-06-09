@@ -1,5 +1,6 @@
 package com.example.demo.anno;
 
+import com.example.demo.data.KG.GraphMapper;
 import com.example.demo.data.Verify.VerifyMapper;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.Trans;
@@ -19,6 +20,8 @@ public class AuthAnnoLogic {
     GlobalLogger logger;
     @Autowired
     VerifyMapper verifyMapper;
+    @Autowired
+    GraphMapper graphMapper;
 
     @Pointcut(value = "@annotation(com.example.demo.anno.AuthAnno)")
     private void aspectJMethod() {
@@ -39,10 +42,13 @@ public class AuthAnnoLogic {
         String TableIdByClient = AnnoUtil.getCookieValueOfUniqueName("table_id",request);
         //todo 根据authAnno的属性level来判断发起该请求的用户是否拥有操作tableId对应图谱的权限
         String levelToOp = authAnno.level();//"r" "w" ""
-        if(levelToOp.equals("r"))
-            ;
-        if(levelToOp.equals("w"))
-            ;
+        if(!levelToOp.equals("")){
+            String authStr = graphMapper.selectAuthority(TableIdByClient);
+            if(levelToOp.equals("r"))
+                ;
+            if(levelToOp.equals("w"))
+                ;
+        }
 
         //若带有AuthUserNameAnno的注解，则赋为真实的userName
         int ArgUserNameIndex = AnnoUtil.getArgIndexOfUniqueAnno(AuthUserNameAnno.class,joinPoint);

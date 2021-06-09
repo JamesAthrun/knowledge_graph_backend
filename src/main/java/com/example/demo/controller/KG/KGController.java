@@ -142,7 +142,7 @@ public class KGController {
     )
     @AuthAnno(level = "r")
     public ResultBean getGraphInfo(HttpServletRequest request, @AuthTableIdAnno String tableId) {
-        logger.log("KGController rollBackChange");
+        logger.log("KGController getGraphInfo");
         return kgService.getGraphInfo(tableId);
     }
 
@@ -153,7 +153,7 @@ public class KGController {
     )
     @AuthAnno(level = "r")
     public ResultBean getAllGraphInfo(HttpServletRequest request) {
-        logger.log("KGController rollBackChange");
+        logger.log("KGController getAllGraphInfo");
         return kgService.getAllGraphInfo();
     }
 

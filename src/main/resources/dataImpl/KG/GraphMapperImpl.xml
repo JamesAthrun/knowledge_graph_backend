@@ -40,6 +40,11 @@
         where tableId = #{tableId}
         order by time desc
     </select>
+    <select id="selectAuthority" resultType="java.lang.String">
+        select authority
+        from nkg.graph
+        where tableId=#{tableId}
+    </select>
 
     <delete id="rollBack">
         delete

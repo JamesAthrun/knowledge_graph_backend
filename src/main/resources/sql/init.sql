@@ -108,9 +108,9 @@ create table `history`
   default charset = utf8;
 
 insert into account (name, pwd, email)
-values ('trump', '123456', 'magg@trump.com');
-insert into account (name, pwd, email)
 values ('obama', '123456', 'blm@obama.com');
+insert into account (name, pwd, email)
+values ('trump', '123456', 'magg@trump.com');
 insert into `group` (name, description)
 values ('common', 'common user');
 insert into `group` (name, description)

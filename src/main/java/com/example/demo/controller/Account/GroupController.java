@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("")
 @Api(
         value = "用户组相关",
-        tags = "用户"
+        tags = "用户组"
 )
 public class GroupController {
     @Autowired

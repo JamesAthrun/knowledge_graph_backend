@@ -13,7 +13,7 @@ public interface KGService {
 
     ResultBean getTreeData(String id, String ver);
 
-    ResultBean createGraphByJsonStr(String jsonStr);
+    ResultBean createGraphByJsonStr(String jsonStr, String name);
 
     ResultBean ask(String questionStr);
 

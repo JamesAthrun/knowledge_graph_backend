@@ -54,7 +54,7 @@ public class KGController {
             notes = ""
     )
     @AuthAnno(level = "r")
-    public ResultBean getTreeData(HttpServletRequest request, @RequestParam String id, @RequestParam String ver) {
+    public ResultBean getTreeData(@RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getTreeData");
         return kgService.getTreeData(id, ver);
     }
@@ -64,9 +64,10 @@ public class KGController {
             value = "通过一个jsonStr创建一张知识图谱",
             notes = ""
     )
-    public ResultBean createGraphByJsonStr(HttpServletRequest request, @RequestBody String jsonStr) {
+    @AuthAnno
+    public ResultBean createGraphByJsonStr(@RequestBody String jsonStr, @AuthUserNameAnno String userName) {
         logger.log("KGController createGraphByJsonStr");
-        return kgService.createGraphByJsonStr(jsonStr);
+        return kgService.createGraphByJsonStr(jsonStr, userName);
     }
 
     @PostMapping("/uploadFile")

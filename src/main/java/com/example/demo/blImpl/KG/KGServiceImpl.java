@@ -2,6 +2,7 @@ package com.example.demo.blImpl.KG;
 
 import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bl.KG.KGService;
+import com.example.demo.data.Account.AccountMapper;
 import com.example.demo.data.Account.UserGroupMapper;
 import com.example.demo.data.KG.GraphMapper;
 import com.example.demo.data.KG.ItemMapper;
@@ -42,6 +43,8 @@ public class KGServiceImpl implements KGService {
     GraphMapper graphMapper;
     @Autowired
     UserGroupMapper userGroupMapper;
+    @Autowired
+    AccountMapper accountMapper;
     //去重
     private static <T> void MySet(List<T> in) {
         HashSet<T> out = new HashSet<>(in);
@@ -159,8 +162,9 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean createGraphByJsonStr(String jsonString) {
-        globalConfigure.createGraphByJsonStr(jsonString);
+    public ResultBean createGraphByJsonStr(String jsonString, String name) {
+        AccountPo accountPo = accountMapper.selectAccountByName(name);
+        globalConfigure.createGraphByJsonStr(jsonString, accountPo.userId);
         return ResultBean.success();
     }
 

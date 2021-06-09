@@ -71,16 +71,16 @@ public class GlobalConfigure {
         recorder.init();
         logger.log("data load begin");
         String jsonString = getJsonString(dataPath);
-        createGraphByJsonStr(jsonString);
+        createGraphByJsonStr(jsonString, 1);
         logger.log("data load end");
     }
 
-    public void createGraphByJsonStr(String jsonString) {
+    public void createGraphByJsonStr(String jsonString, int userId) {
         timer.set();
 
         String tableId = recorder.getTableId();
         JSONObject jojo = JSONObject.parseObject(jsonString);
-        graphMapper.insert(new GraphPo(tableId, jojo.getString("name"), jojo.getString("description"), "0", 1, 2, 210));
+        graphMapper.insert(new GraphPo(tableId, jojo.getString("name"), jojo.getString("description"), "0", userId, jojo.getInteger("groupId"), jojo.getInteger("authority")));
 
         JSONArray entity_list = jojo.getJSONArray("item");
         HashMap<String, String> map = new HashMap<>();
@@ -109,8 +109,8 @@ public class GlobalConfigure {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        addAllowedOrigins(corsConfiguration); // 1
-        corsConfiguration.addAllowedOrigin("*");
+        addAllowedOrigins(corsConfiguration); // 1
+//        corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedHeader("*"); // 2
         corsConfiguration.addAllowedMethod("*"); // 3
         corsConfiguration.setAllowCredentials(true); // 跨域session共享

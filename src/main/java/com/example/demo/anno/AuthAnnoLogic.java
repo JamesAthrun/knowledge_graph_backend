@@ -49,10 +49,12 @@ public class AuthAnnoLogic {
         if(levelToOp.equals("r")) {
             AccountPo accountPo = accountMapper.selectAccountByName(UserNameByServer);
             boolean permission = kgService.getReadPermission(TableIdByClient, accountPo.userId);
+            if (!permission) throw new Exception();
         }
         if(levelToOp.equals("w")) {
             AccountPo accountPo = accountMapper.selectAccountByName(UserNameByServer);
             boolean permission = kgService.getWritePermission(TableIdByClient, accountPo.userId);
+            if (!permission) throw new Exception();
         }
         //若带有AuthUserNameAnno的注解，则赋为真实的userName
         int ArgUserNameIndex = AnnoUtil.getArgIndexOfUniqueAnno(AuthUserNameAnno.class,joinPoint);

@@ -38,9 +38,4 @@ public class AccountServiceImpl implements AccountService {
         accountMapper.register(new AccountPo(name, pwd, email));
         return ResultBean.success();
     }
-
-    @Override
-    public ResultBean getGroupList(int userId) {
-        return ResultBean.success(userGroupMapper.selectGroupsByUserId(userId));
-    }
 }

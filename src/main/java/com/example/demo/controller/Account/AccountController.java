@@ -55,13 +55,4 @@ public class AccountController {
         AccountVo account = new AccountVo(s);
         return accountService.register(account.name, account.pwd, account.email);
     }
-
-    @GetMapping("/getGroupList")
-    @ApiOperation(
-            value = "获取特定用户用户组列表",
-            notes = ""
-    )
-    public ResultBean getGroupList(HttpServletRequest request, @RequestParam int userId) {
-        return accountService.getGroupList(userId);
-    }
 }

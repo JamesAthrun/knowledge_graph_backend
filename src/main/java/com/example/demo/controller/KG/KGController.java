@@ -32,7 +32,7 @@ public class KGController {
             notes = "匹配的范围包括编号、中英文名、字符串内容"
     )
     @AuthAnno(level = "")
-    public ResultBean search(@RequestParam String keywords, @RequestParam String ver) {
+    public ResultBean search(HttpServletRequest request, @RequestParam String keywords, @RequestParam String ver) {
         logger.log("KGController search");
         return kgService.searchEntity(keywords, ver);
     }
@@ -43,7 +43,7 @@ public class KGController {
             notes = "孤立节点的返回是不正常的"
     )
     @AuthAnno(level = "r")
-    public ResultBean getGraphData(@RequestParam String id, @RequestParam String ver) {
+    public ResultBean getGraphData(HttpServletRequest request, @RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getGraphData");
         return kgService.getGraphData(id, ver);
     }
@@ -142,7 +142,7 @@ public class KGController {
             notes = ""
     )
     @AuthAnno(level = "r")
-    public ResultBean getGraphInfo(@AuthTableIdAnno String tableId) {
+    public ResultBean getGraphInfo(HttpServletRequest request, @AuthTableIdAnno String tableId) {
         logger.log("KGController rollBackChange");
         return kgService.getGraphInfo(tableId);
     }
@@ -164,7 +164,7 @@ public class KGController {
             notes = ""
     )
     @AuthAnno(level = "r")
-    public ResultBean getGraphHistory(@AuthTableIdAnno String tableId) {
+    public ResultBean getGraphHistory(HttpServletRequest request, @AuthTableIdAnno String tableId) {
         logger.log("KGController getGraphHistory");
         return kgService.getGraphHistory(tableId);
     }
@@ -175,7 +175,7 @@ public class KGController {
             notes = ""
     )
     @AuthAnno(level = "w")
-    public ResultBean updateGraphAuthority(@AuthTableIdAnno String tableId, @RequestParam int authority) {
+    public ResultBean updateGraphAuthority(HttpServletRequest request, @AuthTableIdAnno String tableId, @RequestParam int authority) {
         return kgService.changeTablePermission(tableId, authority);
     }
 

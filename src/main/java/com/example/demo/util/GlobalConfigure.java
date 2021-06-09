@@ -113,7 +113,7 @@ public class GlobalConfigure {
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedHeader("*"); // 2
         corsConfiguration.addAllowedMethod("*"); // 3
-//        corsConfiguration.setAllowCredentials(true); // 跨域session共享
+        corsConfiguration.setAllowCredentials(true); // 跨域session共享
         source.registerCorsConfiguration("/**", corsConfiguration); // 4
         return new CorsFilter(source);
     }

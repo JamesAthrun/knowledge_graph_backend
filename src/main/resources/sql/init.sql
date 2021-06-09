@@ -1,6 +1,6 @@
 drop database if exists nkg;
 create database nkg default charset utf8;
-USE nkg;
+use nkg;
 
 create table `triple`
 (

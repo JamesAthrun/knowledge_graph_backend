@@ -61,15 +61,18 @@ public class GlobalConfigure {
     Timer timer;
 
     @Bean
+    public void autoInit(){
+        if (autoInitDB)
+            init();
+    }
+
     public void init() {
-        if (autoInitDB) {
-            runSqlScript(sqlPath, propertyPath);
-            recorder.init();
-            logger.log("data load begin");
-            String jsonString = getJsonString(dataPath);
-            createGraphByJsonStr(jsonString);
-            logger.log("data load end");
-        }
+        runSqlScript(sqlPath, propertyPath);
+        recorder.init();
+        logger.log("data load begin");
+        String jsonString = getJsonString(dataPath);
+        createGraphByJsonStr(jsonString);
+        logger.log("data load end");
     }
 
     public void createGraphByJsonStr(String jsonString) {
@@ -77,7 +80,6 @@ public class GlobalConfigure {
 
         String tableId = recorder.getTableId();
         JSONObject jojo = JSONObject.parseObject(jsonString);
-        //todo 创建表应该由用户/管理员进行
         graphMapper.insert(new GraphPo(tableId, jojo.getString("name"), jojo.getString("description"), "0", 1, 2, 210));
 
         JSONArray entity_list = jojo.getJSONArray("item");

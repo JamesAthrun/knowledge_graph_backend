@@ -22,7 +22,7 @@ public class AnswerVo {
     private void addEntity(ItemPo e) {
         JSONObject jo = new JSONObject();
         if (!e.division.equals("String")) return;
-        String context = e.id.substring(1);
+        String context = e.title.substring(1);
         jo.put(String.valueOf(count++), context);
         table.add(jo);
     }

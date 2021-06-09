@@ -24,20 +24,34 @@ public class AuthAnnoLogic {
     private void aspectJMethod() {
     } //被注解的方法
 
-    @Around("aspectJMethod()")
-    public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("aspectJMethod() && @annotation(authAnno)")
+    public Object doAround(ProceedingJoinPoint joinPoint,AuthAnno authAnno) throws Throwable {
         HttpServletRequest request = AnnoUtil.getArgOfUniqueParamType(HttpServletRequest.class,joinPoint);
+        if(request==null) throw new Exception();
         String ip = request.getRemoteAddr();
 
         String KeyByClient = Trans.secretStrToPlainStr(ip,verifyMapper,AnnoUtil.getCookieValueOfUniqueName("user_key",request));
         String KeyByServer = verifyMapper.getDesKey(ip);
-
         if(!KeyByClient.equals(KeyByServer)) throw new Exception();
 
-        String UserNameByClient = AnnoUtil.getArgOfUniqueAnno(AuthUserName.class,joinPoint);
+        //根据用户ip查到的userName，且持有正确的key，可以认为是可靠的
         String UserNameByServer = verifyMapper.getUserNameByIp(ip);
+        String TableIdByClient = AnnoUtil.getCookieValueOfUniqueName("table_id",request);
+        //todo 根据authAnno的属性level来判断发起该请求的用户是否拥有操作tableId对应图谱的权限
+        String levelToOp = authAnno.level();//"r" "w" ""
+        if(levelToOp.equals("r"))
+            ;
+        if(levelToOp.equals("w"))
+            ;
 
-        if(!UserNameByClient.equals(UserNameByServer)) throw new Exception();
+        //若带有AuthUserNameAnno的注解，则赋为真实的userName
+        int ArgUserNameIndex = AnnoUtil.getArgIndexOfUniqueAnno(AuthUserNameAnno.class,joinPoint);
+        if(ArgUserNameIndex!=-1) joinPoint.getArgs()[ArgUserNameIndex] = UserNameByServer;
+
+        //若带有AuthUserNameAnno的注解，则赋为tableId
+        int ArgTableIdIndex = AnnoUtil.getArgIndexOfUniqueAnno(AuthTableIdAnno.class,joinPoint);
+        if(ArgTableIdIndex!=-1) joinPoint.getArgs()[ArgTableIdIndex] = TableIdByClient;
+
         return joinPoint.proceed(joinPoint.getArgs());
     }
 

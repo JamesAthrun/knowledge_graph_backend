@@ -5,6 +5,7 @@ import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
 import com.example.demo.util.Trans;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -44,7 +45,12 @@ public class CryptAnnoLogic {
             //todo 使用该注解后，get请求的参数不加密，但返回的data加密
             return joinPoint.proceed(joinPoint.getArgs());
         } else throw new Exception();
+
     }
 
+    @AfterThrowing(value = "aspectJMethod()")
+    public void doAfterThrow() {
+        logger.log("加解密错误");
+    }
 
 }

@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -67,7 +68,7 @@ public class KGController {
             notes = "权限：任何用户"
     )
     @AuthAnno(level = "")
-    public ResultBean createGraphByJsonStr(@RequestBody String jsonStr, @AuthUserNameAnno String userName) {
+    public ResultBean createGraphByJsonStr(@RequestBody String jsonStr, @ApiIgnore @AuthUserNameAnno String userName) {
         logger.log("KGController createGraphByJsonStr");
         return kgService.createGraphByJsonStr(jsonStr, userName);
     }
@@ -88,7 +89,7 @@ public class KGController {
             notes = "权限：写"
     )
     @AuthAnno(level = "w")
-    public ResultBean commitChange(HttpServletRequest request, @AuthUserNameAnno String userName, @RequestBody KGEditFormVo f) {
+    public ResultBean commitChange(HttpServletRequest request, @ApiIgnore @AuthUserNameAnno String userName, @RequestBody KGEditFormVo f) {
         logger.log("KGController commitChange");
         if(!userName.equals(f.user)) return ResultBean.error(-111,"invalid user");
         return kgService.commitChange(f);
@@ -100,7 +101,7 @@ public class KGController {
             notes = "权限：写"
     )
     @AuthAnno(level = "w")
-    public ResultBean cancelChange(HttpServletRequest request, @AuthUserNameAnno String userName) {
+    public ResultBean cancelChange(HttpServletRequest request, @ApiIgnore @AuthUserNameAnno String userName) {
         logger.log("KGController cancelChange");
         return kgService.cancelChange(userName);
     }
@@ -111,7 +112,7 @@ public class KGController {
             notes = "权限：写"
     )
     @AuthAnno(level = "w")
-    public ResultBean confirmChange(HttpServletRequest request, @AuthUserNameAnno String userName) {
+    public ResultBean confirmChange(HttpServletRequest request, @ApiIgnore @AuthUserNameAnno String userName) {
         logger.log("KGController confirmChange");
         return kgService.confirmChange(userName);
     }
@@ -122,7 +123,7 @@ public class KGController {
             notes = "权限：写"
     )
     @AuthAnno(level = "w")
-    public ResultBean rollBackChange(HttpServletRequest request, @RequestParam String ver, @AuthTableIdAnno String tableId) {
+    public ResultBean rollBackChange(HttpServletRequest request, @RequestParam String ver, @ApiIgnore @AuthTableIdAnno String tableId) {
         logger.log("KGController rollBackChange");
         return kgService.rollBackChange(ver, tableId);
     }
@@ -144,7 +145,7 @@ public class KGController {
             notes = "权限：读"
     )
     @AuthAnno(level = "r")
-    public ResultBean getGraphInfo(HttpServletRequest request, @AuthTableIdAnno String tableId) {
+    public ResultBean getGraphInfo(HttpServletRequest request, @ApiIgnore @AuthTableIdAnno String tableId) {
         logger.log("KGController getGraphInfo");
         return kgService.getGraphInfo(tableId);
     }
@@ -166,7 +167,7 @@ public class KGController {
             notes = "权限：读"
     )
     @AuthAnno(level = "r")
-    public ResultBean getGraphHistory(HttpServletRequest request, @AuthTableIdAnno String tableId) {
+    public ResultBean getGraphHistory(HttpServletRequest request, @ApiIgnore @AuthTableIdAnno String tableId) {
         logger.log("KGController getGraphHistory");
         return kgService.getGraphHistory(tableId);
     }
@@ -177,7 +178,7 @@ public class KGController {
             notes = "权限：写"
     )
     @AuthAnno(level = "w")
-    public ResultBean updateGraphAuthority(HttpServletRequest request, @AuthTableIdAnno String tableId, @RequestParam int authority) {
+    public ResultBean updateGraphAuthority(HttpServletRequest request, @ApiIgnore @AuthTableIdAnno String tableId, @RequestParam int authority) {
         return kgService.changeTablePermission(tableId, authority);
     }
 

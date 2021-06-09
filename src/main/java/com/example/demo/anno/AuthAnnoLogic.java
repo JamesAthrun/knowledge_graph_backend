@@ -8,6 +8,7 @@ import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.PermissionUtil;
 import com.example.demo.util.Trans;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -71,6 +72,11 @@ public class AuthAnnoLogic {
         if(ArgTableIdIndex!=-1) joinPoint.getArgs()[ArgTableIdIndex] = TableIdByClient;
 
         return joinPoint.proceed(joinPoint.getArgs());
+    }
+
+    @AfterThrowing(value = "aspectJMethod()")
+    public void doAfterThrow() {
+        logger.log("cookie认证错误");
     }
 
 }

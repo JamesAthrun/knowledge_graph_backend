@@ -50,7 +50,6 @@ public class AuthAnnoLogic {
         //todo 根据authAnno的属性level来判断发起该请求的用户是否拥有操作tableId对应图谱的权限
         String levelToOp = authAnno.level();//"r" "w" ""
         if(!levelToOp.equals("")){
-            String authStr = graphMapper.selectAuthority(TableIdByClient);
             if(levelToOp.equals("r")) {
                 AccountPo accountPo = accountMapper.selectAccountByName(UserNameByServer);
                 boolean permission = kgService.getReadPermission(TableIdByClient, accountPo.userId);
@@ -62,7 +61,6 @@ public class AuthAnnoLogic {
                 if (!permission) throw new Exception();
             }
         }
-
 
         //若带有AuthUserNameAnno的注解，则赋为真实的userName
         int ArgUserNameIndex = AnnoUtil.getArgIndexOfUniqueAnno(AuthUserNameAnno.class,joinPoint);

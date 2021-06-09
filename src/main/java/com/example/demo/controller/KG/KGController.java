@@ -152,7 +152,7 @@ public class KGController {
             value = "",
             notes = ""
     )
-    @AuthAnno(level = "r")
+    @AuthAnno(level = "")
     public ResultBean getAllGraphInfo(HttpServletRequest request) {
         logger.log("KGController getAllGraphInfo");
         return kgService.getAllGraphInfo();

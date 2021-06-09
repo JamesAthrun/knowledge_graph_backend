@@ -64,9 +64,10 @@ public class KGController {
             value = "通过一个jsonStr创建一张知识图谱",
             notes = ""
     )
-    public ResultBean createGraphByJsonStr(@RequestBody String jsonStr) {
+    @AuthAnno
+    public ResultBean createGraphByJsonStr(@RequestBody String jsonStr, @AuthUserNameAnno String userName) {
         logger.log("KGController createGraphByJsonStr");
-        return kgService.createGraphByJsonStr(jsonStr);
+        return kgService.createGraphByJsonStr(jsonStr, userName);
     }
 
     @PostMapping("/uploadFile")
@@ -152,8 +153,8 @@ public class KGController {
             notes = ""
     )
     @AuthAnno(level = "r")
-    public ResultBean getAllGraphInfo() {
-        logger.log("KGController rollBackChange");
+    public ResultBean getAllGraphInfo(HttpServletRequest request) {
+        logger.log("KGController getAllGraphInfo");
         return kgService.getAllGraphInfo();
     }
 

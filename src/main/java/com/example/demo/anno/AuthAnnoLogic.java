@@ -1,6 +1,9 @@
 package com.example.demo.anno;
 
+import com.example.demo.bl.KG.KGService;
+import com.example.demo.data.Account.AccountMapper;
 import com.example.demo.data.Verify.VerifyMapper;
+import com.example.demo.po.AccountPo;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.Trans;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,6 +22,10 @@ public class AuthAnnoLogic {
     GlobalLogger logger;
     @Autowired
     VerifyMapper verifyMapper;
+    @Autowired
+    AccountMapper accountMapper;
+    @Autowired
+    KGService kgService;
 
     @Pointcut(value = "@annotation(com.example.demo.anno.AuthAnno)")
     private void aspectJMethod() {
@@ -39,11 +46,14 @@ public class AuthAnnoLogic {
         String TableIdByClient = AnnoUtil.getCookieValueOfUniqueName("table_id",request);
         //todo 根据authAnno的属性level来判断发起该请求的用户是否拥有操作tableId对应图谱的权限
         String levelToOp = authAnno.level();//"r" "w" ""
-        if(levelToOp.equals("r"))
-            ;
-        if(levelToOp.equals("w"))
-            ;
-
+        if(levelToOp.equals("r")) {
+            AccountPo accountPo = accountMapper.selectAccountByName(UserNameByServer);
+            boolean permission = kgService.getReadPermission(TableIdByClient, accountPo.userId);
+        }
+        if(levelToOp.equals("w")) {
+            AccountPo accountPo = accountMapper.selectAccountByName(UserNameByServer);
+            boolean permission = kgService.getWritePermission(TableIdByClient, accountPo.userId);
+        }
         //若带有AuthUserNameAnno的注解，则赋为真实的userName
         int ArgUserNameIndex = AnnoUtil.getArgIndexOfUniqueAnno(AuthUserNameAnno.class,joinPoint);
         if(ArgUserNameIndex!=-1) joinPoint.getArgs()[ArgUserNameIndex] = UserNameByServer;

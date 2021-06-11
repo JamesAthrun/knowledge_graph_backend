@@ -56,18 +56,9 @@ public class AccountController {
         return accountService.register(account.name, account.pwd, account.email);
     }
 
-    @GetMapping("/getGroupList")
-    @ApiOperation(
-            value = "获取特定用户用户组列表",
-            notes = ""
-    )
-    public ResultBean getGroupList(HttpServletRequest request, @RequestParam int userId) {
-        return accountService.getGroupList(userId);
-    }
-
     @GetMapping("/getUserName")
     @ApiOperation(
-            value = "获取特定用户用户组列表",
+            value = "根据用户id获取用户名",
             notes = ""
     )
     public ResultBean getUserName(HttpServletRequest request, @RequestParam String userName) {

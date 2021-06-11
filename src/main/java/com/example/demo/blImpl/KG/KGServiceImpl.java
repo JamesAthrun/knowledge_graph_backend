@@ -364,6 +364,14 @@ public class KGServiceImpl implements KGService {
         return ResultBean.success(ao);
     }
 
+    @Override
+    public ResultBean changeTablePermission(String tableId, int authority) {
+        if (authority < 0 || authority / 100 > 2 || (authority / 10) % 10 > 2 || authority % 10 > 2)
+            return ResultBean.error(-1, "权限设置错误");
+        graphMapper.updateAuthority(tableId, authority);
+        return ResultBean.success();
+    }
+
     private ResultBean createItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment, String ver) {
         itemMapper.insert(new ItemPo(id, tableId, title, name, division, comment, incr(ver), "0"));
         if (id.equals(headId) || id.equals(relationId) || id.equals(tailId)) createLink(tableId, headId, relationId, tailId, ver);
@@ -451,38 +459,5 @@ public class KGServiceImpl implements KGService {
 
     private String incr(String s) {
         return String.valueOf(Integer.parseInt(s) + 1);
-    }
-
-    public boolean getWritePermission(String tableId, int userId) {
-        GraphPo go = graphMapper.get(tableId);
-        if(go.userId == userId && go.authority / 100 == 2) return true;
-        if(go.userId == userId && (go.authority / 10) % 10 == 2) {
-            List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
-            for(GroupPo groupPo: groupPoList) {
-                if (groupPo.groupId == go.groupId) return true;
-            }
-        }
-        return go.authority % 10 == 2;
-    }
-
-    @Override
-    public boolean getReadPermission(String tableId, int userId) {
-        GraphPo go = graphMapper.get(tableId);
-        if(go.userId == userId && go.authority / 100 >= 1) return true;
-        if(go.userId == userId && (go.authority / 10) % 10 >= 1) {
-            List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
-            for(GroupPo groupPo: groupPoList) {
-                if (groupPo.groupId == go.groupId) return true;
-            }
-        }
-        return go.authority % 10 >= 1;
-    }
-
-    @Override
-    public ResultBean changeTablePermission(String tableId, int authority) {
-        if (authority < 0 || authority / 100 > 2 || (authority / 10) % 10 > 2 || authority % 10 > 2)
-            return ResultBean.error(-1, "权限设置错误");
-        graphMapper.updateAuthority(tableId, authority);
-        return ResultBean.success();
     }
 }

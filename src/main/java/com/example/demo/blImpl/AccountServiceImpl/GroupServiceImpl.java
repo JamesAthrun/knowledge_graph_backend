@@ -1,6 +1,5 @@
 package com.example.demo.blImpl.AccountServiceImpl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.Account.GroupService;
 import com.example.demo.data.Account.GroupMapper;
 import com.example.demo.data.Account.UserGroupMapper;
@@ -19,10 +18,7 @@ public class GroupServiceImpl implements GroupService {
     UserGroupMapper userGroupMapper;
 
     @Override
-    public ResultBean addGroup(String jsonString) {
-        JSONObject jojo = JSONObject.parseObject(jsonString);
-        String name = jojo.getString("name");
-        String description = jojo.getString("description");
+    public ResultBean addGroup(String name,String description) {
         groupMapper.addGroup(new GroupPo(name, description));
         return ResultBean.success();
     }
@@ -30,5 +26,10 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ResultBean getUserList(int groupId) {
         return ResultBean.success(userGroupMapper.selectGroupsByGroupId(groupId));
+    }
+
+    @Override
+    public ResultBean getGroupList(int userId) {
+        return ResultBean.success(userGroupMapper.selectGroupsByUserId(userId));
     }
 }

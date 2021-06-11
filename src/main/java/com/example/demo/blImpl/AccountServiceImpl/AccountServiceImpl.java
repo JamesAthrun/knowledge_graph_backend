@@ -40,11 +40,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResultBean getGroupList(int userId) {
-        return ResultBean.success(userGroupMapper.selectGroupsByUserId(userId));
-    }
-
-    @Override
     public ResultBean getUserName(String userName) {
         AccountPo accountPo = accountMapper.selectAccountByName(userName);
         if(accountPo != null) return ResultBean.success(accountPo.userId);

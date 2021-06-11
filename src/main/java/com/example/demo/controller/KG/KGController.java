@@ -57,7 +57,7 @@ public class KGController {
             notes = "权限：读"
     )
     @AuthAnno(level = "r")
-    public ResultBean getTreeData(@RequestParam String id, @RequestParam String ver) {
+    public ResultBean getTreeData(HttpServletRequest request, @RequestParam String id, @RequestParam String ver) {
         logger.log("KGController getTreeData");
         return kgService.getTreeData(id, ver);
     }
@@ -68,7 +68,7 @@ public class KGController {
             notes = "权限：任何用户"
     )
     @AuthAnno(level = "")
-    public ResultBean createGraphByJsonStr(@RequestBody String jsonStr, @ApiIgnore @AuthUserNameAnno String userName) {
+    public ResultBean createGraphByJsonStr(HttpServletRequest request, @RequestBody String jsonStr, @ApiIgnore @AuthUserNameAnno String userName) {
         logger.log("KGController createGraphByJsonStr");
         return kgService.createGraphByJsonStr(jsonStr, userName);
     }

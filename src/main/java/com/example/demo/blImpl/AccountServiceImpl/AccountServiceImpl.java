@@ -43,4 +43,11 @@ public class AccountServiceImpl implements AccountService {
     public ResultBean getGroupList(int userId) {
         return ResultBean.success(userGroupMapper.selectGroupsByUserId(userId));
     }
+
+    @Override
+    public ResultBean getUserName(String userName) {
+        AccountPo accountPo = accountMapper.selectAccountByName(userName);
+        if(accountPo != null) return ResultBean.success(accountPo.userId);
+        return ResultBean.error(4, "User name not found");
+    }
 }

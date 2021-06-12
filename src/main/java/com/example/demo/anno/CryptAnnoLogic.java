@@ -5,7 +5,6 @@ import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
 import com.example.demo.util.Trans;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -48,9 +47,9 @@ public class CryptAnnoLogic {
 
     }
 
-    @AfterThrowing(value = "aspectJMethod()")
-    public void doAfterThrow() {
-        logger.log("加解密错误");
-    }
+//    @AfterThrowing(value = "aspectJMethod()")
+//    public void doAfterThrow() {
+//        logger.log("加解密错误");
+//    }
 
 }

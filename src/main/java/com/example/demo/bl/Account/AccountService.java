@@ -11,4 +11,6 @@ public interface AccountService {
     ResultBean register(String name, String pwd, String email);
 
     ResultBean getUserName(String userName);
+
+    ResultBean addUsertoGroup(int userId, int groupId);
 }

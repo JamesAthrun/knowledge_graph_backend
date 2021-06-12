@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface UserGroupMapper {
 
-    void addToGroup(UserGroupPo userGroupPo);
+    void addToGroup(int userId, int groupId);
 
     List<GroupPo> selectGroupsByUserId(int userId);
 

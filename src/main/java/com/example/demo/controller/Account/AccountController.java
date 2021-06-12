@@ -64,4 +64,13 @@ public class AccountController {
     public ResultBean getUserName(HttpServletRequest request, @RequestParam String userName) {
         return accountService.getUserName(userName);
     }
+
+    @GetMapping("/addUsertoGroup")
+    @ApiOperation(
+            value = "将用户加入用户组",
+            notes = ""
+    )
+    public ResultBean getUserList(@RequestParam int userId, @RequestParam int groupId) {
+        return accountService.addUsertoGroup(userId, groupId);
+    }
 }

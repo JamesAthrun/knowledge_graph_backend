@@ -45,4 +45,10 @@ public class AccountServiceImpl implements AccountService {
         if(accountPo != null) return ResultBean.success(accountPo.userId);
         return ResultBean.error(4, "User name not found");
     }
+
+    @Override
+    public ResultBean addUsertoGroup(int userId, int groupId) {
+        userGroupMapper.addToGroup(userId, groupId);
+        return ResultBean.success();
+    }
 }

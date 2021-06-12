@@ -1,6 +1,7 @@
 package com.example.demo.blImpl.KG;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.Account.AccountMapper;
 import com.example.demo.data.Account.UserGroupMapper;
@@ -164,8 +165,36 @@ public class KGServiceImpl implements KGService {
     @Override
     public ResultBean createGraphByJsonStr(String jsonString, String name) {
         AccountPo accountPo = accountMapper.selectAccountByName(name);
-        globalConfigure.createGraphByJsonStr(jsonString, accountPo.userId);
+        createGraphByJsonStr(jsonString, accountPo.userId);
         return ResultBean.success();
+    }
+
+    private void createGraphByJsonStr(String jsonString, int userId){
+        timer.set();
+        String tableId = recorder.getTableId();
+        JSONObject jojo = JSONObject.parseObject(jsonString);
+        graphMapper.insert(new GraphPo(tableId, jojo.getString("name"), jojo.getString("description"), "0", userId, jojo.getInteger("groupId"), jojo.getInteger("authority")));
+
+        JSONArray entity_list = jojo.getJSONArray("item");
+        HashMap<String, String> map = new HashMap<>();
+
+        for (Object o : entity_list) {
+            JSONObject jo = (JSONObject) o;
+            String tmp = recorder.getRecordId();
+            map.put(jo.getString("id"), tmp);
+            itemMapper.insert(new ItemPo(tmp, tableId, jo.getString("title"), jo.getString("name"), jo.getString("division"), jo.getString("comment"), "0", "0"));
+        }
+
+        JSONArray triple_list = jojo.getJSONArray("triple");
+        for (Object o : triple_list) {
+            JSONObject jo = (JSONObject) o;
+            String real_head = map.get(jo.getString("head"));
+            String real_relation = map.get(jo.getString("relation"));
+            String real_tail = map.get(jo.getString("tail"));
+            tripleMapper.insert(new TriplePo(tableId, real_head, real_relation, real_tail, "0", "0"));
+        }
+        graphMapper.createHistory(tableId, "0", Timer.getFormatTime(), "NKG: init");
+        logger.log("建图用时 " + timer.get());
     }
 
     @Override

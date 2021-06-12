@@ -1,14 +1,9 @@
 package com.example.demo.util;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.KG.KGService;
 import com.example.demo.data.KG.GraphMapper;
 import com.example.demo.data.KG.ItemMapper;
 import com.example.demo.data.KG.TripleMapper;
-import com.example.demo.po.GraphPo;
-import com.example.demo.po.ItemPo;
-import com.example.demo.po.TriplePo;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +15,6 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.HashMap;
 import java.util.Properties;
 
 import static com.example.demo.util.Trans.getJsonString;
@@ -71,38 +65,9 @@ public class GlobalConfigure {
         recorder.init();
         logger.log("data load begin");
         String jsonString = getJsonString(dataPath);
-        createGraphByJsonStr(jsonString, 1);
+        kgService.createGraphByJsonStr(jsonString, "obama");
+//        recorder.save();
         logger.log("data load end");
-    }
-
-    public void createGraphByJsonStr(String jsonString, int userId) {
-        timer.set();
-
-        String tableId = recorder.getTableId();
-        JSONObject jojo = JSONObject.parseObject(jsonString);
-        graphMapper.insert(new GraphPo(tableId, jojo.getString("name"), jojo.getString("description"), "0", userId, jojo.getInteger("groupId"), jojo.getInteger("authority")));
-
-        JSONArray entity_list = jojo.getJSONArray("item");
-        HashMap<String, String> map = new HashMap<>();
-
-        for (Object o : entity_list) {
-            JSONObject jo = (JSONObject) o;
-            String tmp = recorder.getRecordId();
-            map.put(jo.getString("id"), tmp);
-            itemMapper.insert(new ItemPo(tmp, tableId, jo.getString("title"), jo.getString("name"), jo.getString("division"), jo.getString("comment"), "0", "0"));
-        }
-
-        JSONArray triple_list = jojo.getJSONArray("triple");
-        for (Object o : triple_list) {
-            JSONObject jo = (JSONObject) o;
-            String real_head = map.get(jo.getString("head"));
-            String real_relation = map.get(jo.getString("relation"));
-            String real_tail = map.get(jo.getString("tail"));
-            tripleMapper.insert(new TriplePo(tableId, real_head, real_relation, real_tail, "0", "0"));
-        }
-        logger.log("建图用时 " + timer.get());
-
-        recorder.save();
     }
 
     @Bean

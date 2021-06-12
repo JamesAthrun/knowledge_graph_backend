@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.bl.KG.KGService;
+import com.example.demo.data.KG.GraphMapper;
 import com.example.demo.data.KG.ItemMapper;
 import com.example.demo.util.GlobalConfigure;
 import com.example.demo.util.GlobalLogger;
@@ -24,6 +25,8 @@ class KGTests {
     GlobalConfigure config;
     @Autowired
     GlobalLogger logger;
+    @Autowired
+    GraphMapper graphMapper;
     
     @AfterEach
     public void initAll(){
@@ -123,6 +126,7 @@ class KGTests {
         kgService.rollBackChange("0", "0");
         ResultBean res = kgService.getGraphHistory("0");
         assertEquals(1, res.code);
+        assertEquals("0",graphMapper.getPresentVer("0"));
         logger.log(res.data);
     }
 
@@ -130,6 +134,7 @@ class KGTests {
     public void askTest(){
         ResultBean res = kgService.ask("农民工 预防");
         assertEquals(1,res.code);
+        assertNotNull(res.data);
         logger.log(res.data);
     }
 }

@@ -35,7 +35,7 @@
     </select>
 
     <select id="getHistory" resultType="com.example.demo.po.HistoryPo">
-        select tableId, time, ver, detail
+        select tableId, `time`, ver, detail, `drop`
         from nkg.history
         where tableId = #{tableId}
         order by time desc
@@ -52,6 +52,9 @@
         where ver &gt; #{ver};
         delete
         from nkg.item
+        where ver &gt; #{ver};
+        update nkg.history
+        set `drop` = '1'
         where ver &gt; #{ver};
         update nkg.graph
         set ver = #{ver}

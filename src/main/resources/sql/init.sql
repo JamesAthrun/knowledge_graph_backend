@@ -103,6 +103,7 @@ create table `history`
     `ver`     varchar(11)   not null,
     `time`    varchar(256)  not null,
     `detail`  varchar(1024) not null,
+    `drop`     varchar(11)  default '0',
     primary key (`id`)
 ) engine = MyISAM
   default charset = utf8;

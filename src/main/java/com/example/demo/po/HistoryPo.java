@@ -12,6 +12,7 @@ public class HistoryPo {
     public String time;
     public String ver;
     public String tableId;
+    public String drop;
 
     public static JSONArray toJsonArray(List<HistoryPo> hs) {
         JSONArray ja = new JSONArray();
@@ -25,6 +26,7 @@ public class HistoryPo {
             }
             jo.put("time", h.time);
             jo.put("ver", h.ver);
+            jo.put("drop",h.drop);
             ja.add(jo);
         }
         return ja;

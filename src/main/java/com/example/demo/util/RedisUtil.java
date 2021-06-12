@@ -17,10 +17,9 @@ public class RedisUtil {
     public RedisUtil() {
         jedis = new Jedis("localhost", 6379);
         jedis.flushAll();
-//        ICParams = new SetParams().px(3600).nx();
     }
 
-    public Integer OpCommitItemChange(KGEditFormVo f) {
+    public synchronized Integer OpCommitItemChange(KGEditFormVo f) {
         long res = jedis.rpush("IC:" + f.user, Trans.javaObjectToJsonStr(f));
         if (res > 0L) {
             jedis.expire("IC:" + f.user, 3600L);
@@ -28,18 +27,18 @@ public class RedisUtil {
         } else return 0;
     }
 
-    public Integer OpCancelItemChange(String userName) {
+    public synchronized Integer OpCancelItemChange(String userName) {
         String res = jedis.rpop("IC:" + userName);
         return res!=null ? 1 : 0;
     }
 
-    public List<String> getOpsOfUser(String userName) {
+    public synchronized List<String> getOpsOfUser(String userName) {
         long size = jedis.llen("IC:" + userName);
         return jedis.lrange("IC:" + userName, 0, size);
     }
 
 
-    public Integer OpConfirmChange(String userName) {
+    public synchronized Integer OpConfirmChange(String userName) {
         long res = jedis.del("IC:" + userName);
         return res == 1L ? 1 : 0;
     }

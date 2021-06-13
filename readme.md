@@ -1,4 +1,7 @@
 # Readme
+# 不再即时维护，接口信息见swagger
+<http://localhost:8082/swagger-ui.html>
+
 ## 1. 请求格式
 ### 1.1 接受请求
 GET/POST   

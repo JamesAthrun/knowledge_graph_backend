@@ -3,11 +3,24 @@
 <mapper namespace="com.example.demo.data.Verify.VerifyMapper">
 
     <insert id="insert">
-        replace into nkg.verify(ip, desKey) values (#{ip},#{desKey})
+        replace into nkg.verify(ip, desKey)
+        values (#{ip}, #{desKey})
     </insert>
+    <update id="setUserName">
+        update nkg.verify
+        set `userName` = #{userName}
+        where `ip` = #{ip}
+    </update>
 
     <select id="getDesKey" resultType="java.lang.String">
-        select desKey from nkg.verify where ip=#{ip}
+        select `desKey`
+        from nkg.verify
+        where `ip` = #{ip}
+    </select>
+    <select id="getUserNameByIp" resultType="java.lang.String">
+        select `userName`
+        from nkg.verify
+        where `ip` = #{ip}
     </select>
 
 </mapper>

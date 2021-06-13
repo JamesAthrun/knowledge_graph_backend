@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.data.Account.UserGroupMapper">
+
+    <insert id="addToGroup" parameterType="com.example.demo.po.UserGroupPo">
+        insert into nkg.`userGroup`(userId, groupId)
+        values (#{userId}, #{groupId})
+    </insert>
+
+    <select id="selectGroupsByUserId" resultType="com.example.demo.po.GroupPo">
+        select groupId, name, description
+        from nkg.`group` g
+        where g.groupId in (
+            select ug.groupId
+            from nkg.usergroup ug
+            where ug.userId = #{userId}
+        )
+    </select>
+
+    <select id="selectGroupsByGroupId" resultType="com.example.demo.po.AccountPo">
+        select userId, name, pwd, email
+        from nkg.`account` a
+        where a.userId in (
+            select ug.userId
+            from nkg.usergroup ug
+            where ug.groupId = #{groupId}
+        )
+    </select>
+
+</mapper>

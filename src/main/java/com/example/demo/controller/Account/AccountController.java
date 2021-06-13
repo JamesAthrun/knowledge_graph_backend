@@ -1,11 +1,14 @@
 package com.example.demo.controller.Account;
 
-import com.alibaba.fastjson.JSONObject;
+import com.example.demo.anno.CryptAnno;
 import com.example.demo.bl.Account.AccountService;
 import com.example.demo.data.Verify.VerifyMapper;
 import com.example.demo.util.GlobalLogger;
-import com.example.demo.util.GlobalTrans;
 import com.example.demo.util.ResultBean;
+import com.example.demo.vo.AccountVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController()
 @RequestMapping("")
+@Api(
+        value = "用户相关",
+        tags = "用户"
+)
 public class AccountController {
     @Autowired
     AccountService accountService;
@@ -21,21 +28,49 @@ public class AccountController {
     @Autowired
     GlobalLogger logger;
 
+    @CryptAnno
     @PostMapping("/login")
+    @ApiOperation(
+            value = "用户登录",
+            notes = ""
+    )
+    @ApiImplicitParam(name = "s", value = "加密后的json字符串，如{\"name\":\"obama\",\"pwd\":\"123456\",\"email\":\"example@qq.com\"} -encrypt-> hexStr")
     public ResultBean login(HttpServletRequest request, @RequestBody String s) throws Exception {
         logger.log("AccountController login");
-        String ip = request.getRemoteAddr();
-        JSONObject jo = GlobalTrans.secretJsonStrToJsonObject(ip,verifyMapper,s);
-        String name = jo.getString("username"),pwd = jo.getString("password");
-        return accountService.login(name,pwd);
+        AccountVo account = new AccountVo(s);
+        ResultBean res =  accountService.login(account.name, account.pwd);
+        if(res.code==1) verifyMapper.setUserName(request.getRemoteAddr(),account.name);
+        return res;
     }
 
+    @CryptAnno
     @PostMapping("/signup")
+    @ApiOperation(
+            value = "用户注册",
+            notes = ""
+    )
+    @ApiImplicitParam(name = "s", value = "加密后的json字符串，如{\"name\":\"obama\",\"pwd\":\"123456\",\"email\":\"example@qq.com\"} -encrypt-> hexStr")
     public ResultBean register(HttpServletRequest request, @RequestBody String s) throws Exception {
         logger.log("AccountController signup");
-        String ip = request.getRemoteAddr();
-        JSONObject jo = GlobalTrans.secretJsonStrToJsonObject(ip,verifyMapper,s);
-        String name = jo.getString("username"),pwd = jo.getString("password"),email = jo.getString("email");
-        return accountService.register(name,pwd,email);
+        AccountVo account = new AccountVo(s);
+        return accountService.register(account.name, account.pwd, account.email);
+    }
+
+    @GetMapping("/getUserName")
+    @ApiOperation(
+            value = "根据用户id获取用户名",
+            notes = ""
+    )
+    public ResultBean getUserName(HttpServletRequest request, @RequestParam String userName) {
+        return accountService.getUserName(userName);
+    }
+
+    @GetMapping("/addUsertoGroup")
+    @ApiOperation(
+            value = "将用户加入用户组",
+            notes = ""
+    )
+    public ResultBean getUserList(@RequestParam int userId, @RequestParam int groupId) {
+        return accountService.addUsertoGroup(userId, groupId);
     }
 }

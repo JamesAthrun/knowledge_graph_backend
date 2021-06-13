@@ -3,21 +3,77 @@
 <mapper namespace="com.example.demo.data.KG.GraphMapper">
 
     <insert id="insert" parameterType="com.example.demo.po.GraphPo" useGeneratedKeys="true" keyProperty="tableId">
-        replace into nkg.graph(tableId, name, description) values (#{tableId},#{name},#{description})
+        replace into nkg.graph(tableId, name, description, ver, userId, groupId, authority)
+        values (#{tableId}, #{name}, #{description}, #{ver}, #{userId}, #{groupId}, #{authority})
+    </insert>
+
+    <update id="confirmChange">
+        update nkg.graph
+        set ver = #{ver}
+        where tableId = #{tableId};
+    </update>
+    <insert id="createHistory">
+        insert into nkg.history(tableId, ver, time, detail)
+        values (#{tableId}, #{ver}, #{time}, #{detail})
     </insert>
 
     <select id="get" resultMap="GraphPo">
-        select * from nkg.graph where tableId = #{tableId}
+        select tableId, name, description, ver, userId, groupId, authority
+        from nkg.graph
+        where tableId = #{tableId}
     </select>
 
-    <select id="getSize" resultType="java.lang.Integer">
-        select count(tableId) from nkg.graph
+    <select id="getAll" resultMap="GraphPo">
+        select *
+        from nkg.graph
     </select>
+
+    <select id="getPresentVer" resultType="java.lang.String">
+        select ver
+        from nkg.graph
+        where tableId = #{tableId}
+    </select>
+
+    <select id="getHistory" resultType="com.example.demo.po.HistoryPo">
+        select tableId, `time`, ver, detail, `drop`
+        from nkg.history
+        where tableId = #{tableId}
+        order by time desc
+    </select>
+    <select id="selectAuthority" resultType="java.lang.String">
+        select authority
+        from nkg.graph
+        where tableId=#{tableId}
+    </select>
+
+    <delete id="rollBack">
+        delete
+        from nkg.triple
+        where ver &gt; #{ver};
+        delete
+        from nkg.item
+        where ver &gt; #{ver};
+        update nkg.history
+        set `drop` = '1'
+        where ver &gt; #{ver};
+        update nkg.graph
+        set ver = #{ver}
+        where tableId = #{tableId};
+    </delete>
+
+    <update id="updateAuthority">
+        update nkg.graph set `authority`=#{authority}
+        where tableId = #{tableId}
+    </update>
 
     <resultMap id="GraphPo" type="com.example.demo.po.GraphPo">
         <id column="tableId" property="tableId"/>
         <result column="name" property="name"/>
         <result column="description" property="description"/>
+        <result column="ver" property="ver"/>
+        <result column="userId" property="userId"/>
+        <result column="groupId" property="groupId"/>
+        <result column="authority" property="authority"/>
     </resultMap>
 
 </mapper>

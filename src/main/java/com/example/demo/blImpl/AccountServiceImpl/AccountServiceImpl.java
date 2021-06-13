@@ -1,8 +1,8 @@
 package com.example.demo.blImpl.AccountServiceImpl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.bl.Account.AccountService;
 import com.example.demo.data.Account.AccountMapper;
+import com.example.demo.data.Account.UserGroupMapper;
 import com.example.demo.data.Verify.VerifyMapper;
 import com.example.demo.po.AccountPo;
 import com.example.demo.util.GlobalLogger;
@@ -16,27 +16,39 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     AccountMapper accountMapper;
     @Autowired
+    UserGroupMapper userGroupMapper;
+    @Autowired
     VerifyMapper verifyMapper;
     @Autowired
     GlobalLogger logger;
 
     @Override
     public ResultBean login(String name, String pwd) {
-        AccountPo accountPo = accountMapper.selectPwdByName(name);
-        if(pwd.equals(accountPo.pwd)) {
-            JSONObject jo = new JSONObject();
-            jo.put("authority",accountPo.authority);
-            return ResultBean.success(jo);
-        }
-        else{
+        AccountPo accountPo = accountMapper.selectAccountByName(name);
+        if (pwd.equals(accountPo.pwd)) {
+            return ResultBean.success();
+        } else {
             logger.log("pwd not match");
-            return ResultBean.error(3,"pwd not match");
+            return ResultBean.error(3, "pwd not match");
         }
     }
 
     @Override
-    public ResultBean register(String name,String pwd, String email){
-        accountMapper.register(new AccountPo(name,pwd,email,"client"));
+    public ResultBean register(String name, String pwd, String email) {
+        accountMapper.register(new AccountPo(name, pwd, email));
+        return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean getUserName(String userName) {
+        AccountPo accountPo = accountMapper.selectAccountByName(userName);
+        if(accountPo != null) return ResultBean.success(accountPo.userId);
+        return ResultBean.error(4, "User name not found");
+    }
+
+    @Override
+    public ResultBean addUsertoGroup(int userId, int groupId) {
+        userGroupMapper.addToGroup(userId, groupId);
         return ResultBean.success();
     }
 }

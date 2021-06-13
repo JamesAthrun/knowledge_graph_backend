@@ -3,11 +3,21 @@
 <mapper namespace="com.example.demo.data.Account.AccountMapper">
 
     <insert id="register" parameterType="com.example.demo.po.AccountPo">
-        insert into nkg.account(name, pwd, email, authority) values (#{name},#{pwd},#{email},#{authority})
+        insert into nkg.account(name, pwd, email)
+        values (#{name}, #{pwd}, #{email})
     </insert>
 
-    <select id="selectPwdByName" resultType="com.example.demo.po.AccountPo">
-        select * from nkg.account where name = #{name} limit 0,1
+    <select id="selectAccountByName" resultType="com.example.demo.po.AccountPo">
+        select userId, name, pwd, email
+        from nkg.account
+        where name = #{name}
     </select>
+
+    <select id="selectAccountById" resultType="com.example.demo.po.AccountPo">
+        select userId, name, pwd, email
+        from nkg.account
+        where userId = #{id}
+    </select>
+
 
 </mapper>

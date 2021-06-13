@@ -9,6 +9,4 @@ import java.util.List;
 public interface QuestionMapper {
 
     List<QuestionPo> getAll();
-
-//    QuestionPo get(String id);
 }

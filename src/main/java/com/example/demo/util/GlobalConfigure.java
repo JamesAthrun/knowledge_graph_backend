@@ -37,6 +37,7 @@ public class GlobalConfigure {
             "http://localhost:8080", "http://localhost:8081", "http://localhost:8082",
             "http://0.0.0.0:8080", "http://0.0.0.0:8081", "http://0.0.0.0:8082",
             "http://119.3.222.50:8080", "http://119.3.222.50:8081", "http://119.3.222.50:8082",
+            "http://123.57.200.185:8099",
             "http://localhost:63342", "https://jsonplaceholder.typicode.com/posts"
     };
 

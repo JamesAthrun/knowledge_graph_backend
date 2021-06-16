@@ -134,9 +134,19 @@ public class KGController {
             notes = "权限：读"
     )
     @AuthAnno(level = "r")
-    public ResultBean ask(HttpServletRequest request, @RequestBody String questionStr) {
+    public ResultBean ask(HttpServletRequest request, @RequestBody String questionStr,@AuthTableIdAnno String tableId) {
         logger.log("KGController ask");
-        return kgService.ask(questionStr);
+        return kgService.ask(questionStr,tableId);
+    }
+
+    @ApiOperation(
+            value = "",
+            notes = "权限：写"
+    )
+    @AuthAnno(level = "w")
+    public ResultBean createQuestion(HttpServletRequest request, @ApiIgnore @AuthTableIdAnno String tableId, @RequestParam String keyWords, @RequestParam String help, @RequestParam String relatedIds, @RequestParam String ver) {
+        logger.log("KGController ask");
+        return kgService.createQuestion(keyWords, help, relatedIds, tableId, ver);
     }
 
     @GetMapping("/getGraphInfo")

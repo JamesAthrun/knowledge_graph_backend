@@ -15,7 +15,7 @@ public interface KGService {
 
     ResultBean createGraphByJsonStr(String jsonStr, String name);
 
-    ResultBean ask(String questionStr);
+    ResultBean ask(String questionStr, String tableId);
 
     ResultBean commitChange(KGEditFormVo f);
 
@@ -32,4 +32,8 @@ public interface KGService {
     ResultBean getGraphHistory(String tableId);
 
     ResultBean changeTablePermission(String tableId, int authority);
+
+    ResultBean createQuestion(String keyWords, String help, String relatedIds, String tableId, String ver);
+
+    ResultBean createQuestionByJsonStr(String jsonStr);
 }

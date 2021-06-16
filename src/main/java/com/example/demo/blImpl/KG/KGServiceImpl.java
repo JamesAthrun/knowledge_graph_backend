@@ -368,8 +368,8 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean ask(String questionStr) {
-        List<QuestionPo> qs = new ArrayList<>(questionMapper.getAll());
+    public ResultBean ask(String questionStr, String tableId) {
+        List<QuestionPo> qs = new ArrayList<>(questionMapper.getAll(tableId));
         HashMap<QuestionPo, Integer> votes = new HashMap<>();
 
         for (QuestionPo q : qs) {
@@ -398,6 +398,27 @@ public class KGServiceImpl implements KGService {
         if (authority < 0 || authority / 100 > 2 || (authority / 10) % 10 > 2 || authority % 10 > 2)
             return ResultBean.error(-1, "权限设置错误");
         graphMapper.updateAuthority(tableId, authority);
+        return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean createQuestion(String keyWords, String help, String relatedIds, String tableId, String ver){
+        questionMapper.insert(keyWords, help, relatedIds, tableId, ver);
+        return ResultBean.success();
+    }
+
+    @Override
+    public ResultBean createQuestionByJsonStr(String jsonStr) {
+        JSONArray ja = JSONArray.parseArray(jsonStr);
+        for (Object o : ja) {
+            JSONObject jo = (JSONObject)o;
+            String keyWords = jo.get("keyWords").toString();
+            String help = jo.getString("help");
+            String relatedIds = jo.get("relatedIds").toString();
+            String tableId = jo.getString("tableId");
+            String ver = jo.getString("ver");
+            questionMapper.insert(keyWords,help,relatedIds,tableId,ver);
+        }
         return ResultBean.success();
     }
 

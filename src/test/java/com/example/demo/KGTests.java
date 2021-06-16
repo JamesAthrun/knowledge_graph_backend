@@ -27,11 +27,11 @@ class KGTests {
     GlobalLogger logger;
     @Autowired
     GraphMapper graphMapper;
-    
+
     @AfterEach
-    public void initAll(){
+    public void initAfterEach(){
         logger.log("init");
-        config.init();
+        config.doInit();
     }
 
     @Test
@@ -122,7 +122,7 @@ class KGTests {
         assertEquals(1,kgService.commitChange(f1).code);
         assertEquals(1,kgService.commitChange(f2).code);
         assertEquals(1,kgService.confirmChange("xgs").code);
-        Thread.sleep(3000);
+//        Thread.sleep(3000);
         kgService.rollBackChange("0", "0");
         ResultBean res = kgService.getGraphHistory("0");
         assertEquals(1, res.code);
@@ -132,9 +132,15 @@ class KGTests {
 
     @Test
     public void askTest(){
-        ResultBean res = kgService.ask("农民工 预防");
+        ResultBean res = kgService.ask("农民工 预防","0");
         assertEquals(1,res.code);
         assertNotNull(res.data);
         logger.log(res.data);
+    }
+
+    @Test
+    public void createQuestionTest(){
+        ResultBean res = kgService.createQuestion("[{\"0\":\"测试\"}]","测试用的问题","[{\"0\":\"19321220\"},{\"1\":\"19747406\"}","0","0");
+        assertEquals(1,res.code);
     }
 }

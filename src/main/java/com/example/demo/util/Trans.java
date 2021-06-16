@@ -17,7 +17,7 @@ import java.util.Base64;
 
 public class Trans {
 
-    public static String getJsonString(String filepath) {
+    public static String getJsonStringFromPath(String filepath) {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filepath)), StandardCharsets.UTF_8));
             String line;

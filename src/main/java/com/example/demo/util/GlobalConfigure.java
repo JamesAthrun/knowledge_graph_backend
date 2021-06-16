@@ -17,7 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 
-import static com.example.demo.util.Trans.getJsonString;
+import static com.example.demo.util.Trans.getJsonStringFromPath;
 
 @Configuration
 public class GlobalConfigure {
@@ -30,6 +30,7 @@ public class GlobalConfigure {
     private final String dataPath = "src/main/resources/data.json";
     private final String propertyPath = "application.yml";
     private final String sqlPath = "sql/init.sql";
+    private final String qPath = "src/main/resources/question.json";
     private final boolean autoInitDB = true;
     private final String[] origins = new String[]{
             //在这里设置允许跨域的路由
@@ -55,18 +56,17 @@ public class GlobalConfigure {
     Timer timer;
 
     @Bean
-    public void autoInit(){
+    public void init(){
         if (autoInitDB)
-            init();
+            doInit();
     }
 
-    public void init() {
+    public void doInit() {
         runSqlScript(sqlPath, propertyPath);
         recorder.init();
         logger.log("data load begin");
-        String jsonString = getJsonString(dataPath);
-        kgService.createGraphByJsonStr(jsonString, "obama");
-//        recorder.save();
+        kgService.createGraphByJsonStr(getJsonStringFromPath(dataPath), "obama");
+        kgService.createQuestionByJsonStr(getJsonStringFromPath(qPath));
         logger.log("data load end");
     }
 

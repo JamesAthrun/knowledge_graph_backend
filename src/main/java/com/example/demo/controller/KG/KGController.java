@@ -139,6 +139,7 @@ public class KGController {
         return kgService.ask(questionStr,tableId);
     }
 
+    @GetMapping("/createQuestion")
     @ApiOperation(
             value = "",
             notes = "权限：写"

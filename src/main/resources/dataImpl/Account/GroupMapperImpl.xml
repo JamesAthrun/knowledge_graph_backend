@@ -13,5 +13,10 @@
         where groupId = #{id}
     </select>
 
+    <select id="selectGroupByName" resultType="com.example.demo.po.GroupPo">
+        select groupId, name, description
+        from nkg.`group`
+        where name = #{name}
+    </select>
 
 </mapper>

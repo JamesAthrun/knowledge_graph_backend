@@ -9,4 +9,6 @@ public interface GroupMapper {
     void addGroup(GroupPo groupPo);
 
     GroupPo selectGroupById(int id);
+
+    GroupPo selectGroupByName(String name);
 }

@@ -2,11 +2,14 @@ package com.example.demo.blImpl.AccountServiceImpl;
 
 import com.example.demo.bl.Account.AccountService;
 import com.example.demo.data.Account.AccountMapper;
+import com.example.demo.data.Account.GroupMapper;
 import com.example.demo.data.Account.UserGroupMapper;
 import com.example.demo.data.Verify.VerifyMapper;
 import com.example.demo.po.AccountPo;
+import com.example.demo.po.GroupPo;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
+import org.apache.catalina.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,8 @@ public class AccountServiceImpl implements AccountService {
     AccountMapper accountMapper;
     @Autowired
     UserGroupMapper userGroupMapper;
+    @Autowired
+    GroupMapper groupMapper;
     @Autowired
     VerifyMapper verifyMapper;
     @Autowired
@@ -47,8 +52,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResultBean addUsertoGroup(int userId, int groupId) {
-        userGroupMapper.addToGroup(userId, groupId);
+    public ResultBean addUsertoGroup(int userId, String groupName) {
+        GroupPo groupPo = groupMapper.selectGroupByName(groupName);
+        userGroupMapper.addToGroup(userId, groupPo.groupId);
         return ResultBean.success();
     }
 }

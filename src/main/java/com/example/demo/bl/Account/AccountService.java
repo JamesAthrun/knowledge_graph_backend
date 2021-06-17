@@ -12,5 +12,5 @@ public interface AccountService {
 
     ResultBean getUserName(String userName);
 
-    ResultBean addUsertoGroup(int userId, int groupId);
+    ResultBean addUsertoGroup(int userId, String groupName);
 }

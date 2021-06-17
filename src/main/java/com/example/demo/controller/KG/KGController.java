@@ -34,9 +34,9 @@ public class KGController {
                     "\n权限：任何用户"
     )
     @AuthAnno(level = "")
-    public ResultBean search(HttpServletRequest request, @RequestParam String keywords, @RequestParam String ver) {
+    public ResultBean search(HttpServletRequest request, @RequestParam String keywords, @RequestParam String ver, @AuthTableIdAnno String tableId) {
         logger.log("KGController search");
-        return kgService.searchEntity(keywords, ver);
+        return kgService.searchEntity(keywords, ver,tableId);
     }
 
     @GetMapping("/getGraphData")

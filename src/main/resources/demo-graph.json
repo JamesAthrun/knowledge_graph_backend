@@ -1,0 +1,36 @@
+{
+  "groupId": 2,
+  "authority": 210,
+  "item": [
+    {
+      "title": "A1",
+      "comment": "",
+      "id": "1",
+      "name": "始祖头",
+      "division": "Abstract"
+    },
+    {
+      "title": "A2",
+      "comment": "",
+      "id": "2",
+      "name": "始祖关系",
+      "division": "Abstract"
+    },
+    {
+      "title": "A3",
+      "comment": "",
+      "id": "3",
+      "name": "始祖尾",
+      "division": "Abstract"
+    }
+  ],
+  "description": "demo",
+  "triple": [
+    {
+      "head": "1",
+      "relation": "2",
+      "tail": "3"
+    }
+  ],
+  "name": "demo-graph"
+}

@@ -76,9 +76,9 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean searchEntity(String keywords, String ver) {
+    public ResultBean searchEntity(String keywords, String ver, String tableId) {
         timer.set();
-        List<ItemPo> items = itemMapper.searchByKeywords(keywords, ver);
+        List<ItemPo> items = itemMapper.searchByKeywords(keywords, ver, tableId);
         ItemListVo itemListVo = new ItemListVo();
         for (ItemPo e : items) {
             itemListVo.addItem(e);
@@ -163,8 +163,8 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean createGraphByJsonStr(String jsonString, String name) {
-        AccountPo accountPo = accountMapper.selectAccountByName(name);
+    public ResultBean createGraphByJsonStr(String jsonString, String userName) {
+        AccountPo accountPo = accountMapper.selectAccountByName(userName);
         createGraphByJsonStr(jsonString, accountPo.userId);
         return ResultBean.success();
     }

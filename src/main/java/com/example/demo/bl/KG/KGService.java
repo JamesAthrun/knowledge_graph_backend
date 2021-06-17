@@ -7,13 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface KGService {
 
-    ResultBean searchEntity(String keywords, String ver);
+    ResultBean searchEntity(String keywords, String ver, String tableId);
 
     ResultBean getGraphData(String id, String ver);
 
     ResultBean getTreeData(String id, String ver);
 
-    ResultBean createGraphByJsonStr(String jsonStr, String name);
+    ResultBean createGraphByJsonStr(String jsonStr, String userName);
 
     ResultBean ask(String questionStr, String tableId);
 

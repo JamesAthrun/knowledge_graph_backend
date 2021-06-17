@@ -36,14 +36,14 @@ class KGTests {
 
     @Test
     public void searchEntity1() {
-        ResultBean res = kgService.searchEntity("佩戴", "0");
+        ResultBean res = kgService.searchEntity("佩戴", "0","0");
         assertEquals(res.code, 1);
         assertNotEquals(res.data, "{\"data\":[]}");
     }
 
     @Test
     public void searchEntity2() {
-        ResultBean res = kgService.searchEntity("__#+1%&^9", "0");
+        ResultBean res = kgService.searchEntity("__#+1%&^9", "0","0");
         assertEquals(res.code, 1);
         assertEquals(res.data, "{\"data\":[]}");
     }

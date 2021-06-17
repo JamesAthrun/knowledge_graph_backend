@@ -12,6 +12,21 @@
         from (
               (select max(ver) ver, id
                from (select id, ver
+                     from (select * from nkg.item where tableId = #{tableId}) t0
+                     where ver &lt;= #{ver}
+                       and (title like '%${keywords}%' or name like '%${keywords}%')
+                    ) t1
+               group by id) t2
+                 join (select * from nkg.item where tableId = #{tableId}) t3
+                      on t3.ver = t2.ver and t3.id = t2.id)
+        where `drop` = '0'
+    </select>
+
+    <select id="searchByKeywordsGlobal" resultMap="ItemPo">
+        select t2.id id, tableId, title, name, division, comment
+        from (
+              (select max(ver) ver, id
+               from (select id, ver
                      from nkg.item
                      where ver &lt;= #{ver}
                        and (title like '%${keywords}%' or name like '%${keywords}%')

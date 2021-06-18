@@ -146,7 +146,7 @@ public class KGController {
     )
     @AuthAnno(level = "w")
     public ResultBean createQuestion(HttpServletRequest request, @ApiIgnore @AuthTableIdAnno String tableId, @RequestParam String keyWords, @RequestParam String help, @RequestParam String relatedIds, @RequestParam String ver) {
-        logger.log("KGController ask");
+        logger.log("KGController createQuestion");
         return kgService.createQuestion(keyWords, help, relatedIds, tableId, ver);
     }
 

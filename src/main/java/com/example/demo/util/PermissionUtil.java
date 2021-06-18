@@ -7,6 +7,7 @@ import com.example.demo.po.GroupPo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.util.List;
 
 @Component
@@ -17,26 +18,24 @@ public class PermissionUtil {
     UserGroupMapper userGroupMapper;
 
     public boolean getWritePermission(String tableId, int userId) {
-        GraphPo go = graphMapper.get(tableId);
-        if(go.userId == userId && go.authority / 100 == 2) return true;
-        if(go.userId == userId && (go.authority / 10) % 10 == 2) {
-            List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
-            for(GroupPo groupPo: groupPoList) {
-                if (groupPo.groupId == go.groupId) return true;
-            }
-        }
-        return go.authority % 10 == 2;
+        return doJudge(tableId, userId, 2);
     }
 
     public boolean getReadPermission(String tableId, int userId) {
+        return doJudge(tableId, userId, 1);
+    }
+
+    public boolean doJudge(String tableId, int userId, int levelNeed) {
         GraphPo go = graphMapper.get(tableId);
-        if(go.userId == userId && go.authority / 100 >= 1) return true;
-        if(go.userId == userId && (go.authority / 10) % 10 >= 1) {
-            List<GroupPo> groupPoList = userGroupMapper.selectGroupsByUserId(userId);
-            for(GroupPo groupPo: groupPoList) {
-                if (groupPo.groupId == go.groupId) return true;
+        int authCode = go.authority;
+        if (authCode % 100 % 10 >= levelNeed) return true;
+        else if (userId == go.userId && authCode / 100 >= levelNeed) return true;
+        else if ((authCode - authCode / 100) % 10 >= levelNeed) {
+            List<GroupPo> userInGroups = userGroupMapper.selectGroupsByUserId(userId);
+            for (GroupPo userInGroup : userInGroups) {
+                if (userInGroup.groupId == go.groupId) return true;
             }
         }
-        return go.authority % 10 >= 1;
+        return false;
     }
 }

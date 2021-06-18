@@ -65,7 +65,7 @@ create table `group`
   charset = utf8;
 
 
-create table `userGroup`
+create table `usergroup`
 (
     `userId`  int,
     `groupId` int,
@@ -117,11 +117,11 @@ insert into `group` (name, description)
 values ('common', 'common user');
 insert into `group` (name, description)
 values ('root', 'Administrator');
-insert into userGroup(userId, groupId)
+insert into usergroup(userId, groupId)
 values (1, 1);
-insert into userGroup(userId, groupId)
+insert into usergroup(userId, groupId)
 values (2, 1);
-insert into userGroup(userId, groupId)
+insert into usergroup(userId, groupId)
 values (1, 2);
 # insert into question (keyWords, help, relatedIds, ver)
 # values ('[{"0":"农民工"},{"1":"预防"}]', '请仔细阅读以上内容，在完成的项后打勾，如果您已经全部完成，说明您已经百毒不侵，可以下地干活了！',

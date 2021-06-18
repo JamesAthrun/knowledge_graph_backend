@@ -29,7 +29,7 @@ public class RedisUtil {
 
     public synchronized Integer OpCancelItemChange(String userName) {
         String res = jedis.rpop("IC:" + userName);
-        return res!=null ? 1 : 0;
+        return res != null ? 1 : 0;
     }
 
     public synchronized List<String> getOpsOfUser(String userName) {

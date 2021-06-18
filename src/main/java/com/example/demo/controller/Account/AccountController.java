@@ -38,8 +38,8 @@ public class AccountController {
     public ResultBean login(HttpServletRequest request, @RequestBody String s) throws Exception {
         logger.log("AccountController login");
         AccountVo account = new AccountVo(s);
-        ResultBean res =  accountService.login(account.name, account.pwd);
-        if(res.code==1) verifyMapper.setUserName(request.getRemoteAddr(),account.name);
+        ResultBean res = accountService.login(account.name, account.pwd);
+        if (res.code == 1) verifyMapper.setUserName(request.getRemoteAddr(), account.name);
         return res;
     }
 

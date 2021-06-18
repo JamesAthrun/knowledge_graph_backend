@@ -57,7 +57,7 @@ public class GlobalConfigure {
     Timer timer;
 
     @Bean
-    public void init(){
+    public void init() {
         if (autoInitDB)
             doInit();
     }

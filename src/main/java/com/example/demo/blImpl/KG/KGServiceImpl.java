@@ -46,6 +46,7 @@ public class KGServiceImpl implements KGService {
     UserGroupMapper userGroupMapper;
     @Autowired
     AccountMapper accountMapper;
+
     //去重
     private static <T> void MySet(List<T> in) {
         HashSet<T> out = new HashSet<>(in);
@@ -107,18 +108,18 @@ public class KGServiceImpl implements KGService {
         return ResultBean.success(go);
     }
 
-    private List<String> getAllRoots(List<TriplePo> tris){
+    private List<String> getAllRoots(List<TriplePo> tris) {
         List<String> res = new ArrayList<>();
         HashMap<String, Integer> tmp = new HashMap<>();
         for (TriplePo tri :
                 tris) {
-            tmp.merge(tri.head,0,(o,n)->o);
-            tmp.merge(tri.relation,1,(o,n)->1);
-            tmp.merge(tri.tail,1,(o,n)->1);
+            tmp.merge(tri.head, 0, (o, n) -> o);
+            tmp.merge(tri.relation, 1, (o, n) -> 1);
+            tmp.merge(tri.tail, 1, (o, n) -> 1);
         }
         for (String id :
                 tmp.keySet()) {
-            if(tmp.get(id).equals(0)){
+            if (tmp.get(id).equals(0)) {
                 res.add(id);
             }
         }
@@ -142,7 +143,7 @@ public class KGServiceImpl implements KGService {
         final String SubRoot = "19736712";
         for (String root :
                 roots) {
-            related_link.add(new TriplePo(null,TreeRoot,SubRoot,root));
+            related_link.add(new TriplePo(null, TreeRoot, SubRoot, root));
         }
         //找到所有的root，然后将其连接到一个统一的虚根上，以表示为一棵树
 
@@ -169,7 +170,7 @@ public class KGServiceImpl implements KGService {
         return ResultBean.success();
     }
 
-    private void createGraphByJsonStr(String jsonString, int userId){
+    private void createGraphByJsonStr(String jsonString, int userId) {
         timer.set();
         String tableId = recorder.getTableId();
         JSONObject jojo = JSONObject.parseObject(jsonString);
@@ -370,26 +371,11 @@ public class KGServiceImpl implements KGService {
     @Override
     public ResultBean ask(String questionStr, String tableId) {
         List<QuestionPo> qs = new ArrayList<>(questionMapper.getAll(tableId));
-        HashMap<QuestionPo, Integer> votes = new HashMap<>();
 
-        for (QuestionPo q : qs) {
-            List<String> tmp = q.getKeyWords();
-            for (String kw : tmp) {
-                if (questionStr.contains(kw)) votes.merge(q, 0, (oldValue, newValue) -> oldValue + 1);
-            }
-        }
-        votes.put(null, 0);
-        QuestionPo max = null;
-        for (QuestionPo q : votes.keySet())
-            if (votes.get(q) > votes.get(max)) max = q;
-        if (max == null) return ResultBean.error(0, "no match question");
+        QuestionPo mostPossibleQuestion = QuestionPo.getMostMatch(qs, questionStr);
+        if (mostPossibleQuestion == null) return ResultBean.error(0, "no match question");
 
-        String ver = max.ver;
-        AnswerVo ao = new AnswerVo(itemMapper, max.help, ver);
-        List<String> relatedIds = max.getRelatedIds();
-        for (String id : relatedIds) {
-            ao.addTableItem(id);
-        }
+        AnswerVo ao = new AnswerVo(itemMapper, mostPossibleQuestion);
         return ResultBean.success(ao);
     }
 
@@ -402,7 +388,7 @@ public class KGServiceImpl implements KGService {
     }
 
     @Override
-    public ResultBean createQuestion(String keyWords, String help, String relatedIds, String tableId, String ver){
+    public ResultBean createQuestion(String keyWords, String help, String relatedIds, String tableId, String ver) {
         questionMapper.insert(keyWords, help, relatedIds, tableId, ver);
         return ResultBean.success();
     }
@@ -411,20 +397,21 @@ public class KGServiceImpl implements KGService {
     public ResultBean createQuestionByJsonStr(String jsonStr) {
         JSONArray ja = JSONArray.parseArray(jsonStr);
         for (Object o : ja) {
-            JSONObject jo = (JSONObject)o;
+            JSONObject jo = (JSONObject) o;
             String keyWords = jo.get("keyWords").toString();
             String help = jo.getString("help");
             String relatedIds = jo.get("relatedIds").toString();
             String tableId = jo.getString("tableId");
             String ver = jo.getString("ver");
-            questionMapper.insert(keyWords,help,relatedIds,tableId,ver);
+            questionMapper.insert(keyWords, help, relatedIds, tableId, ver);
         }
         return ResultBean.success();
     }
 
     private ResultBean createItem(String headId, String relationId, String tailId, String id, String tableId, String title, String name, String division, String comment, String ver) {
         itemMapper.insert(new ItemPo(id, tableId, title, name, division, comment, incr(ver), "0"));
-        if (id.equals(headId) || id.equals(relationId) || id.equals(tailId)) createLink(tableId, headId, relationId, tailId, ver);
+        if (id.equals(headId) || id.equals(relationId) || id.equals(tailId))
+            createLink(tableId, headId, relationId, tailId, ver);
         return ResultBean.success();
     }
 

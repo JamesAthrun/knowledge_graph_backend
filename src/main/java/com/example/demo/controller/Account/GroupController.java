@@ -28,8 +28,8 @@ public class GroupController {
             value = "创建用户组",
             notes = ""
     )
-    public ResultBean addGroup(@RequestBody GroupVo groupVo){
-        return groupService.addGroup(groupVo.name,groupVo.description);
+    public ResultBean addGroup(@RequestBody GroupVo groupVo) {
+        return groupService.addGroup(groupVo.name, groupVo.description);
     }
 
     @GetMapping("/getUserList")

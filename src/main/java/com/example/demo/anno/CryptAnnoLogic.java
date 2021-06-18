@@ -28,14 +28,14 @@ public class CryptAnnoLogic {
     @Around("aspectJMethod()")
     public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] objs = joinPoint.getArgs();
-        HttpServletRequest request = AnnoUtil.getArgOfUniqueParamType(HttpServletRequest.class,joinPoint);
-        if(request==null) throw new Exception();
+        HttpServletRequest request = AnnoUtil.getArgOfUniqueParamType(HttpServletRequest.class, joinPoint);
+        if (request == null) throw new Exception();
 
         if (request.getMethod().equals("POST")) {
             String ip = request.getRemoteAddr();
-            String body = AnnoUtil.getArgOfUniqueParamType(String.class,joinPoint);
+            String body = AnnoUtil.getArgOfUniqueParamType(String.class, joinPoint);
             String plainStr = Trans.secretStrToPlainStr(ip, verifyMapper, body);
-            int index = AnnoUtil.getArgIndexOfUniqueParamType(String.class,joinPoint);
+            int index = AnnoUtil.getArgIndexOfUniqueParamType(String.class, joinPoint);
             objs[index] = plainStr;
             ResultBean res = (ResultBean) joinPoint.proceed(objs);
             res.setAsSecret(verifyMapper, ip);

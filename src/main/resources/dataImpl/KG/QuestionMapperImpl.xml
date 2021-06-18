@@ -3,14 +3,14 @@
 <mapper namespace="com.example.demo.data.KG.QuestionMapper">
 
     <select id="getAll" resultMap="QuestionPo">
-        select keyWords, help, relatedIds,ver
+        select keyWords, help, relatedIds, ver
         from nkg.question
         where tableId = #{tableId};
     </select>
 
     <insert id="insert">
         insert into nkg.question(keyWords, help, relatedIds, tableId, ver)
-        values (#{keyWords},#{help},#{relatedIds},#{tableId},#{ver});
+        values (#{keyWords}, #{help}, #{relatedIds}, #{tableId}, #{ver});
     </insert>
 
     <resultMap id="QuestionPo" type="com.example.demo.po.QuestionPo">

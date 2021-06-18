@@ -43,7 +43,7 @@
     <select id="selectAuthority" resultType="java.lang.String">
         select authority
         from nkg.graph
-        where tableId=#{tableId}
+        where tableId = #{tableId}
     </select>
 
     <delete id="rollBack">
@@ -62,7 +62,8 @@
     </delete>
 
     <update id="updateAuthority">
-        update nkg.graph set `authority`=#{authority}
+        update nkg.graph
+        set `authority`=#{authority}
         where tableId = #{tableId}
     </update>
 

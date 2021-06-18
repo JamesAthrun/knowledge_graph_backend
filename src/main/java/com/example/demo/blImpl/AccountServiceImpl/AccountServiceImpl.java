@@ -9,7 +9,6 @@ import com.example.demo.po.AccountPo;
 import com.example.demo.po.GroupPo;
 import com.example.demo.util.GlobalLogger;
 import com.example.demo.util.ResultBean;
-import org.apache.catalina.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public ResultBean getUserName(String userName) {
         AccountPo accountPo = accountMapper.selectAccountByName(userName);
-        if(accountPo != null) return ResultBean.success(accountPo.userId);
+        if (accountPo != null) return ResultBean.success(accountPo.userId);
         return ResultBean.error(4, "User name not found");
     }
 

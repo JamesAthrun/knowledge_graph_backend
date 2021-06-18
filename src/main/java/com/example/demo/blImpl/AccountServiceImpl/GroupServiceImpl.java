@@ -18,7 +18,7 @@ public class GroupServiceImpl implements GroupService {
     UserGroupMapper userGroupMapper;
 
     @Override
-    public ResultBean addGroup(String name,String description) {
+    public ResultBean addGroup(String name, String description) {
         groupMapper.addGroup(new GroupPo(name, description));
         return ResultBean.success();
     }

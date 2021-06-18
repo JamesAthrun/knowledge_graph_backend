@@ -28,6 +28,6 @@ public interface GraphMapper {
 
     void createHistory(@Param("tableId") String tableId, @Param("ver") String ver, @Param("time") String time, @Param("detail") String detail);
 
-    String selectAuthority(@Param("tableId")String tableId);
+    String selectAuthority(@Param("tableId") String tableId);
 
 }

@@ -26,7 +26,7 @@ public class HistoryPo {
             }
             jo.put("time", h.time);
             jo.put("ver", h.ver);
-            jo.put("drop",h.drop);
+            jo.put("drop", h.drop);
             ja.add(jo);
         }
         return ja;

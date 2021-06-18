@@ -36,7 +36,7 @@ public class KGController {
     @AuthAnno(level = "")
     public ResultBean search(HttpServletRequest request, @RequestParam String keywords, @RequestParam String ver, @AuthTableIdAnno String tableId) {
         logger.log("KGController search");
-        return kgService.searchEntity(keywords, ver,tableId);
+        return kgService.searchEntity(keywords, ver, tableId);
     }
 
     @GetMapping("/getGraphData")
@@ -91,7 +91,7 @@ public class KGController {
     @AuthAnno(level = "w")
     public ResultBean commitChange(HttpServletRequest request, @ApiIgnore @AuthUserNameAnno String userName, @RequestBody KGEditFormVo f) {
         logger.log("KGController commitChange");
-        if(!userName.equals(f.user)) return ResultBean.error(-111,"invalid user");
+        if (!userName.equals(f.user)) return ResultBean.error(-111, "invalid user");
         return kgService.commitChange(f);
     }
 
@@ -134,9 +134,9 @@ public class KGController {
             notes = "权限：读"
     )
     @AuthAnno(level = "r")
-    public ResultBean ask(HttpServletRequest request, @RequestBody String questionStr,@AuthTableIdAnno String tableId) {
+    public ResultBean ask(HttpServletRequest request, @RequestBody String questionStr, @AuthTableIdAnno String tableId) {
         logger.log("KGController ask");
-        return kgService.ask(questionStr,tableId);
+        return kgService.ask(questionStr, tableId);
     }
 
     @GetMapping("/createQuestion")

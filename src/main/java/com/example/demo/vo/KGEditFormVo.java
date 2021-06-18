@@ -42,32 +42,32 @@ public class KGEditFormVo {
     public JSONObject toJSONObject(Integer mode) {
         String detailStr = "";
         if (mode == 0) {
-            switch (op){
+            switch (op) {
                 case "createItem":
-                    detailStr+= String.format("create item (id, title, name)->(「%s」,「%s」,「%s」)", id,title,name);
+                    detailStr += String.format("create item (id, title, name)->(「%s」,「%s」,「%s」)", id, title, name);
                     break;
                 case "createLink":
-                    detailStr+= String.format("link items in triple(「%s」,「%s」,「%s」)", headId,relationId,tailId);
+                    detailStr += String.format("link items in triple(「%s」,「%s」,「%s」)", headId, relationId, tailId);
                     break;
                 case "updateItem":
-                    detailStr+= String.format("update item 「%s」 in all triples", id);
+                    detailStr += String.format("update item 「%s」 in all triples", id);
                     break;
                 case "replaceItem":
-                    detailStr+=String.format("replace item 「%s」 in triple (「%s」,「%s」,「%s」)", id,headId,relationId,tailId);
+                    detailStr += String.format("replace item 「%s」 in triple (「%s」,「%s」,「%s」)", id, headId, relationId, tailId);
                     break;
                 case "deleteItem":
-                    detailStr+=String.format("delete item 「%s」", id);
+                    detailStr += String.format("delete item 「%s」", id);
                     break;
                 case "deleteLink":
-                    detailStr+=String.format("unlink items in triple(「%s」,「%s」,「%s」)",headId,relationId,tailId);
+                    detailStr += String.format("unlink items in triple(「%s」,「%s」,「%s」)", headId, relationId, tailId);
                     break;
                 default:
                     ;
-                }
-                JSONObject jo = new JSONObject();
-                jo.put("detail",detailStr);
-                return jo;
             }
+            JSONObject jo = new JSONObject();
+            jo.put("detail", detailStr);
+            return jo;
+        }
         return null;
     }
 }

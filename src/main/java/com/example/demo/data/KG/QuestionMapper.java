@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface QuestionMapper {
 
-    void insert(@Param("keyWords") String keyWords, @Param("help") String help, @Param("relatedIds") String relatedIds, @Param("tableId")String tableId, @Param("ver") String ver);
+    void insert(@Param("keyWords") String keyWords, @Param("help") String help, @Param("relatedIds") String relatedIds, @Param("tableId") String tableId, @Param("ver") String ver);
 
-    List<QuestionPo> getAll(@Param("tableId")String tableId);
+    List<QuestionPo> getAll(@Param("tableId") String tableId);
 }

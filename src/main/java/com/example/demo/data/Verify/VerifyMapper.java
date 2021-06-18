@@ -10,7 +10,7 @@ public interface VerifyMapper {
 
     String getDesKey(String ip);
 
-    void setUserName(@Param("ip") String ip,@Param("userName") String userName);
+    void setUserName(@Param("ip") String ip, @Param("userName") String userName);
 
-    String getUserNameByIp(@Param("ip")String ip);
+    String getUserNameByIp(@Param("ip") String ip);
 }

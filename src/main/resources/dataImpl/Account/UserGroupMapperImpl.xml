@@ -3,7 +3,7 @@
 <mapper namespace="com.example.demo.data.Account.UserGroupMapper">
 
     <insert id="addToGroup" parameterType="com.example.demo.po.UserGroupPo">
-        insert into nkg.`userGroup`(userId, groupId)
+        insert into nkg.`usergroup`(userId, groupId)
         values (#{userId}, #{groupId})
     </insert>
 

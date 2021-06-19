@@ -1,0 +1,440 @@
+{
+  "name": "一次外交谈话",
+  "groupId": 1,
+  "authority": 222,
+  "description": "1941年11月11日，德国向美国宣战，两天后，德国的盟友匈牙利也向美国提交了宣战布告，在此期间发生了一次非常有趣的谈话。",
+  "item": [
+    {
+      "title": "P01",
+      "comment": "",
+      "id": "1",
+      "name": "在那之后",
+      "division": "Property"
+    },{
+      "title": "P02",
+      "comment": "",
+      "id": "2",
+      "name": "说话",
+      "division": "Property"
+    },{
+      "title": "P03",
+      "comment": "",
+      "id": "3",
+      "name": "是该国的外交官",
+      "division": "Property"
+    },{
+      "title": "P04",
+      "comment": "",
+      "id": "4",
+      "name": "盟友",
+      "division": "Property"
+    },{
+      "title": "P05",
+      "comment": "",
+      "id": "5",
+      "name": "宣战",
+      "division": "Property"
+    },{
+      "title": "P06",
+      "comment": "",
+      "id": "6",
+      "name": "有领土需求",
+      "division": "Property"
+    },{
+      "title": "P07",
+      "comment": "",
+      "id": "7",
+      "name": "对话",
+      "division": "Property"
+    },{
+      "title": "P08",
+      "comment": "",
+      "id": "8",
+      "name": "有国王",
+      "division": "Property"
+    },{
+      "title": "P09",
+      "comment": "",
+      "id": "9",
+      "name": "是王国",
+      "division": "Property"
+    },{
+      "title": "P10",
+      "comment": "",
+      "id": "10",
+      "name": "有海军",
+      "division": "Property"
+    },{
+      "title": "P11",
+      "comment": "",
+      "id": "11",
+      "name": "有海军上将",
+      "division": "Property"
+    },{
+      "title": "P12",
+      "comment": "",
+      "id": "12",
+      "name": "敌人",
+      "division": "Property"
+    },{
+      "title": "R01",
+      "comment": "",
+      "id": "14",
+      "name": "德国",
+      "division": "Resource"
+    },{
+      "title": "R02",
+      "comment": "",
+      "id": "15",
+      "name": "美国",
+      "division": "Resource"
+    },{
+      "title": "R03",
+      "comment": "",
+      "id": "16",
+      "name": "匈牙利",
+      "division": "Resource"
+    },{
+      "title": "R04",
+      "comment": "",
+      "id": "17",
+      "name": "罗马尼亚",
+      "division": "Resource"
+    },{
+      "title": "#贵国向我国宣战，我已知悉，但我刚刚上任，不熟悉欧洲事务，我想问问你们的情况，以便向总统汇报，可以吗？",
+      "comment": "",
+      "id": "18",
+      "name": "",
+      "division": "Class"
+    },{
+      "title": "#您尽管问。",
+      "comment": "",
+      "id": "19",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#贵国是一个共和国吗？",
+      "comment": "",
+      "id": "20",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#不是，是王国。",
+      "comment": "",
+      "id": "21",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#这么说，你们有一个国王咯？",
+      "comment": "",
+      "id": "22",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#不是的。我国虽是王国，但是并没有国王。倒是有一个海军上将，他领导整个国家。",
+      "comment": "",
+      "id": "23",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#一个海军上将领导的国家...贵国的海军实力一定很强大吧？",
+      "comment": "",
+      "id": "24",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#也不是，我国是内陆国，没有海军。",
+      "comment": "",
+      "id": "25",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#好吧...那贵国可对我国有领土需求？",
+      "comment": "",
+      "id": "26",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#我国对美国没有领土需求。",
+      "comment": "",
+      "id": "27",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#那英国呢？",
+      "comment": "",
+      "id": "28",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#我国对英国也没有领土需求",
+      "comment": "",
+      "id": "29",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#那你们对谁有领土需求？",
+      "comment": "",
+      "id": "30",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#罗马尼亚。",
+      "comment": "",
+      "id": "31",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#罗马尼亚？我没听错吧？那不是你们的盟友吗？",
+      "comment": "",
+      "id": "32",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#是的。",
+      "comment": "",
+      "id": "33",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#你们为了向罗马尼亚索要领土，而和罗马尼亚一起向美国宣战？",
+      "comment": "",
+      "id": "34",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "#先生，这就是错综复杂的欧洲政治。",
+      "comment": "",
+      "id": "35",
+      "name": "",
+      "division": "String"
+    },{
+      "title": "C02",
+      "comment": "",
+      "id": "36",
+      "name": "杰尼·斯卡特",
+      "division": "Class"
+    },{
+      "title": "C01",
+      "comment": "",
+      "id": "37",
+      "name": "塞切尼·巴卡",
+      "division": "Class"
+    },{
+      "title": "",
+      "comment": "",
+      "id": "38",
+      "name": "是",
+      "division": "Abstract"
+    },{
+      "title": "",
+      "comment": "",
+      "id": "39",
+      "name": "否",
+      "division": "Abstract"
+    }
+  ],
+  "triple": [
+    {
+      "head": "18",
+      "relation": "1",
+      "tail": "19"
+    },{
+      "head": "19",
+      "relation": "1",
+      "tail": "20"
+    },{
+      "head": "20",
+      "relation": "1",
+      "tail": "21"
+    },{
+      "head": "21",
+      "relation": "1",
+      "tail": "22"
+    },{
+      "head": "22",
+      "relation": "1",
+      "tail": "23"
+    },{
+      "head": "23",
+      "relation": "1",
+      "tail": "24"
+    },{
+      "head": "24",
+      "relation": "1",
+      "tail": "25"
+    },{
+      "head": "25",
+      "relation": "1",
+      "tail": "26"
+    },{
+      "head": "26",
+      "relation": "1",
+      "tail": "27"
+    },{
+      "head": "27",
+      "relation": "1",
+      "tail": "28"
+    },{
+      "head": "28",
+      "relation": "1",
+      "tail": "29"
+    },{
+      "head": "29",
+      "relation": "1",
+      "tail": "30"
+    },{
+      "head": "30",
+      "relation": "1",
+      "tail": "31"
+    },{
+      "head": "31",
+      "relation": "1",
+      "tail": "32"
+    },{
+      "head": "32",
+      "relation": "1",
+      "tail": "33"
+    },{
+      "head": "33",
+      "relation": "1",
+      "tail": "34"
+    },{
+      "head": "34",
+      "relation": "1",
+      "tail": "35"
+    },{
+      "head": "36",
+      "relation": "2",
+      "tail": "18"
+    },{
+      "head": "36",
+      "relation": "2",
+      "tail": "20"
+    },{
+      "head": "36",
+      "relation": "2",
+      "tail": "22"
+    },{
+      "head": "36",
+      "relation": "2",
+      "tail": "24"
+    },{
+      "head": "36",
+      "relation": "2",
+      "tail": "26"
+    },{
+      "head": "36",
+      "relation": "2",
+      "tail": "28"
+    },{
+      "head": "36",
+      "relation": "2",
+      "tail": "30"
+    },{
+      "head": "36",
+      "relation": "2",
+      "tail": "32"
+    },{
+      "head": "36",
+      "relation": "2",
+      "tail": "34"
+    }, {
+      "head": "37",
+      "relation": "2",
+      "tail": "19"
+    }, {
+      "head": "37",
+      "relation": "2",
+      "tail": "21"
+    }, {
+      "head": "37",
+      "relation": "2",
+      "tail": "23"
+    }, {
+      "head": "37",
+      "relation": "2",
+      "tail": "25"
+    }, {
+      "head": "37",
+      "relation": "2",
+      "tail": "27"
+    }, {
+      "head": "37",
+      "relation": "2",
+      "tail": "29"
+    }, {
+      "head": "37",
+      "relation": "2",
+      "tail": "31"
+    }, {
+      "head": "37",
+      "relation": "2",
+      "tail": "33"
+    }, {
+      "head": "37",
+      "relation": "2",
+      "tail": "35"
+    }, {
+      "head": "36",
+      "relation": "3",
+      "tail": "15"
+    }, {
+      "head": "37",
+      "relation": "3",
+      "tail": "16"
+    }, {
+      "head": "16",
+      "relation": "6",
+      "tail": "17"
+    }, {
+      "head": "16",
+      "relation": "5",
+      "tail": "15"
+    }, {
+      "head": "16",
+      "relation": "4",
+      "tail": "17"
+    }, {
+      "head": "16",
+      "relation": "4",
+      "tail": "14"
+    }, {
+      "head": "14",
+      "relation": "4",
+      "tail": "17"
+    }, {
+      "head": "14",
+      "relation": "5",
+      "tail": "15"
+    }, {
+      "head": "17",
+      "relation": "5",
+      "tail": "15"
+    },{
+      "head": "14",
+      "relation": "12",
+      "tail": "15"
+    }, {
+      "head": "16",
+      "relation": "9",
+      "tail": "38"
+    }, {
+      "head": "16",
+      "relation": "8",
+      "tail": "39"
+    }, {
+      "head": "16",
+      "relation": "10",
+      "tail": "39"
+    }, {
+      "head": "16",
+      "relation": "11",
+      "tail": "38"
+    }, {
+      "head": "36",
+      "relation": "7",
+      "tail": "37"
+    }
+  ]
+}

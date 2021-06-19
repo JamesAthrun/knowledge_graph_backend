@@ -1,0 +1,127 @@
+{
+  "groupId": 1000,
+  "authority": 222,
+  "item": [
+    {
+      "title": "lxc",
+      "comment": "一名伟大的篮球运动员，库里的好朋友。",
+      "id": "1",
+      "name": "林CC",
+      "division": "Resource"
+    },
+    {
+      "title": "lzc",
+      "comment": "腾讯员工，和马HT谈笑风生",
+      "id": "2",
+      "name": "陆ZC",
+      "division": "Resource"
+    },
+    {
+      "title": "xgs",
+      "comment": "无",
+      "id": "3",
+      "name": "肖GS",
+      "division": "Resource"
+    },
+    {
+      "title": "jsx",
+      "comment": "高级知识分子，有丰富的观影经验",
+      "id": "4",
+      "name": "焦SX",
+      "division": "Resource"
+    },
+    {
+      "title": "P01",
+      "comment": "",
+      "id": "5",
+      "name": "室友",
+      "division": "Property"
+    },
+    {
+      "title": "#这里是中国！",
+      "comment": "",
+      "id": "6",
+      "name": "",
+      "division": "String"
+    },
+    {
+      "title": "P02",
+      "comment": "",
+      "id": "7",
+      "name": "回答",
+      "division": "Property"
+    }
+  ],
+  "description": "325宿舍情况",
+  "triple": [
+    {
+      "head": "1",
+      "relation": "5",
+      "tail": "2"
+    },{
+      "head": "2",
+      "relation": "5",
+      "tail": "3"
+    },{
+      "head": "3",
+      "relation": "5",
+      "tail": "4"
+    },{
+      "head": "1",
+      "relation": "5",
+      "tail": "3"
+    },{
+      "head": "2",
+      "relation": "5",
+      "tail": "4"
+    },{
+      "head": "4",
+      "relation": "5",
+      "tail": "1"
+    },{
+      "head": "1",
+      "relation": "7",
+      "tail": "6"
+    },
+    {
+      "head": "2",
+      "relation": "7",
+      "tail": "6"
+    },
+    {
+      "head": "3",
+      "relation": "7",
+      "tail": "6"
+    },
+    {
+      "head": "4",
+      "relation": "7",
+      "tail": "6"
+    }
+  ],
+  "question": [
+    {
+      "keyWords": [
+        {
+          "0": "325"
+        },
+        {
+          "1": "同学"
+        },
+        {
+          "2": "住"
+        },{
+          "3": "哪"
+        }
+      ],
+      "help": "325对你讲话",
+      "relatedIds": [
+        {
+          "0": "6"
+        }
+      ],
+      "ver": "0"
+    }
+  ],
+  "name": "325知识图谱"
+}

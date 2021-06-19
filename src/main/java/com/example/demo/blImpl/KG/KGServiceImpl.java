@@ -189,11 +189,33 @@ public class KGServiceImpl implements KGService {
         JSONArray triple_list = jojo.getJSONArray("triple");
         for (Object o : triple_list) {
             JSONObject jo = (JSONObject) o;
-            String real_head = map.get(jo.getString("head"));
-            String real_relation = map.get(jo.getString("relation"));
-            String real_tail = map.get(jo.getString("tail"));
-            tripleMapper.insert(new TriplePo(tableId, real_head, real_relation, real_tail, "0", "0"));
+            String headAfterMap = map.get(jo.getString("head"));
+            String relationAfterMap = map.get(jo.getString("relation"));
+            String tailAfterMap = map.get(jo.getString("tail"));
+            tripleMapper.insert(new TriplePo(tableId, headAfterMap, relationAfterMap, tailAfterMap, "0", "0"));
         }
+
+        if(jojo.containsKey("question")){
+            JSONArray ja =jojo.getJSONArray("question");
+            for (Object o : ja) {
+                JSONObject jo = (JSONObject) o;
+                String keyWords = jo.get("keyWords").toString();
+                String help = jo.getString("help");
+                String ver = jo.getString("ver");
+                String relatedIds = jo.get("relatedIds").toString();
+                JSONArray idBeforeMap = JSONArray.parseArray(relatedIds);
+                JSONArray idAfterMap = new JSONArray();
+                for(int i=0;i<idBeforeMap.size();i++){
+                    JSONObject tmp2 = (JSONObject)idBeforeMap.get(i);
+                    String id = tmp2.getString(String.valueOf(i));
+                    JSONObject tmp3 = new JSONObject();
+                    tmp3.put(String.valueOf(i),map.get(id));
+                    idAfterMap.add(tmp3);
+                }
+                questionMapper.insert(keyWords, help, idAfterMap.toJSONString(), tableId, ver);
+            }
+        }
+
         graphMapper.createHistory(tableId, "0", Timer.getFormatTime(), "NKG: init");
         logger.log("建图用时 " + timer.get());
     }
